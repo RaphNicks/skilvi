@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 24 24%27%3E%3Cpath fill=%27%232B4ADB%27 d=%27M12 2 4 5v6.5c0 5 3.4 8.6 8 10.5 4.6-1.9 8-5.5 8-10.5V5l-8-3Z%27/%3E%3Cpath fill=%27%23fff%27 d=%27m8.6 11.8 2.3 2.3 4.6-4.6-1.4-1.4-3.2 3.2-.9-.9-1.4 1.4Z%27/%3E%3C/svg%3E">
+  <title>Promote your services — Skilvi</title>
+  <meta name="description" content="Get seen: promoted placements in Skilvi search and category pages.">
+  <link rel="stylesheet" href="assets/css/skilvi.css?v=4">
+</head>
+<body data-chrome="public" data-page="promo">
+
+<header class="topbar">
+  <input type="checkbox" id="navCheck" class="nav-check" aria-hidden="true">
+  <div class="container topbar-in">
+    <a class="brand" href="index.html"><span class="brand-mark"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 5 6v6c0 4.4 3 7.4 7 9 4-1.6 7-4.6 7-9V6l-7-3Z"/><path d="m9 12 2 2 4-4"/></svg></span>Skilvi</a>
+    <nav class="mainnav">
+      <a href="search.html">Explore</a>
+      <a href="jobs.html">Jobs</a>
+      <a href="help.html">How it works</a>
+    </nav>
+    <div class="topact">
+      <a class="btn btn-ghost" href="login.html">Log in</a>
+      <a class="btn btn-primary" href="login.html#regForm">Join free</a>
+    </div>
+    <label class="icon-btn nav-toggle" for="navCheck" aria-label="Menu"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg></label>
+  </div>
+  <div class="mobile-nav" id="mobileNav">
+    <a href="search.html">Explore</a>
+    <a href="jobs.html">Jobs</a>
+    <a href="help.html">How it works</a>
+    <a href="login.html">Log in</a>
+    <a href="login.html#regForm">Join free</a>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="hero-in">
+    <span class="hero-eyebrow" id="prEyebrow"></span>
+    <h1 style="font-size:34px">Be seen when clients search.</h1>
+    <p class="hero-sub">Promotion puts your service in labelled “Promoted” positions in search results or on category pages. It's an ad slot — clearly marked, capped, and never a quality ranking.</p>
+    <div class="row mt-3" style="gap:10px;flex-wrap:wrap">
+      <a class="btn btn-primary btn-lg" href="#buy">Buy a boost</a>
+      <a class="btn btn-secondary btn-lg" href="login.html#regForm">Create a free account first</a>
+    </div>
+  </div>
+</section>
+
+<!-- Products -->
+<section class="section" id="buy">
+  <div class="section-head"><h2>Choose your placement</h2></div>
+  <div class="grid grid-2" id="prProducts"></div>
+</section>
+
+<!-- Rules -->
+<section class="section">
+  <div class="section-head"><h2>Rules we never break</h2></div>
+  <div class="grid grid-4" id="prRules"></div>
+</section>
+
+<!-- Buy form -->
+<section class="section section-last">
+  <div class="svc-layout" style="align-items:start">
+    <div class="card card-pad">
+      <h2 style="font-size:18px">Buy a promotion</h2>
+      <p class="small muted mt-1">Starts immediately after payment, runs for the full period, and stops automatically. You can pause early — unused days are lost, no partial refunds.</p>
+      <form id="prForm" class="mt-3">
+        <div class="field mb-2">
+          <label>Product <span style="color:var(--red)">*</span></label>
+          <div class="stack" style="gap:8px" data-radio>
+            <button type="button" class="radio-pill active" style="width:100%"><span class="rd"></span> Search boost — ₦2,500 / 7 days <span class="tiny faint" style="margin-left:auto">top of relevant searches</span></button>
+            <button type="button" class="radio-pill" style="width:100%"><span class="rd"></span> Category spotlight — ₦5,000 / 7 days <span class="tiny faint" style="margin-left:auto">category page + home tile</span></button>
+          </div>
+        </div>
+        <div class="form-row-2 mb-2">
+          <div class="field">
+            <label>Service to promote <span style="color:var(--red)">*</span></label>
+            <select class="select" required>
+              <option>Website development — landing pages to full sites</option>
+              <option>WordPress care &amp; fixes</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Duration</label>
+            <select class="select"><option>7 days (standard)</option></select>
+          </div>
+        </div>
+        <div class="field mb-3">
+          <label>Categories shown in searches (search boost only)</label>
+          <div class="row-wrap" style="gap:8px">
+            <button type="button" class="chip active" style="font-size:12px;padding:4px 10px">Web Development</button>
+            <button type="button" class="chip" style="font-size:12px;padding:4px 10px">UI/UX Design</button>
+            <button type="button" class="chip" style="font-size:12px;padding:4px 10px">Software & Scripts</button>
+          </div>
+          <span class="hint">Your promoted slot shows only when clients search these categories.</span>
+        </div>
+        <div class="row spread" style="align-items:center;flex-wrap:wrap;gap:12px">
+          <div>
+            <div class="amount" style="font-size:20px">₦2,500</div>
+            <div class="tiny faint">card, bank transfer or USSD</div>
+          </div>
+          <button class="btn btn-primary btn-lg" type="submit">Pay &amp; start promotion</button>
+        </div>
+      </form>
+    </div>
+
+    <aside class="card card-pad">
+      <h3 style="font-size:14px">Before you buy</h3>
+      <div class="stack mt-2" style="gap:10px" id="prTips"></div>
+    </aside>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="footer-in">
+    <div class="footer-grid">
+      <div>
+        <div class="f-brand"><span class="brand-mark"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 5 6v6c0 4.4 3 7.4 7 9 4-1.6 7-4.6 7-9V6l-7-3Z"/><path d="m9 12 2 2 4-4"/></svg></span>Skilvi</div>
+        <p class="f-desc">Discover. Learn. Earn. A marketplace built for Nigeria — digital skills and hands-on trades, paid securely in Naira.</p>
+      </div>
+      <div><h4>For clients</h4><a href="search.html">Browse workers</a><a href="jobs.html">Post a job</a><a href="help.html#faq-escrow">How escrow works</a><a href="help.html#faq-fees">Fees &amp; pricing</a></div>
+      <div><h4>For workers</h4><a href="login.html#regForm">Create a free profile</a><a href="verification.html">Get verified</a><a href="help.html#faq-withdrawals">Withdraw your money</a><a href="promotion.html">Promote your profile</a></div>
+      <div><h4>Company</h4><a href="about.html">About Skilvi</a><a href="help.html">Help center</a><a href="terms.html">Terms of service</a><a href="privacy.html">Privacy policy</a><a href="help.html">Contact support</a></div>
+    </div>
+    <div class="footer-bottom"><span>© 2026 Skilvi Technologies Ltd. All rights reserved.</span><span>Built in Nigeria · Payments held securely in escrow</span></div>
+  </div>
+</footer>
+
+<script src="assets/js/mock.js?v=4"></script>
+<script src="assets/js/skilvi.js?v=4"></script>
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const I = SkIconSvg;
+    $("#prEyebrow").innerHTML = I.zap + " Optional · starts instantly · always labelled";
+
+    $("#prProducts").innerHTML = [
+      [I.search, "Search boost", "₦2,500", "7 days", "Your service appears in the top “Promoted” position of search results when clients search your categories.", ["Up to 3 categories you choose", "Labeled “Promoted” on the card", "Never above more than 2 promoted items per page", "Works alongside your organic ranking"]],
+      [I.layers, "Category spotlight", "₦5,000", "7 days", "Featured placement on your category page plus a tile on the home browse grid — maximum visibility for launches and busy seasons.", ["One top-level category", "Home page tile for 7 days", "Ideal for new services or peak seasons", "Labeled “Promoted” everywhere"]]
+    ].map(([i, t, p, d, desc, pts]) =>
+      '<div class="card card-pad"><div class="row spread"><span class="stat-icon">' + i + '</span><span class="tag tag-promoted">Promoted</span></div>' +
+      "<h3 style=\"font-size:16px;margin-top:12px;font-family:var(--font-body)\">" + t + "</h3>" +
+      '<div class="row mt-1" style="align-items:baseline;gap:8px"><span class="amount" style="font-size:24px">' + p + "</span><span class=\"tiny faint\">/ " + d + "</span></div>" +
+      '<p class="small muted mt-1">' + desc + "</p>" +
+      '<ul class="mt-2" style="display:flex;flex-direction:column;gap:7px">' +
+      pts.map((x) => '<li class="small" style="color:var(--ink-2);display:flex;gap:7px;align-items:flex-start">' + I.check + "<span>" + x + "</span></li>").join("") +
+      "</ul></div>").join("");
+
+    $("#prRules").innerHTML = [
+      [I.tag, "Always labelled", "Every promoted item carries a “Promoted” tag. Clients always know it's an ad."],
+      [I.layers, "Capped density", "Max 3 promoted items per results page. No page is ever flooded with ads."],
+      [I.star, "Never a ranking", "Promotion occupies fixed slots. It never changes organic order or implies Skilvi-endorsed quality."],
+      [I.clock, "Transparent timers", "Promotions start instantly, run for the exact period, and expire automatically."]
+    ].map(([i, t, d]) => '<div class="step"><span class="step-num" style="width:34px;height:34px">' + i + "</span><h3>" + t + "</h3><p>" + d + "</p></div>").join("");
+
+    $("#prTips").innerHTML = [
+      ["Promote when your profile is ready", "A boosted profile with no portfolio still converts badly. Finish your profile first."],
+      ["Pair with verification", "Promotion brings eyes; the verified badge converts them. Unverified boosts waste budget in trades."],
+      ["Test 7 days, then measure", "Check profile views and order starts in your dashboard. Re-promote what works."]
+    ].map(([t, d]) => '<div class="row" style="gap:10px;align-items:flex-start"><span class="stat-icon" style="width:30px;height:30px;flex:none">' + I.zap + "</span>" +
+      "<div><div class=\"bold small\">" + t + '</div><div class="tiny faint">' + d + "</div></div></div>").join("");
+
+    $$("#prForm [data-radio] .radio-pill").forEach((p) => p.addEventListener("click", () => {
+      $$("#prForm [data-radio] .radio-pill").forEach((x) => x.classList.remove("active"));
+      p.classList.add("active");
+      const price = p.textContent.includes("₦5,000") ? "₦5,000" : "₦2,500";
+      $("#prForm .amount").textContent = price;
+    }));
+    $$("#prForm .chip").forEach((c) => c.addEventListener("click", () => c.classList.toggle("active")));
+    $("#prForm").addEventListener("submit", (e) => {
+      e.preventDefault();
+      Sk.toast("Promotion activated — your service is now showing in promoted slots for 7 days.", "success");
+      setTimeout(() => location.href = "worker-dashboard.html", 1200);
+    });
+  });
+</script>
+</body>
+</html>

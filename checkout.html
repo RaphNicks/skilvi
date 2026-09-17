@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 24 24%27%3E%3Cpath fill=%27%232B4ADB%27 d=%27M12 2 4 5v6.5c0 5 3.4 8.6 8 10.5 4.6-1.9 8-5.5 8-10.5V5l-8-3Z%27/%3E%3Cpath fill=%27%23fff%27 d=%27m8.6 11.8 2.3 2.3 4.6-4.6-1.4-1.4-3.2 3.2-.9-.9-1.4 1.4Z%27/%3E%3C/svg%3E">
+  <title>Checkout — pay into escrow — Skilvi</title>
+  <meta name="description" content="Secure checkout on Skilvi: pay by card, bank transfer, or mobile money. Funds are held in escrow until the job is done.">
+  <link rel="stylesheet" href="assets/css/skilvi.css?v=4">
+</head>
+<body data-chrome="public" data-active="explore">
+
+<header class="topbar">
+  <input type="checkbox" id="navCheck" class="nav-check" aria-hidden="true">
+  <div class="container topbar-in">
+    <a class="brand" href="index.html"><span class="brand-mark"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 5 6v6c0 4.4 3 7.4 7 9 4-1.6 7-4.6 7-9V6l-7-3Z"/><path d="m9 12 2 2 4-4"/></svg></span>Skilvi</a>
+    <nav class="mainnav">
+      <a href="search.html" class="active">Explore</a>
+      <a href="jobs.html">Jobs</a>
+      <a href="help.html">How it works</a>
+    </nav>
+    <div class="topact">
+      <a class="btn btn-ghost" href="login.html">Log in</a>
+      <a class="btn btn-primary" href="login.html#regForm">Join free</a>
+    </div>
+    <label class="icon-btn nav-toggle" for="navCheck" aria-label="Menu"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg></label>
+  </div>
+  <div class="mobile-nav" id="mobileNav">
+    <a href="search.html" class="active">Explore</a>
+    <a href="jobs.html">Jobs</a>
+    <a href="help.html">How it works</a>
+    <a href="login.html">Log in</a>
+    <a href="login.html#regForm">Join free</a>
+  </div>
+</header>
+
+<main class="container page-pad">
+  <p class="small muted"><a href="service-detail.html">Website development</a> / Checkout</p>
+
+  <div class="page-head">
+    <div>
+      <h1 class="ph-title">Confirm &amp; pay</h1>
+      <p class="ph-sub">Order OR-1043 (draft) · you'll get the full order link after payment is verified.</p>
+    </div>
+  </div>
+
+  <div class="svc-layout" style="align-items:start">
+    <!-- Main -->
+    <div class="stack" style="gap:16px">
+      <!-- Order summary -->
+      <div class="card card-pad">
+        <div class="row spread" style="align-items:flex-start;gap:14px">
+          <div class="row" style="gap:11px">
+            <span class="avatar a1">CO</span>
+            <div>
+              <div class="bold" style="font-size:15px">Chinedu Okafor <span class="badge-verified" style="margin-left:4px"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 5 6v6c0 4.4 3 7.4 7 9 4-1.6 7-4.6 7-9V6l-7-3Z"/><path d="m9 12 2 2 4-4"/></svg>Verified</span></div>
+              <span class="rating-line" style="margin-top:3px"><span class="stars"><span class="on"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 2.6l2.9 5.9 6.5.95-4.7 4.6 1.1 6.5L12 17.5l-5.8 3.05 1.1-6.5-4.7-4.6 6.5-.95L12 2.6z"/></svg></span></span> <b>4.9</b> · 187 orders · replies ~1 hr</span>
+            </div>
+          </div>
+          <div class="right">
+            <div class="tiny faint">WORKER</div>
+            <a class="link" href="worker-profile.html" style="font-size:13px">View profile</a>
+          </div>
+        </div>
+        <hr class="divider mt-3 mb-2">
+        <div class="kv"><span class="k">Service</span><span class="v">Website development — landing pages to full sites</span></div>
+        <div class="kv"><span class="k">Package</span><span class="v">Standard · 10 days · 2 revisions</span></div>
+        <div class="kv"><span class="k">Brief</span><span class="v">Business website (5 pages) · logo &amp; colours provided</span></div>
+        <div class="kv"><span class="k">Work mode</span><span class="v">Remote</span></div>
+      </div>
+
+      <!-- Payment method -->
+      <div class="card card-pad">
+        <h3 style="font-size:15px">Payment method</h3>
+        <p class="tiny faint mt-1">All payments are in Naira, verified automatically — no screenshots, no waiting for a human to confirm.</p>
+        <div class="stack mt-2" style="gap:10px">
+          <label class="radio-pill active" style="width:100%"><span class="rd"></span> Bank transfer (instant) — recommended <span class="tag tag-royal" style="margin-left:auto">NIP</span></label>
+          <label class="radio-pill" style="width:100%"><span class="rd"></span> Card (Visa / Mastercard / Verve)</label>
+          <label class="radio-pill" style="width:100%"><span class="rd"></span> USSD (no internet needed)</label>
+        </div>
+
+        <div class="alert alert-info mt-3"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;flex:none;margin-top:1px"><path d="M12 3 5 6v6c0 4.4 3 7.4 7 9 4-1.6 7-4.6 7-9V6l-7-3Z"/><path d="m9 12 2 2 4-4"/></svg><span><b>Instant transfer instructions (generated for you):</b> Pay <b>₦85,000</b> to <b>Skilvi Technologies Ltd</b> · GTBank <span class="mono">0123456789</span> · reference <span class="mono">OR-1043</span>. Confirmation is automatic — your order activates the moment we verify it.</span></div>
+
+        <details class="acc mt-2">
+          <summary>Paying by card instead?</summary>
+          <div class="acc-body">
+            <div class="form-row-2">
+              <div class="field" style="grid-column:1/-1"><label>Card number</label><input class="input" placeholder="0000 0000 0000 0000" inputmode="numeric"></div>
+              <div class="field"><label>Expiry</label><input class="input" placeholder="MM / YY" inputmode="numeric"></div>
+              <div class="field"><label>CVV</label><input class="input" type="password" placeholder="•••" inputmode="numeric" maxlength="4"></div>
+            </div>
+            <p class="tiny faint mt-2">Processed securely by our payment partner (PCI-DSS). Skilvi never sees or stores your card number.</p>
+          </div>
+        </details>
+      </div>
+
+      <!-- What happens next -->
+      <div class="card card-pad">
+        <h3 style="font-size:15px">What happens after you pay</h3>
+        <div class="timeline mt-2">
+          <div class="tl-item done"><span class="tl-dot"></span><div class="tl-t">Payment verified automatically</div><div class="tl-s">You'll see a confirmation on your phone and in-app within seconds.</div></div>
+          <div class="tl-item"><span class="tl-dot"></span><div class="tl-t">Chinedu is notified &amp; starts</div><div class="tl-s">The order moves to “worker to start”. He can't begin until your payment is confirmed.</div></div>
+          <div class="tl-item"><span class="tl-dot"></span><div class="tl-t">Work delivered → you approve</div><div class="tl-s">2 revision rounds included. You approve, or the payment auto-releases 5 business days after delivery.</div></div>
+          <div class="tl-item"><span class="tl-dot"></span><div class="tl-t">Not happy? Open a dispute</div><div class="tl-s">Escrow freezes and Skilvi mediates with your full message history as evidence.</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Sidebar -->
+    <aside class="stack" style="gap:16px">
+      <div class="summary-card">
+        <div class="small muted">Order total</div>
+        <div class="sc-price">₦85,000</div>
+        <div class="sc-meta">Standard package · one-time payment</div>
+        <hr class="divider mt-2 mb-2">
+        <div class="kv"><span class="k">Package price</span><span class="v amount">₦85,000</span></div>
+        <div class="kv"><span class="k">Skilvi commission</span><span class="v" style="color:var(--green)">Included — not added to you</span></div>
+        <div class="kv"><span class="k">Paid to</span><span class="v">Skilvi (escrow)</span></div>
+        <div class="kv"><span class="k">Releases to worker on</span><span class="v">Your approval</span></div>
+        <div class="escrow-note mt-2"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;flex:none;color:var(--royal-600);margin-top:1px"><path d="M12 3 5 6v6c0 4.4 3 7.4 7 9 4-1.6 7-4.6 7-9V6l-7-3Z"/><path d="m9 12 2 2 4-4"/></svg><span><b>Protected by Skilvi escrow.</b> You pay Skilvi, not the worker directly. Your money is held safely and released only when the work is done and you approve it.</span></div>
+        <button class="btn btn-primary btn-block btn-lg mt-3" id="payBtn" type="button">Pay ₦85,000</button>
+        <a class="btn btn-secondary btn-block mt-1" href="messages.html">Message the worker first</a>
+        <p class="tiny faint center mt-2">No account yet? <a href="login.html#regForm">Create one free</a> — takes 2 minutes.</p>
+      </div>
+      <div class="card card-pad">
+        <h3 style="font-size:13px">Why pay Skilvi and not the worker?</h3>
+        <p class="tiny mt-1" style="color:var(--ink-2);line-height:1.6">Because that's what protects you. Direct payments can't be reversed or disputed. Escrow payments can — and 100% of orders on Skilvi go through it.</p>
+      </div>
+    </aside>
+  </div>
+
+  <div class="trust-strip" style="justify-content:center;margin:36px 0 0">
+    <span class="trust-item"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 5 6v6c0 4.4 3 7.4 7 9 4-1.6 7-4.6 7-9V6l-7-3Z"/><path d="m9 12 2 2 4-4"/></svg> Escrow-protected</span>
+    <span class="trust-item"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9.5 12 4l9 5.5"/><path d="M5 10v8m4.5-8v8m5-8v8M19 10v8M3 20h18"/></svg> Card · bank transfer · USSD</span>
+    <span class="trust-item"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a8 8 0 0 1-8 8H4l2-3a8 8 0 1 1 15-5Z"/></svg> Support in English, Mon–Sat</span>
+  </div>
+</main>
+
+<footer class="footer">
+  <div class="footer-in">
+    <div class="footer-grid">
+      <div>
+        <div class="f-brand"><span class="brand-mark"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 5 6v6c0 4.4 3 7.4 7 9 4-1.6 7-4.6 7-9V6l-7-3Z"/><path d="m9 12 2 2 4-4"/></svg></span>Skilvi</div>
+        <p class="f-desc">Discover. Learn. Earn. A marketplace built for Nigeria — digital skills and hands-on trades, paid securely in Naira.</p>
+      </div>
+      <div><h4>For clients</h4><a href="search.html">Browse workers</a><a href="jobs.html">Post a job</a><a href="help.html#faq-escrow">How escrow works</a><a href="help.html#faq-fees">Fees &amp; pricing</a></div>
+      <div><h4>For workers</h4><a href="login.html#regForm">Create a free profile</a><a href="verification.html">Get verified</a><a href="help.html#faq-withdrawals">Withdraw your money</a><a href="promotion.html">Promote your profile</a></div>
+      <div><h4>Company</h4><a href="about.html">About Skilvi</a><a href="help.html">Help center</a><a href="terms.html">Terms of service</a><a href="privacy.html">Privacy policy</a><a href="help.html">Contact support</a></div>
+    </div>
+    <div class="footer-bottom"><span>© 2026 Skilvi Technologies Ltd. All rights reserved.</span><span>Built in Nigeria · Payments held securely in escrow</span></div>
+  </div>
+</footer>
+
+<script src="assets/js/skilvi.js?v=4"></script>
+</body>
+</html>

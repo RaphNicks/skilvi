@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 24 24%27%3E%3Cpath fill=%27%232B4ADB%27 d=%27M12 2 4 5v6.5c0 5 3.4 8.6 8 10.5 4.6-1.9 8-5.5 8-10.5V5l-8-3Z%27/%3E%3Cpath fill=%27%23fff%27 d=%27m8.6 11.8 2.3 2.3 4.6-4.6-1.4-1.4-3.2 3.2-.9-.9-1.4 1.4Z%27/%3E%3C/svg%3E">
+  <title>Settings — Skilvi</title>
+  <meta name="description" content="Skilvi account settings: profile, phone, payout details, and security.">
+  <link rel="stylesheet" href="assets/css/skilvi.css?v=4">
+</head>
+<body data-shell="worker" data-active="settings" data-page="settings">
+
+<div class="shell">
+  <aside class="side">
+  <div class="side-brand"><a class="brand" href="worker-dashboard.html"><span class="brand-mark"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 5 6v6c0 4.4 3 7.4 7 9 4-1.6 7-4.6 7-9V6l-7-3Z"/><path d="m9 12 2 2 4-4"/></svg></span>Skilvi</a></div>
+  <div class="side-label">Work</div>
+    <a class="side-item" href="worker-dashboard.html"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="7" height="7" rx="1.5"/><rect x="13" y="4" width="7" height="7" rx="1.5"/><rect x="4" y="13" width="7" height="7" rx="1.5"/><rect x="13" y="13" width="7" height="7" rx="1.5"/></svg><span>Overview</span></a>
+    <a class="side-item" href="worker-orders.html"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="8" width="18" height="12" rx="2"/><path d="M9 8V6a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2M3 13h18"/></svg><span>My work</span></a>
+    <a class="side-item" href="worker-services.html"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3 9 5-9 5-9-5 9-5Z"/><path d="m3 13 9 5 9-5"/></svg><span>Services</span></a>
+    <a class="side-item" href="worker-jobs.html"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M9 9h6M9 13h6M9 17h3"/></svg><span>Jobs & proposals</span> <span class="badge-n">3</span></a>
+  <div class="side-label">Money</div>
+    <a class="side-item" href="worker-wallet.html"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 7H5a2 2 0 0 1 0-4h13v4"/><path d="M20 7a1.5 1.5 0 0 1 1.5 1.5v11A1.5 1.5 0 0 1 20 21H6a2 2 0 0 1-2-2V5"/><circle cx="16.5" cy="14" r="1"/></svg><span>Wallet</span></a>
+    <a class="side-item" href="worker-wallet.html?tab=withdrawals"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v13"/><path d="m8 7 4-4 4 4"/><path d="M4 14v4a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-4"/></svg><span>Withdrawals</span></a>
+    <a class="side-item" href="verification.html"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 5 6v6c0 4.4 3 7.4 7 9 4-1.6 7-4.6 7-9V6l-7-3Z"/><path d="m9 12 2 2 4-4"/></svg><span>Verification</span></a>
+    <a class="side-item" href="promotion.html"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 4 14h6l-1 8 9-12h-6l1-8Z"/></svg><span>Promotion</span></a>
+  <div class="side-label">Account</div>
+    <a class="side-item" href="messages.html"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H8l-4 4V6a1 1 0 0 1 1-1Z"/></svg><span>Messages</span> <span class="badge-n">2</span></a>
+    <a class="side-item" href="disputes.html"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v16m-7 0h14"/><path d="m5 7-3 6a3.5 3.5 0 0 0 6 0L5 7Zm14 0-3 6a3.5 3.5 0 0 0 6 0l-3-6Z"/><path d="M5 7h14"/></svg><span>Disputes</span></a>
+    <a class="side-item active" href="account-settings.html"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19 12a7 7 0 0 0-.1-1.2l2-1.6-2-3.4-2.4 1a7 7 0 0 0-2-1.2L14 3h-4l-.5 2.6a7 7 0 0 0-2 1.2l-2.4-1-2 3.4 2 1.6a7 7 0 0 0 0 2.4l-2 1.6 2 3.4 2.4-1a7 7 0 0 0 2 1.2L10 21h4l.5-2.6a7 7 0 0 0 2-1.2l2.4 1 2-3.4-2-1.6c.06-.4.1-.8.1-1.2Z"/></svg><span>Settings</span></a>
+  <div class="side-foot"><div class="side-user"><span class="avatar sm a1">CO</span><div><div class="su-name">Chinedu Okafor</div><div class="su-role">Worker · Verified</div></div></div></div>
+</aside>
+  <div class="shell-main">
+    <header class="subbar">
+  <div class="sb-actions">
+    <a class="link-muted" href="index.html">View marketplace</a>
+    <a class="icon-btn" href="notifications.html" aria-label="Notifications"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9a6 6 0 1 1 12 0c0 5 2 6 2 6H4s2-1 2-6"/><path d="M10 19a2 2 0 0 0 4 0"/></svg><span class="dot"></span></button>
+    <a class="sb-user" href="account-settings.html"><span class="avatar sm a1">CO</span><span class="su-name">Chinedu</span></a>
+  </div>
+</header>
+    <main class="content">
+      <div class="page-head">
+        <div>
+          <h1 class="ph-title">Account settings</h1>
+          <p class="ph-sub">Profile, security, notifications and your data. Phone changes require a fresh OTP.</p>
+        </div>
+      </div>
+
+      <div class="svc-layout" style="align-items:start">
+        <div class="stack" style="gap:16px">
+          <!-- Profile -->
+          <div class="card card-pad">
+            <h3 style="font-size:15px">Profile</h3>
+            <div class="row mt-2 mb-2" style="gap:14px">
+              <span class="avatar lg a1">CO</span>
+              <div>
+                <button class="btn btn-secondary btn-sm" data-toast="Upload: JPG/PNG, at least 400×400, face clearly visible" type="button">Change photo</button>
+                <p class="tiny faint mt-1">Photos with a clear face get 3× more trust on profiles.</p>
+              </div>
+            </div>
+            <div class="form-row-2">
+              <div class="field"><label>Full name</label><input class="input" value="Chinedu Okafor"></div>
+              <div class="field"><label>Headline</label><input class="input" value="Frontend developer & WordPress specialist"></div>
+            </div>
+            <div class="field mt-2">
+              <label>Bio</label>
+              <textarea class="textarea">I've been building websites for 6 years — first for a software house in Port Harcourt, then for restaurants, pharmacies and real-estate agencies. I work fully remotely and stay available after launch.</textarea>
+            </div>
+            <div class="form-row-2 mt-2">
+              <div class="field"><label>State</label><select class="select"><option>Rivers</option><option>Lagos</option><option>FCT</option></select></div>
+              <div class="field"><label>City</label><input class="input" value="Port Harcourt"></div>
+            </div>
+            <div class="row mt-3" style="justify-content:flex-end"><button class="btn btn-primary" data-save type="button">Save profile</button></div>
+          </div>
+
+          <!-- Security -->
+          <div class="card card-pad">
+            <h3 style="font-size:15px">Security &amp; login</h3>
+            <div class="field mt-2 mb-2">
+              <label>Phone number (primary login)</label>
+              <div class="row" style="gap:8px"><input class="input" value="+234 803 111 2233" style="max-width:220px"><button class="btn btn-secondary btn-sm" data-toast="OTP sent to the new number — confirm to finish" type="button">Change</button></div>
+              <span class="hint">Changing your phone sends an OTP to the new number and invalidates old sessions.</span>
+            </div>
+            <div class="field mb-2">
+              <label>Email</label>
+              <div class="row" style="gap:8px"><input class="input" value="chinedu@okafordev.ng" style="max-width:280px"><button class="btn btn-secondary btn-sm" data-toast="Confirmation email sent" type="button">Change</button></div>
+            </div>
+            <div class="field">
+              <label>Password</label>
+              <div class="row" style="gap:8px"><input class="input" type="password" placeholder="New password" style="max-width:280px"><button class="btn btn-secondary btn-sm" data-toast="Password updated — other devices signed out" type="button">Update</button></div>
+            </div>
+          </div>
+
+          <!-- Notifications -->
+          <div class="card card-pad">
+            <h3 style="font-size:15px">Notifications</h3>
+            <div class="switch-row">
+              <div><div class="sw-title">Order updates (email)</div><div class="sw-sub">New messages, delivery, approval, settlement — always on for money events</div></div>
+              <label class="switch"><input type="checkbox" checked disabled><span class="track"></span></label>
+            </div>
+            <div class="switch-row">
+              <div><div class="sw-title">Money alerts (SMS)</div><div class="sw-sub">Payment received, withdrawal paid/failed, auto-release countdown</div></div>
+              <label class="switch"><input type="checkbox" checked><span class="track"></span></label>
+            </div>
+            <div class="switch-row">
+              <div><div class="sw-title">New job alerts (email)</div><div class="sw-sub">Jobs matching your categories, twice daily</div></div>
+              <label class="switch"><input type="checkbox" checked><span class="track"></span></label>
+            </div>
+            <div class="switch-row">
+              <div><div class="sw-title">Marketing &amp; tips (email)</div><div class="sw-sub">Occasional product news. Never your data, sold or shared.</div></div>
+              <label class="switch"><input type="checkbox"><span class="track"></span></label>
+            </div>
+            <div class="row mt-3" style="justify-content:flex-end"><button class="btn btn-primary" data-save type="button">Save preferences</button></div>
+          </div>
+
+          <!-- Privacy & data -->
+          <div class="card card-pad">
+            <h3 style="font-size:15px">Privacy &amp; your data (NDPR)</h3>
+            <p class="tiny faint mt-1">You control your data. Requests are answered within 30 days.</p>
+            <div class="row mt-2" style="gap:8px;flex-wrap:wrap">
+              <button class="btn btn-secondary btn-sm" data-toast="A download of your data will arrive by email within 7 days" type="button">Download my data</button>
+              <button class="btn btn-secondary btn-sm" data-toast="Deletion request logged — processed within 30 days, after active orders settle" type="button">Request deletion</button>
+              <button class="btn btn-secondary btn-sm" data-toast="Your consent records" type="button">View consent history</button>
+            </div>
+          </div>
+
+          <!-- Danger zone -->
+          <div class="card card-pad" style="border-color:#F3C1C1">
+            <h3 style="font-size:15px;color:var(--red)">Danger zone</h3>
+            <div class="row mt-2" style="align-items:center;gap:12px;flex-wrap:wrap">
+              <p class="small muted" style="max-width:380px">Deactivating hides your profile, blocks new orders and stops your services from appearing in search. Active escrow must settle first.</p>
+              <button class="btn btn-danger" data-danger type="button">Deactivate account</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Sidebar -->
+        <aside class="summary-card">
+          <h3 style="font-size:14px">Account status</h3>
+          <div class="kv mt-1"><span class="k">Role</span><span class="v">Worker + Client</span></div>
+          <div class="kv"><span class="k">State</span><span class="v"><span class="st st-green">Active</span></span></div>
+          <div class="kv"><span class="k">Verified</span><span class="v">Identity · expires Sep 2028</span></div>
+          <div class="kv"><span class="k">Trust score</span><span class="v">96 / 100</span></div>
+          <div class="kv"><span class="k">Member since</span><span class="v">Jan 2026</span></div>
+          <div class="escrow-note mt-3" id="stNote"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 5 6v6c0 4.4 3 7.4 7 9 4-1.6 7-4.6 7-9V6l-7-3Z"/><path d="m9 12 2 2 4-4"/></svg><span><b>Why the trust score?</b> It combines on-time delivery, dispute history and payment reliability. It's visible to Skilvi support (not to other users) and affects how quickly your withdrawals are auto-approved.</span></div>
+        </aside>
+      </div>
+    </main>
+  </div>
+</div>
+
+<script src="assets/js/mock.js?v=4"></script>
+<script src="assets/js/skilvi.js?v=4"></script>
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const I = SkIconSvg;
+    $("#stNote").innerHTML = I.shield + "<span><b>Why the trust score?</b> It combines on-time delivery, dispute history and payment reliability. It's visible to Skilvi support (not to other users) and affects how quickly your withdrawals are auto-approved.</span>";
+  });
+</script>
+</body>
+</html>

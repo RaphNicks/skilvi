@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 24 24%27%3E%3Cpath fill=%27%232B4ADB%27 d=%27M12 2 4 5v6.5c0 5 3.4 8.6 8 10.5 4.6-1.9 8-5.5 8-10.5V5l-8-3Z%27/%3E%3Cpath fill=%27%23fff%27 d=%27m8.6 11.8 2.3 2.3 4.6-4.6-1.4-1.4-3.2 3.2-.9-.9-1.4 1.4Z%27/%3E%3C/svg%3E">
+  <title>Get verified — Skilvi</title>
+  <meta name="description" content="Get the Skilvi verified badge — a one-time identity check that builds client trust.">
+  <link rel="stylesheet" href="assets/css/skilvi.css?v=4">
+</head>
+<body data-chrome="public" data-page="verify">
+
+<header class="topbar">
+  <input type="checkbox" id="navCheck" class="nav-check" aria-hidden="true">
+  <div class="container topbar-in">
+    <a class="brand" href="index.html"><span class="brand-mark"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 5 6v6c0 4.4 3 7.4 7 9 4-1.6 7-4.6 7-9V6l-7-3Z"/><path d="m9 12 2 2 4-4"/></svg></span>Skilvi</a>
+    <nav class="mainnav">
+      <a href="search.html">Explore</a>
+      <a href="jobs.html">Jobs</a>
+      <a href="help.html">How it works</a>
+    </nav>
+    <div class="topact">
+      <a class="btn btn-ghost" href="login.html">Log in</a>
+      <a class="btn btn-primary" href="login.html#regForm">Join free</a>
+    </div>
+    <label class="icon-btn nav-toggle" for="navCheck" aria-label="Menu"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg></label>
+  </div>
+  <div class="mobile-nav" id="mobileNav">
+    <a href="search.html">Explore</a>
+    <a href="jobs.html">Jobs</a>
+    <a href="help.html">How it works</a>
+    <a href="login.html">Log in</a>
+    <a href="login.html#regForm">Join free</a>
+  </div>
+</header>
+
+<!-- Hero -->
+<section class="hero">
+  <div class="hero-in" style="display:grid;grid-template-columns:1.2fr 1fr;gap:40px;align-items:center">
+    <div>
+      <span class="hero-eyebrow" id="vrEyebrow"></span>
+      <h1 style="font-size:34px">Get verified. Be trusted.</h1>
+      <p class="hero-sub">The verified badge tells clients one thing, clearly: this person is real, and their account is theirs. It's a one-time ₦5,000 check that stays on your profile for two years.</p>
+      <div class="row mt-3" style="gap:10px;flex-wrap:wrap">
+        <a class="btn btn-primary btn-lg" href="#apply">Apply now — ₦5,000</a>
+        <a class="btn btn-secondary btn-lg" href="login.html#regForm">Create a free account first</a>
+      </div>
+    </div>
+    <div class="card card-pad center">
+      <span class="avatar lg a1" style="margin:0 auto">CO</span>
+      <div class="bold mt-2" style="font-size:17px">Chinedu Okafor</div>
+      <div class="badge-verified mt-1" style="justify-content:center" id="vrBadge"></div>
+      <p class="tiny faint mt-2" style="max-width:220px;margin-left:auto;margin-right:auto">How your name looks everywhere — search, profiles, orders, chat.</p>
+      <div class="kv mt-2"><span class="k">Fee</span><span class="v">₦5,000 · once</span></div>
+      <div class="kv"><span class="k">Valid</span><span class="v">2 years</span></div>
+      <div class="kv"><span class="k">Review time</span><span class="v">≤ 2 business days</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- What it does / doesn't do -->
+<section class="section">
+  <div class="section-head"><h2>What the badge is — and isn't</h2></div>
+  <div class="grid grid-2" id="vrIsIsnt"></div>
+</section>
+
+<!-- Process -->
+<section class="section">
+  <div class="section-head"><h2>How it works</h2></div>
+  <div class="grid grid-3" id="vrSteps"></div>
+</section>
+
+<!-- Why -->
+<section class="section">
+  <div class="card card-pad" id="vrWhy"></div>
+</section>
+
+<!-- Apply -->
+<section class="section section-last" id="apply">
+  <div class="svc-layout" style="align-items:start">
+    <div class="card card-pad">
+      <h2 style="font-size:18px">Verification application</h2>
+      <p class="small muted mt-1">Takes about 5 minutes. Photos are encrypted, seen only by our verification team, and deleted 12 months after the decision.</p>
+      <form id="vrForm" class="mt-3">
+        <div class="form-row-2 mb-2">
+          <div class="field">
+            <label>Full name (exactly as on your ID) <span style="color:var(--red)">*</span></label>
+            <input class="input" placeholder="e.g. Chinedu Chukwuma Okafor" required>
+          </div>
+          <div class="field">
+            <label>ID type <span style="color:var(--red)">*</span></label>
+            <select class="select" required>
+              <option value="">Select…</option>
+              <option>National ID (NIN)</option>
+              <option>Driver's licence</option>
+              <option>International passport</option>
+              <option>Voter's card (BVAS)</option>
+            </select>
+          </div>
+        </div>
+        <div class="field mb-2">
+          <label>ID number <span style="color:var(--red)">*</span></label>
+          <input class="input" placeholder="11 or 12 digits" inputmode="numeric" required>
+        </div>
+        <div class="form-row-2 mb-2">
+          <div class="field">
+            <label>ID document <span style="color:var(--red)">*</span></label>
+            <div class="file-drop" id="vrDrop1"></div>
+          </div>
+          <div class="field">
+            <label>Selfie holding your ID <span style="color:var(--red)">*</span></label>
+            <div class="file-drop" id="vrDrop2"></div>
+          </div>
+        </div>
+        <label class="check-row" style="padding:0">
+          <input type="checkbox" required style="accent-color:var(--royal-600);width:15px;height:15px">
+          <span class="small" style="color:var(--ink-2)">I confirm these documents belong to me and I'm at least 18. I understand Skilvi verifies <b>identity only</b> — never skill level — and that false documents lead to account closure.</span>
+        </label>
+        <div class="row spread mt-3" style="align-items:center;flex-wrap:wrap;gap:12px">
+          <div>
+            <div class="amount" style="font-size:20px">₦5,000</div>
+            <div class="tiny faint">one-time · card, bank transfer or USSD</div>
+          </div>
+          <button class="btn btn-primary btn-lg" type="submit">Pay &amp; submit application</button>
+        </div>
+      </form>
+    </div>
+
+    <aside class="stack" style="gap:16px">
+      <div class="card card-pad">
+        <h3 style="font-size:14px">Accepted documents</h3>
+        <p class="small mt-1" style="color:var(--ink-2);line-height:1.7">NIN, driver's licence, international passport, or BVAS voter's card. Must be unexpired, undamaged, and fully readable. Expired documents are rejected with a reason.</p>
+      </div>
+      <div class="card card-pad">
+        <h3 style="font-size:14px">Already verified?</h3>
+        <p class="small mt-1" style="color:var(--ink-2);line-height:1.7">Manage your verification (expiry, re-verification before it lapses) from <a href="account-settings.html">Account settings</a>.</p>
+      </div>
+    </aside>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="footer-in">
+    <div class="footer-grid">
+      <div>
+        <div class="f-brand"><span class="brand-mark"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 5 6v6c0 4.4 3 7.4 7 9 4-1.6 7-4.6 7-9V6l-7-3Z"/><path d="m9 12 2 2 4-4"/></svg></span>Skilvi</div>
+        <p class="f-desc">Discover. Learn. Earn. A marketplace built for Nigeria — digital skills and hands-on trades, paid securely in Naira.</p>
+      </div>
+      <div><h4>For clients</h4><a href="search.html">Browse workers</a><a href="jobs.html">Post a job</a><a href="help.html#faq-escrow">How escrow works</a><a href="help.html#faq-fees">Fees &amp; pricing</a></div>
+      <div><h4>For workers</h4><a href="login.html#regForm">Create a free profile</a><a href="verification.html">Get verified</a><a href="help.html#faq-withdrawals">Withdraw your money</a><a href="promotion.html">Promote your profile</a></div>
+      <div><h4>Company</h4><a href="about.html">About Skilvi</a><a href="help.html">Help center</a><a href="terms.html">Terms of service</a><a href="privacy.html">Privacy policy</a><a href="help.html">Contact support</a></div>
+    </div>
+    <div class="footer-bottom"><span>© 2026 Skilvi Technologies Ltd. All rights reserved.</span><span>Built in Nigeria · Payments held securely in escrow</span></div>
+  </div>
+</footer>
+
+<script src="assets/js/mock.js?v=4"></script>
+<script src="assets/js/skilvi.js?v=4"></script>
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const I = SkIconSvg;
+    $("#vrEyebrow").innerHTML = I.shield + " One-time · ₦5,000 · valid 2 years";
+    $("#vrBadge").innerHTML = I.shield + " Identity verified by Skilvi";
+    $("#vrDrop1").innerHTML = I.file + "<br>JPG, PNG or PDF · max 10 MB";
+    $("#vrDrop2").innerHTML = I.camera + "<br>Clear face, good lighting, holding the ID";
+
+    $("#vrIsIsnt").innerHTML = [
+      [I.checkc, "What it is", ["Your government ID and a matching photo are checked by our team.", "Proves the account belongs to a real person — fights fake profiles and stolen identities.", "Shown next to your name everywhere a client meets you.", "One-time fee, valid for two years, then a quick re-check."]],
+      [I.x, "What it is not", ["It is NOT a skill certification — we never test your trade or degree.", "It does NOT affect your search ranking or price display.", "It is NOT required to receive orders (though it strongly helps).", "It can be revoked if documents are found to be false."]]
+    ].map(([i, t, items]) =>
+      '<div class="card card-pad"><span class="stat-icon">' + i + '</span><h3 style="font-size:14px;margin-top:10px;font-family:var(--font-body)">' + t + "</h3>" +
+      '<ul class="mt-2" style="display:flex;flex-direction:column;gap:8px">' +
+      items.map((x) => '<li class="small" style="color:var(--ink-2);display:flex;gap:8px;align-items:flex-start">' + I.check + '<span>' + x + "</span></li>").join("") +
+      "</ul></div>").join("");
+
+    $("#vrSteps").innerHTML = [
+      ["1", "Submit documents", "Upload your ID and a selfie holding it, and pay ₦5,000. You can go back and fix things before submitting."],
+      ["2", "Our team reviews", "A human checks document validity and that the face matches. Target: 2 business days, faster most days."],
+      ["3", "Badge goes live", "Approved: the badge appears on your profile instantly. Rejected: you get the exact reason and can reapply once after fixing it."]
+    ].map(([n, t, d]) => '<div class="step"><span class="step-num">' + n + "</span><h3>" + t + "</h3><p>" + d + "</p></div>").join("");
+
+    $("#vrWhy").innerHTML =
+      '<div class="row spread" style="align-items:center;flex-wrap:wrap;gap:16px">' +
+      "<div><h3>Why workers pay for this</h3><p class=\"small muted mt-1\" style=\"max-width:520px\">In trades especially, a stranger's word is worth little. The badge is the cheapest trust you can buy — it moves you ahead of every unverified competitor in the same category.</p></div>" +
+      '<div class="row" style="gap:10px;flex-wrap:wrap">' +
+      '<span class="tag tag-royal">Verified profiles get 3× more profile views*</span>' +
+      '<span class="tag tag-royal">68% of trades orders go to verified workers*</span>' +
+      '<span class="tag tag-royal">Trusted by clients outside your city</span>' +
+      "</div>" +
+      '<p class="tiny faint mt-2" style="width:100%">*Internal marketplace metrics, Sep 2026 launch cohort.</p></div>';
+
+    $("#vrForm").addEventListener("submit", (e) => {
+      e.preventDefault();
+      Sk.toast("Application submitted — you'll get the decision by SMS and email within 2 business days.", "success");
+      setTimeout(() => location.href = "worker-dashboard.html", 1200);
+    });
+  });
+</script>
+</body>
+</html>

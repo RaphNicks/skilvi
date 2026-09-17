@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 24 24%27%3E%3Cpath fill=%27%232B4ADB%27 d=%27M12 2 4 5v6.5c0 5 3.4 8.6 8 10.5 4.6-1.9 8-5.5 8-10.5V5l-8-3Z%27/%3E%3Cpath fill=%27%23fff%27 d=%27m8.6 11.8 2.3 2.3 4.6-4.6-1.4-1.4-3.2 3.2-.9-.9-1.4 1.4Z%27/%3E%3C/svg%3E">
+  <title>Help center — Skilvi</title>
+  <meta name="description" content="Skilvi help centre: how escrow works, fees and pricing, verification, withdrawals, disputes, on-site work, promotion, and reporting.">
+  <link rel="stylesheet" href="assets/css/skilvi.css?v=4">
+</head>
+<body data-chrome="public" data-active="help" data-page="help">
+
+<header class="topbar">
+  <input type="checkbox" id="navCheck" class="nav-check" aria-hidden="true">
+  <div class="container topbar-in">
+    <a class="brand" href="index.html"><span class="brand-mark"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 5 6v6c0 4.4 3 7.4 7 9 4-1.6 7-4.6 7-9V6l-7-3Z"/><path d="m9 12 2 2 4-4"/></svg></span>Skilvi</a>
+    <nav class="mainnav">
+      <a href="search.html">Explore</a>
+      <a href="jobs.html">Jobs</a>
+      <a href="help.html" class="active">How it works</a>
+    </nav>
+    <div class="topact">
+      <a class="btn btn-ghost" href="login.html">Log in</a>
+      <a class="btn btn-primary" href="login.html#regForm">Join free</a>
+    </div>
+    <label class="icon-btn nav-toggle" for="navCheck" aria-label="Menu"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg></label>
+  </div>
+  <div class="mobile-nav" id="mobileNav">
+    <a href="search.html">Explore</a>
+    <a href="jobs.html">Jobs</a>
+    <a href="help.html" class="active">How it works</a>
+    <a href="login.html">Log in</a>
+    <a href="login.html#regForm">Join free</a>
+  </div>
+</header>
+
+<main class="container page-pad">
+  <div class="card card-pad" style="background:var(--navy-900);border-color:var(--navy-900)">
+    <h1 style="color:#fff;font-size:24px">How Skilvi works</h1>
+    <p class="mt-1" style="color:rgba(255,255,255,.7);font-size:14px;max-width:560px">Plain answers about escrow, fees, verification, withdrawals and disputes — the things people actually ask about.</p>
+    <div class="hero-search mt-3" style="margin-top:16px">
+      <input class="input" placeholder="Search help — try “refund” or “verification”…" aria-label="Search help">
+      <button class="btn btn-primary" type="button" data-toast="Help search is wired to the backend next"><span id="hIco"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg></span> Search</button>
+    </div>
+  </div>
+
+  <div class="grid grid-3 mt-3" id="topicGrid"><a class="topic-card" href="#faq-escrow"><span class="tc-ico"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 5 6v6c0 4.4 3 7.4 7 9 4-1.6 7-4.6 7-9V6l-7-3Z"/><path d="m9 12 2 2 4-4"/></svg></span><h3>How escrow works</h3><p>Money held until the work is done.</p></a>
+      <a class="topic-card" href="#faq-fees"><span class="tc-ico"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 10h18"/></svg></span><h3>Fees & pricing</h3><p>10% commission, free posting.</p></a>
+      <a class="topic-card" href="#faq-verification"><span class="tc-ico"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="m8.5 12 2.5 2.5 5-5"/></svg></span><h3>Getting verified</h3><p>Identity check, one-time ₦5,000.</p></a>
+      <a class="topic-card" href="#faq-promotion"><span class="tc-ico"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 4 14h6l-1 8 9-12h-6l1-8Z"/></svg></span><h3>Promotion</h3><p>Pay for visibility — always labelled.</p></a>
+      <a class="topic-card" href="#faq-withdrawals"><span class="tc-ico"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9.5 12 4l9 5.5"/><path d="M5 10v8m4.5-8v8m5-8v8M19 10v8M3 20h18"/></svg></span><h3>Withdrawals</h3><p>Naira to your bank, next business day.</p></a>
+      <a class="topic-card" href="#faq-disputes"><span class="tc-ico"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v16m-7 0h14"/><path d="m5 7-3 6a3.5 3.5 0 0 0 6 0L5 7Zm14 0-3 6a3.5 3.5 0 0 0 6 0l-3-6Z"/><path d="M5 7h14"/></svg></span><h3>Disputes</h3><p>How we mediate, SLAs, outcomes.</p></a>
+      <a class="topic-card" href="#faq-reporting"><span class="tc-ico"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 21V4"/><path d="M5 4h12l-2.5 4L17 12H5"/></svg></span><h3>Reporting a user</h3><p>Scams, abuse, off-platform payment.</p></a>
+      <a class="topic-card" href="#faq-starting"><span class="tc-ico"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="8" width="18" height="12" rx="2"/><path d="M9 8V6a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2M3 13h18"/></svg></span><h3>Starting as a worker</h3><p>Profile → services → first order.</p></a></div>
+
+  <div class="section" style="max-width:820px">
+    <h2>Frequently asked</h2>
+    <div class="mt-2">
+      <details class="acc" id="faq-escrow" open>
+        <summary>How does escrow protect me?</summary>
+        <div class="acc-body">When you hire, you pay Skilvi — not the worker. The money is held and does not move until the work reaches the agreed completion stage. If the client approves (or 5 business days pass without response), the payment is released to the worker. If something goes wrong, either side can open a dispute and Skilvi mediates before any money moves. No one can “run” with your money or your work.</div>
+      </details>
+      <details class="acc" id="faq-fees">
+        <summary>What are Skilvi's fees?</summary>
+        <div class="acc-body">Posting jobs and creating a worker profile are free. On each completed order, Skilvi keeps a 10% commission from the worker's side — the client pays exactly the agreed price. Withdrawals are currently free. Verification (₦5,000, one-time, 2 years) and promotion packages are optional and never affect your search ranking.</div>
+      </details>
+      <details class="acc" id="faq-verification">
+        <summary>What does the “Verified” badge actually mean?</summary>
+        <div class="acc-body">It means Skilvi checked that the person's identity and account are real — government ID plus a matching photo. It is <b>not</b> a skill certification: Skilvi does not test or certify your trade. Judge skills by reviews, portfolio and past orders. Verification is a one-time paid feature and is separate from promotion (which only buys visibility and is always labelled “Promoted”).</div>
+      </details>
+      <details class="acc" id="faq-withdrawals">
+        <summary>How do I get my money out?</summary>
+        <div class="acc-body">When an order is completed, the worker's share (90% after commission) lands in their wallet. Withdrawals go to a Nigerian bank account via instant transfer, usually within 1 business day. The minimum is ₦5,000. New bank accounts are verified before the first payout for your safety.</div>
+      </details>
+      <details class="acc" id="faq-disputes">
+        <summary>The worker hasn't started / the client isn't responding. What now?</summary>
+        <div class="acc-body">Message them in the order thread first — keep everything on Skilvi so there's a record. If there's no response, open a dispute from the order page. Escrow funds are frozen immediately, and Skilvi reviews the full message history. We aim to acknowledge within 1 business day and resolve within 5.</div>
+      </details>
+      <details class="acc" id="faq-onsite">
+        <summary>Can I do on-site work (plumbing, tiling, painting…)?</summary>
+        <div class="acc-body">Yes. On-site services require you to declare your service area (states/cities) and state in the package whether travel is included in the price. Clients see both before hiring. For on-site delivery, the client confirms completion in-app after the work is done — keep photos of before/after as evidence; they help in any dispute.</div>
+      </details>
+      <details class="acc" id="faq-payments">
+        <summary>Can I pay by bank transfer or USSD?</summary>
+        <div class="acc-body">Yes — card, bank transfer (instant) and USSD are all supported in Naira. You'll get a confirmation on your phone and in-app as soon as the payment is verified. We confirm payments through the payment provider directly, so no fake screenshots needed.</div>
+      </details>
+      <details class="acc" id="faq-promotion">
+        <summary>What is promotion, and how is it different from verification?</summary>
+        <div class="acc-body">They do completely different jobs. <b>Verification</b> is a one-time trust signal: we confirm your identity and account are real, and you get the badge. It says nothing about your skill level. <b>Promotion</b> is paid visibility: your service appears in labelled “Promoted” positions in search results or on category pages for a set period (e.g. 7 days). Promoted items are always labelled, capped (max 3 per results page), and never reordered by Skilvi as “better” — promotion is an ad slot, not a quality ranking.</div>
+      </details>
+      <details class="acc" id="faq-reporting">
+        <summary>How do I report a user, review, or message?</summary>
+        <div class="acc-body">Every public profile, review, message and job has a “Report” option (the flag icon). Pick a reason — scam, fake identity, harassment, off-platform payment solicitation, spam, offensive content — and add details. Reports are anonymous to the reported user. 3+ reports on one account in 30 days automatically raise a risk flag for our team. Confirmed violations follow a published escalation path: warning → suspension → ban, with your withdrawal history reviewed where fraud is involved.</div>
+      </details>
+      <details class="acc" id="faq-starting">
+        <summary>I'm a worker. What's the fastest path to my first order?</summary>
+        <div class="acc-body">Four steps, all free: (1) Complete your profile — photo, bio, skills, at least one portfolio piece. (2) Create one service with 2–3 packages and honest prices (packages with a “most popular” middle tier convert best). (3) Turn on job alerts and apply to 3–5 matching jobs this week with short, specific proposals. (4) Get verified (₦5,000, one-time) — verified profiles get far more hires, especially in trades. Keep your reply time under a few hours; response speed is shown publicly and clients pick fast responders.</div>
+      </details>
+    </div>
+  </div>
+
+  <div class="card card-pad section-last" style="max-width:820px">
+    <div class="row spread" style="align-items:center;flex-wrap:wrap;gap:12px">
+      <div>
+        <h3 style="font-size:15px">Still stuck?</h3>
+        <p class="small muted mt-1">Our support team replies in English, Mon–Sat, 8am–8pm WAT.</p>
+      </div>
+      <div class="row" style="gap:8px">
+        <a class="btn btn-secondary" href="mailto:support@skilvi.ng"><span id="mIco"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg></span> support@skilvi.ng</a>
+        <a class="btn btn-primary" href="login.html"><span id="cIco"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a8 8 0 0 1-8 8H4l2-3a8 8 0 1 1 15-5Z"/></svg></span> Contact in-app</a>
+      </div>
+    </div>
+  </div>
+</main>
+
+<footer class="footer">
+  <div class="footer-in">
+    <div class="footer-grid">
+      <div>
+        <div class="f-brand"><span class="brand-mark"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 5 6v6c0 4.4 3 7.4 7 9 4-1.6 7-4.6 7-9V6l-7-3Z"/><path d="m9 12 2 2 4-4"/></svg></span>Skilvi</div>
+        <p class="f-desc">Discover. Learn. Earn. A marketplace built for Nigeria — digital skills and hands-on trades, paid securely in Naira.</p>
+      </div>
+      <div><h4>For clients</h4><a href="search.html">Browse workers</a><a href="jobs.html">Post a job</a><a href="help.html#faq-escrow">How escrow works</a><a href="help.html#faq-fees">Fees &amp; pricing</a></div>
+      <div><h4>For workers</h4><a href="login.html#regForm">Create a free profile</a><a href="verification.html">Get verified</a><a href="help.html#faq-withdrawals">Withdraw your money</a><a href="promotion.html">Promote your profile</a></div>
+      <div><h4>Company</h4><a href="about.html">About Skilvi</a><a href="help.html">Help center</a><a href="terms.html">Terms of service</a><a href="privacy.html">Privacy policy</a><a href="help.html">Contact support</a></div>
+    </div>
+    <div class="footer-bottom"><span>© 2026 Skilvi Technologies Ltd. All rights reserved.</span><span>Built in Nigeria · Payments held securely in escrow</span></div>
+  </div>
+</footer>
+
+<script src="assets/js/mock.js?v=4"></script>
+<script src="assets/js/skilvi.js?v=4"></script>
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const I = SkIconSvg;
+    $("#hIco").innerHTML = I.search;
+    $("#mIco").innerHTML = I.mail;
+    $("#cIco").innerHTML = I.chat;
+    const topics = [
+      [I.shield, "How escrow works", "Money held until the work is done."],
+      [I.card, "Fees & pricing", "10% commission, free posting."],
+      [I.checkc, "Getting verified", "Identity check, one-time ₦5,000."],
+      [I.zap, "Promotion", "Pay for visibility — always labelled."],
+      [I.bank, "Withdrawals", "Naira to your bank, next business day."],
+      [I.scale, "Disputes", "How we mediate, SLAs, outcomes."],
+      [I.flag, "Reporting a user", "Scams, abuse, off-platform payment."],
+      [I.briefcase, "Starting as a worker", "Profile → services → first order."]
+    ];
+    const anchors = { "How escrow works": "#faq-escrow", "Fees & pricing": "#faq-fees", "Getting verified": "#faq-verification", "Promotion": "#faq-promotion", "Withdrawals": "#faq-withdrawals", "Disputes": "#faq-disputes", "Reporting a user": "#faq-reporting", "Starting as a worker": "#faq-starting" };
+    $("#topicGrid").innerHTML = topics.map(([i, t, d]) =>
+      '<a class="topic-card" href="' + (anchors[t] || "#faq-escrow") + '"><span class="tc-ico">' + i + "</span><h3>" + t + "</h3><p>" + d + "</p></a>").join("");
+    /* if loaded via an anchor, open that FAQ item */
+    if (location.hash) {
+      const d = document.querySelector(location.hash);
+      if (d && d.tagName === "DETAILS") d.open = true;
+    }
+  });
+</script>
+</body>
+</html>

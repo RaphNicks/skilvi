@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 24 24%27%3E%3Cpath fill=%27%232B4ADB%27 d=%27M12 2 4 5v6.5c0 5 3.4 8.6 8 10.5 4.6-1.9 8-5.5 8-10.5V5l-8-3Z%27/%3E%3Cpath fill=%27%23fff%27 d=%27m8.6 11.8 2.3 2.3 4.6-4.6-1.4-1.4-3.2 3.2-.9-.9-1.4 1.4Z%27/%3E%3C/svg%3E">
+  <title>Post a job — Skilvi</title>
+  <meta name="description" content="Post a job on Skilvi in minutes: set your budget, choose a category, and get proposals from vetted workers.">
+  <link rel="stylesheet" href="assets/css/skilvi.css?v=4">
+</head>
+<body data-chrome="public" data-page="post-job">
+
+<header class="topbar">
+  <input type="checkbox" id="navCheck" class="nav-check" aria-hidden="true">
+  <div class="container topbar-in">
+    <a class="brand" href="index.html"><span class="brand-mark"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 5 6v6c0 4.4 3 7.4 7 9 4-1.6 7-4.6 7-9V6l-7-3Z"/><path d="m9 12 2 2 4-4"/></svg></span>Skilvi</a>
+    <nav class="mainnav">
+      <a href="search.html">Explore</a>
+      <a href="jobs.html">Jobs</a>
+      <a href="help.html">How it works</a>
+    </nav>
+    <div class="topact">
+      <a class="btn btn-ghost" href="login.html">Log in</a>
+      <a class="btn btn-primary" href="login.html#regForm">Join free</a>
+    </div>
+    <label class="icon-btn nav-toggle" for="navCheck" aria-label="Menu"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg></label>
+  </div>
+  <div class="mobile-nav" id="mobileNav">
+    <a href="search.html">Explore</a>
+    <a href="jobs.html">Jobs</a>
+    <a href="help.html">How it works</a>
+    <a href="login.html">Log in</a>
+    <a href="login.html#regForm">Join free</a>
+  </div>
+</header>
+
+<main class="container page-pad">
+  <p class="small muted"><a href="jobs.html">Jobs</a> / Post a job</p>
+
+  <div class="svc-layout mt-2">
+    <!-- Form -->
+    <div>
+      <div class="card card-pad">
+        <h1 style="font-size:22px">Post a job</h1>
+        <p class="small muted mt-1">Describe what you need. Workers in that category get notified, and you review their proposals before anyone starts.</p>
+        <hr class="divider mt-3 mb-3">
+
+        <form id="postJobForm">
+          <div class="field mb-2">
+            <label>Job title <span class="req" style="color:var(--red)">*</span></label>
+            <input class="input" placeholder="e.g. Bathroom tiling — 2 rooms, Lekki Phase 1" required>
+          </div>
+          <div class="form-row-2 mb-2">
+            <div class="field">
+              <label>Category <span style="color:var(--red)">*</span></label>
+              <select class="select" required>
+                <option value="">Select a category…</option>
+                <optgroup label="Digital & Tech"><option>Web Development</option><option>App Development</option><option>UI/UX Design</option><option>Software & Scripts</option></optgroup>
+                <optgroup label="Creative & Media"><option>Graphic Design & Branding</option><option>Video & Motion</option><option>Photography</option><option>Writing & Content</option></optgroup>
+                <optgroup label="Trades & Home"><option>Plumbing</option><option>Electrical</option><option>Tiling & Masonry</option><option>Painting</option><option>AC Installation & Repair</option><option>Generator & Power</option></optgroup>
+                <optgroup label="Business"><option>Accounting & Bookkeeping</option><option>Virtual Assistance</option><option>Consulting</option></optgroup>
+              </select>
+            </div>
+            <div class="field">
+              <label>Budget (₦) <span style="color:var(--red)">*</span></label>
+              <input class="input money-input" placeholder="300,000">
+            </div>
+          </div>
+          <div class="field mb-2">
+            <label>Budget type</label>
+            <div class="row" data-radio style="gap:10px">
+              <button type="button" class="radio-pill active" style="flex:1"><span class="rd"></span> Fixed price</button>
+              <button type="button" class="radio-pill" style="flex:1"><span class="rd"></span> Negotiable</button>
+            </div>
+          </div>
+          <div class="field mb-2">
+            <label>Description <span style="color:var(--red)">*</span></label>
+            <textarea class="textarea" style="min-height:130px" placeholder="What exactly needs to be done? Include scope, sizes, references, and anything a worker must know to give an accurate price."></textarea>
+            <span class="hint">Jobs with clear scope get better proposals, faster.</span>
+          </div>
+          <div class="field mb-2">
+            <label>Work mode <span style="color:var(--red)">*</span></label>
+            <div class="row" data-radio style="gap:10px">
+              <button type="button" class="radio-pill" style="flex:1"><span class="rd"></span> Remote</button>
+              <button type="button" class="radio-pill active" style="flex:1"><span class="rd"></span> On-site</button>
+              <button type="button" class="radio-pill" style="flex:1"><span class="rd"></span> Hybrid</button>
+            </div>
+          </div>
+          <div class="form-row-2 mb-2">
+            <div class="field">
+              <label>State <span style="color:var(--red)">*</span></label>
+              <select class="select" required><option value="">Select state…</option><option>Abia</option><option>Enugu</option><option>FCT</option><option>Kano</option><option>Kaduna</option><option>Lagos</option><option>Ogun</option><option>Oyo</option><option>Rivers</option></select>
+            </div>
+            <div class="field">
+              <label>City / area</label>
+              <input class="input" placeholder="e.g. Lekki Phase 1">
+            </div>
+          </div>
+          <div class="form-row-2 mb-3">
+            <div class="field">
+              <label>Deadline (optional)</label>
+              <input class="input" type="date">
+            </div>
+            <div class="field">
+              <label>Maximum proposals (optional)</label>
+              <select class="select"><option>No limit</option><option>5</option><option>10</option><option>15</option></select>
+            </div>
+          </div>
+          <div class="row spread" style="align-items:flex-end">
+            <p class="tiny faint" style="max-width:320px">Posting is free. You only pay when you accept a proposal — and even then, your money sits in escrow until the work is approved.</p>
+            <button class="btn btn-primary btn-lg" type="submit">Publish job</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Sidebar -->
+    <aside>
+      <div class="summary-card">
+        <h3 style="font-size:14px">What happens next</h3>
+        <div class="stack mt-2" id="nextSteps"><div class="row" style="gap:11px"><span class="step-num" style="margin:0;width:26px;height:26px;font-size:12.5px">1</span><div><div class="bold small">Job goes live</div><div class="tiny faint">Matching workers are notified and it appears in their job feed.</div></div></div>
+        <div class="row" style="gap:11px"><span class="step-num" style="margin:0;width:26px;height:26px;font-size:12.5px">2</span><div><div class="bold small">Review proposals</div><div class="tiny faint">Compare price, timeline, ratings and past work. Chat with any of them.</div></div></div>
+        <div class="row" style="gap:11px"><span class="step-num" style="margin:0;width:26px;height:26px;font-size:12.5px">3</span><div><div class="bold small">Accept one</div><div class="tiny faint">An order is created at the accepted price. You pay into Skilvi escrow.</div></div></div>
+        <div class="row" style="gap:11px"><span class="step-num" style="margin:0;width:26px;height:26px;font-size:12.5px">4</span><div><div class="bold small">Work & approval</div><div class="tiny faint">The worker delivers; you approve and the payment is released.</div></div></div>
+        <div class="row" style="gap:11px"><span class="step-num" style="margin:0;width:26px;height:26px;font-size:12.5px">5</span><div><div class="bold small">Review</div><div class="tiny faint">Leave a review. The worker's reputation grows on Skilvi.</div></div></div></div>
+        <div class="escrow-note mt-3" id="pjEscrow"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 5 6v6c0 4.4 3 7.4 7 9 4-1.6 7-4.6 7-9V6l-7-3Z"/><path d="m9 12 2 2 4-4"/></svg><span><b>Your money is protected.</b> You never pay a worker directly. Payment sits with Skilvi until you approve the completed work — and you can open a dispute if anything goes wrong.</span></div>
+      </div>
+    </aside>
+  </div>
+</main>
+
+<footer class="footer">
+  <div class="footer-in">
+    <div class="footer-grid">
+      <div>
+        <div class="f-brand"><span class="brand-mark"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 5 6v6c0 4.4 3 7.4 7 9 4-1.6 7-4.6 7-9V6l-7-3Z"/><path d="m9 12 2 2 4-4"/></svg></span>Skilvi</div>
+        <p class="f-desc">Discover. Learn. Earn. A marketplace built for Nigeria — digital skills and hands-on trades, paid securely in Naira.</p>
+      </div>
+      <div><h4>For clients</h4><a href="search.html">Browse workers</a><a href="jobs.html">Post a job</a><a href="help.html#faq-escrow">How escrow works</a><a href="help.html#faq-fees">Fees &amp; pricing</a></div>
+      <div><h4>For workers</h4><a href="login.html#regForm">Create a free profile</a><a href="verification.html">Get verified</a><a href="help.html#faq-withdrawals">Withdraw your money</a><a href="promotion.html">Promote your profile</a></div>
+      <div><h4>Company</h4><a href="about.html">About Skilvi</a><a href="help.html">Help center</a><a href="terms.html">Terms of service</a><a href="privacy.html">Privacy policy</a><a href="help.html">Contact support</a></div>
+    </div>
+    <div class="footer-bottom"><span>© 2026 Skilvi Technologies Ltd. All rights reserved.</span><span>Built in Nigeria · Payments held securely in escrow</span></div>
+  </div>
+</footer>
+
+<script src="assets/js/mock.js?v=4"></script>
+<script src="assets/js/skilvi.js?v=4"></script>
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const I = SkIconSvg;
+    const steps = [
+      ["1", "Job goes live", "Matching workers are notified and it appears in their job feed."],
+      ["2", "Review proposals", "Compare price, timeline, ratings and past work. Chat with any of them."],
+      ["3", "Accept one", "An order is created at the accepted price. You pay into Skilvi escrow."],
+      ["4", "Work & approval", "The worker delivers; you approve and the payment is released."],
+      ["5", "Review", "Leave a review. The worker's reputation grows on Skilvi."]
+    ];
+    $("#nextSteps").innerHTML = steps.map(([n, t, d]) =>
+      '<div class="row" style="gap:11px"><span class="step-num" style="margin:0;width:26px;height:26px;font-size:12.5px">' + n + "</span>" +
+      "<div><div class=\"bold small\">\" + t + '</div><div class=\"tiny faint\">' + d + "</div></div></div>").join("");
+    $("#pjEscrow").innerHTML = I.shield + "<span><b>Your money is protected.</b> You never pay a worker directly. Payment sits with Skilvi until you approve the completed work — and you can open a dispute if anything goes wrong.</span>";
+  });
+</script>
+</body>
+</html>

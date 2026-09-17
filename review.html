@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 24 24%27%3E%3Cpath fill=%27%232B4ADB%27 d=%27M12 2 4 5v6.5c0 5 3.4 8.6 8 10.5 4.6-1.9 8-5.5 8-10.5V5l-8-3Z%27/%3E%3Cpath fill=%27%23fff%27 d=%27m8.6 11.8 2.3 2.3 4.6-4.6-1.4-1.4-3.2 3.2-.9-.9-1.4 1.4Z%27/%3E%3C/svg%3E">
+  <title>Leave a review — Skilvi</title>
+  <meta name="description" content="Rate your experience on a completed Skilvi order.">
+  <link rel="stylesheet" href="assets/css/skilvi.css?v=4">
+</head>
+<body data-shell="client" data-active="orders" data-page="review">
+
+<div class="shell">
+  <aside class="side">
+  <div class="side-brand"><a class="brand" href="client-dashboard.html"><span class="brand-mark"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 5 6v6c0 4.4 3 7.4 7 9 4-1.6 7-4.6 7-9V6l-7-3Z"/><path d="m9 12 2 2 4-4"/></svg></span>Skilvi</a></div>
+  <div class="side-label">Marketplace</div>
+    <a class="side-item" href="client-dashboard.html"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="7" height="7" rx="1.5"/><rect x="13" y="4" width="7" height="7" rx="1.5"/><rect x="4" y="13" width="7" height="7" rx="1.5"/><rect x="13" y="13" width="7" height="7" rx="1.5"/></svg><span>Overview</span></a>
+    <a class="side-item active" href="client-dashboard.html?tab=orders"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="8" width="18" height="12" rx="2"/><path d="M9 8V6a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2M3 13h18"/></svg><span>My orders</span></a>
+    <a class="side-item" href="client-dashboard.html?tab=jobs"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M9 9h6M9 13h6M9 17h3"/></svg><span>My jobs</span></a>
+    <a class="side-item" href="saved.html"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20.5S4 15 4 9.5A4.5 4.5 0 0 1 12 7a4.5 4.5 0 0 1 8 2.5c0 5.5-8 11-8 11Z"/></svg><span>Saved workers</span></a>
+    <a class="side-item" href="client-dashboard.html?tab=payments"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 10h18"/></svg><span>Payments</span></a>
+  <div class="side-label">Account</div>
+    <a class="side-item" href="messages.html"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H8l-4 4V6a1 1 0 0 1 1-1Z"/></svg><span>Messages</span> <span class="badge-n">1</span></a>
+    <a class="side-item" href="disputes.html"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v16m-7 0h14"/><path d="m5 7-3 6a3.5 3.5 0 0 0 6 0L5 7Zm14 0-3 6a3.5 3.5 0 0 0 6 0l-3-6Z"/><path d="M5 7h14"/></svg><span>Disputes</span></a>
+    <a class="side-item" href="account-settings.html"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19 12a7 7 0 0 0-.1-1.2l2-1.6-2-3.4-2.4 1a7 7 0 0 0-2-1.2L14 3h-4l-.5 2.6a7 7 0 0 0-2 1.2l-2.4-1-2 3.4 2 1.6a7 7 0 0 0 0 2.4l-2 1.6 2 3.4 2.4-1a7 7 0 0 0 2 1.2L10 21h4l.5-2.6a7 7 0 0 0 2-1.2l2.4 1 2-3.4-2-1.6c.06-.4.1-.8.1-1.2Z"/></svg><span>Settings</span></a>
+  <div class="side-foot"><div class="side-user"><span class="avatar sm a2">AB</span><div><div class="su-name">Aisha Bello</div><div class="su-role">Client · Adaeze Boutique</div></div></div></div>
+</aside>
+  <div class="shell-main">
+    <header class="subbar">
+  <div class="sb-actions">
+    <a class="link-muted" href="index.html">View marketplace</a>
+    <button class="icon-btn" data-toast="3 new notifications" aria-label="Notifications"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9a6 6 0 1 1 12 0c0 5 2 6 2 6H4s2-1 2-6"/><path d="M10 19a2 2 0 0 0 4 0"/></svg><span class="dot"></span></button>
+    <a class="sb-user" href="account-settings.html"><span class="avatar sm a2">AB</span><span class="su-name">Aisha</span></a>
+  </div>
+</header>
+    <main class="content" style="max-width:760px">
+      <div class="page-head">
+        <div>
+          <h1 class="ph-title">Rate your experience</h1>
+          <p class="ph-sub">Order OR-1028 · Bathroom tiling — Lekki Phase 1 · completed 2 weeks ago</p>
+        </div>
+      </div>
+
+      <!-- Who -->
+      <div class="card card-pad" id="rvWho"></div>
+
+      <!-- Review form -->
+      <div class="card card-pad mt-3" id="rvForm">
+        <div class="row" style="align-items:center;gap:14px;flex-wrap:wrap">
+          <div>
+            <div class="small muted">How was the work?</div>
+            <div class="row mt-1" style="gap:4px" id="rvStars">
+              <button type="button" class="icon-btn rv-star" data-v="1" style="width:48px;height:48px;border-radius:50%;color:#F59E0B"></button>
+              <button type="button" class="icon-btn rv-star" data-v="2" style="width:48px;height:48px;border-radius:50%;color:#F59E0B"></button>
+              <button type="button" class="icon-btn rv-star" data-v="3" style="width:48px;height:48px;border-radius:50%;color:#F59E0B"></button>
+              <button type="button" class="icon-btn rv-star" data-v="4" style="width:48px;height:48px;border-radius:50%;color:#F59E0B"></button>
+              <button type="button" class="icon-btn rv-star" data-v="5" style="width:48px;height:48px;border-radius:50%;color:#F59E0B"></button>
+            </div>
+          </div>
+          <div class="right">
+            <div class="amount" style="font-size:34px" id="rvScore">—</div>
+            <div class="tiny faint" id="rvLabel">Tap a star to rate</div>
+          </div>
+        </div>
+
+        <div class="field mt-3">
+          <label>What should other clients know? (min 20 characters)</label>
+          <textarea class="textarea" id="rvText" placeholder="e.g. Ifeanyi finished both bathrooms on schedule, protected the floors, and cleaned up every evening. The grout lines came out perfectly straight. I'd hire him again."></textarea>
+          <span class="hint" id="rvCount">0 / 1000</span>
+        </div>
+
+        <div class="field mt-2">
+          <label>Tags (optional — pick any)</label>
+          <div class="row-wrap mt-1" style="gap:8px" id="rvTags">
+            <button type="button" class="chip rv-tag">Delivered on time</button>
+            <button type="button" class="chip rv-tag">Great communication</button>
+            <button type="button" class="chip rv-tag">Quality work</button>
+            <button type="button" class="chip rv-tag">Fair pricing</button>
+            <button type="button" class="chip rv-tag">Would hire again</button>
+          </div>
+        </div>
+
+        <div class="row spread mt-3" style="align-items:center;flex-wrap:wrap;gap:12px">
+          <p class="tiny faint" style="max-width:360px">Reviews are linked to this completed order. Ifeanyi can reply once. Abusive or fake reviews are removed and can end accounts.</p>
+          <div class="row" style="gap:8px">
+            <a class="btn btn-secondary" href="client-dashboard.html">Skip for now</a>
+            <button class="btn btn-primary" id="rvSubmit" type="button" disabled>Submit review</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Success state -->
+      <div class="card card-pad mt-3" id="rvDone" style="display:none">
+        <div class="center" style="padding:16px 8px">
+          <span class="stat-icon" style="width:48px;height:48px;margin:0 auto;color:var(--green);background:var(--green-bg)" id="rvDoneIco"></span>
+          <h3 style="font-size:17px;margin-top:12px">Review published — thank you</h3>
+          <p class="small muted mt-1" style="max-width:420px;margin-left:auto;margin-right:auto">It's now live on Ifeanyi's profile and counts toward his rating. Reviews are how good workers get found — you just helped the marketplace.</p>
+          <div class="row mt-3" style="justify-content:center;gap:8px">
+            <a class="btn btn-primary" href="worker-profile.html">See his profile</a>
+            <a class="btn btn-secondary" href="client-dashboard.html">Back to dashboard</a>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+
+<script src="assets/js/mock.js?v=4"></script>
+<script src="assets/js/skilvi.js?v=4"></script>
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const I = SkIconSvg;
+    $("#rvDoneIco").innerHTML = I.checkc;
+    $("#rvWho").innerHTML =
+      '<div class="row" style="gap:12px;align-items:center;flex-wrap:wrap">' +
+      '<span class="avatar a1">IO</span>' +
+      "<div class=\"grow\"><div class=\"bold\" style=\"font-size:15px\">Ifeanyi Okoro " +
+      '<span class="badge-verified">' + I.shield + "Verified</span></div>" +
+      '<span class="rating-line" style="margin-top:3px">' + SkStars(4.9) + " <b>4.9</b> · 64 reviews · 91 orders completed</span></div>" +
+      '<div class="right"><div class="amount" style="font-size:16px">₦300,000</div><div class="tiny faint">order value · settled</div></div></div>';
+
+    let score = 0;
+    const labels = { 1: "Not satisfied", 2: "Below expectations", 3: "It was okay", 4: "Very good", 5: "Excellent" };
+    const starBtns = $$("#rvStars .rv-star");
+    starBtns.forEach((b) => { b.innerHTML = I.star; });
+    const paint = () => {
+      starBtns.forEach((b) => { b.style.color = Number(b.dataset.v) <= score ? "#F59E0B" : "var(--line-2)"; });
+      $("#rvScore").textContent = score ? score + ".0" : "—";
+      $("#rvLabel").textContent = score ? labels[score] : "Tap a star to rate";
+    };
+    starBtns.forEach((b) => b.addEventListener("click", () => { score = Number(b.dataset.v); paint(); }));
+
+    $("#rvText").addEventListener("input", () => {
+      const v = $("#rvText").value;
+      $("#rvText").maxLength = 1000;
+      $("#rvCount").textContent = v.length + " / 1000";
+      validate();
+    });
+    $$("#rvTags .rv-tag").forEach((t) => t.addEventListener("click", () => t.classList.toggle("active")));
+    function validate() { $("#rvSubmit").disabled = !(score >= 1 && $("#rvText").value.trim().length >= 20); }
+
+    $("#rvSubmit").addEventListener("click", () => {
+      $("#rvForm").style.display = "none";
+      $("#rvDone").style.display = "";
+      Sk.toast("Review published to Ifeanyi's profile.", "success");
+    });
+  });
+</script>
+</body>
+</html>

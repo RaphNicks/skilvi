@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 24 24%27%3E%3Cpath fill=%27%232B4ADB%27 d=%27M12 2 4 5v6.5c0 5 3.4 8.6 8 10.5 4.6-1.9 8-5.5 8-10.5V5l-8-3Z%27/%3E%3Cpath fill=%27%23fff%27 d=%27m8.6 11.8 2.3 2.3 4.6-4.6-1.4-1.4-3.2 3.2-.9-.9-1.4 1.4Z%27/%3E%3C/svg%3E">
+  <title>Admin — Dashboard</title>
+  <meta name="description" content="Skilvi admin console: orders, escrow, payments, withdrawals, disputes, verification, and platform health.">
+  <link rel="stylesheet" href="../assets/css/skilvi.css?v=4">
+</head>
+<body data-shell="admin" data-active="dashboard" data-page="admin">
+
+<div class="shell admin">
+  <aside class="side">
+  <div class="side-brand"><a class="brand" href="../index.html"><span class="brand-mark"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 5 6v6c0 4.4 3 7.4 7 9 4-1.6 7-4.6 7-9V6l-7-3Z"/><path d="m9 12 2 2 4-4"/></svg></span>Skilvi</a><span class="admin-tag">Admin</span></div>
+  <div class="side-label">Operations</div>
+    <a class="side-item active" href="index.html"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="7" height="7" rx="1.5"/><rect x="13" y="4" width="7" height="7" rx="1.5"/><rect x="4" y="13" width="7" height="7" rx="1.5"/><rect x="13" y="13" width="7" height="7" rx="1.5"/></svg><span>Dashboard</span></a>
+    <a class="side-item" href="orders.html"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="8" width="18" height="12" rx="2"/><path d="M9 8V6a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2M3 13h18"/></svg><span>Orders</span></a>
+    <a class="side-item" href="payments.html"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 10h18"/></svg><span>Payments</span></a>
+    <a class="side-item" href="withdrawals.html"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 7H5a2 2 0 0 1 0-4h13v4"/><path d="M20 7a1.5 1.5 0 0 1 1.5 1.5v11A1.5 1.5 0 0 1 20 21H6a2 2 0 0 1-2-2V5"/><circle cx="16.5" cy="14" r="1"/></svg><span>Withdrawals</span> <span class="badge-n">2</span></a>
+    <a class="side-item" href="promotions.html"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 4 14h6l-1 8 9-12h-6l1-8Z"/></svg><span>Promotions</span></a>
+  <div class="side-label">Trust &amp; safety</div>
+    <a class="side-item" href="disputes.html"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v16m-7 0h14"/><path d="m5 7-3 6a3.5 3.5 0 0 0 6 0L5 7Zm14 0-3 6a3.5 3.5 0 0 0 6 0l-3-6Z"/><path d="M5 7h14"/></svg><span>Disputes</span> <span class="badge-n">3</span></a>
+    <a class="side-item" href="reports.html"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 21V4"/><path d="M5 4h12l-2.5 4L17 12H5"/></svg><span>Reports</span> <span class="badge-n">5</span></a>
+    <a class="side-item" href="verification.html"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 5 6v6c0 4.4 3 7.4 7 9 4-1.6 7-4.6 7-9V6l-7-3Z"/><path d="m9 12 2 2 4-4"/></svg><span>Verification</span></a>
+  <div class="side-label">Platform</div>
+    <a class="side-item" href="users.html"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8.5" r="3.5"/><path d="M3 19.5a6 6 0 0 1 12 0"/><path d="M16 5.5a3.5 3.5 0 0 1 0 6.6M17.5 14.5a6 6 0 0 1 3.5 5"/></svg><span>Users</span></a>
+    <a class="side-item" href="categories.html"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3 9 5-9 5-9-5 9-5Z"/><path d="m3 13 9 5 9-5"/></svg><span>Categories</span></a>
+    <a class="side-item" href="support.html"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 1 1 3.4 2.3c-.8.3-.9 1-.9 1.7"/><path d="M12 17h.01"/></svg><span>Support inbox</span></a>
+  <div class="side-label">System</div>
+    <a class="side-item" href="audit-log.html"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8l-5-5Z"/><path d="M14 3v5h5"/></svg><span>Audit log</span></a>
+    <a class="side-item" href="settings.html"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3.2"/><path d="M19 12a7 7 0 0 0-.14-1.4l2-1.55-2-3.46-2.35.95A7 7 0 0 0 14.06 5L13.7 2.5h-3.4L9.94 5a7 7 0 0 0-1.45.84l-2.35-.95-2 3.46 2 1.55A7 7 0 0 0 6 12c0 .48.05.94.14 1.4l-2 1.55 2 3.46 2.35-.95c.44.36.92.66 1.45.84l.36 2.5h3.4l.36-2.5c.53-.18 1.01-.48 1.45-.84l2.35.95 2-3.46-2-1.55c.09-.46.14-.92.14-1.4Z"/></svg><span>Settings</span></a>
+  <div class="side-foot"><div class="side-user"><span class="avatar sm a1">AO</span><div><div class="su-name">Admin</div><div class="su-role">Super admin</div></div></div></div>
+</aside>
+  <div class="shell-main">
+    <header class="subbar">
+  <span class="sb-crumb">Admin console</span>
+  <div class="sb-actions">
+    <a class="link-muted" href="../index.html">View marketplace</a>
+    <button class="icon-btn" data-toast="3 new notifications" aria-label="Notifications"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9a6 6 0 1 1 12 0c0 5 2 6 2 6H4s2-1 2-6"/><path d="M10 19a2 2 0 0 0 4 0"/></svg><span class="dot"></span></button>
+    <a class="sb-user" href="users.html"><span class="avatar sm a1">AO</span><span class="su-name">Admin</span></a>
+  </div>
+</header>
+    <main class="content">
+      <div class="page-head">
+        <div>
+          <h1 class="ph-title">Operations dashboard</h1>
+          <p class="ph-sub">Thursday, 17 September 2026 · updated 2 min ago</p>
+        </div>
+        <div class="ph-actions">
+          <select class="select" style="width:auto"><option>Last 7 days</option><option>Today</option><option>Last 30 days</option></select>
+          <button class="btn btn-secondary btn-sm" data-toast="dashboard-2026-09-17.xlsx exported" type="button">Export</button>
+        </div>
+      </div>
+
+      <!-- KPIs -->
+      <div class="kpi-grid" id="kpiGrid"><div class="kpi"><div class="k-label">GMV (7d)</div><div class="k-value">₦3.53M</div><div class="k-sub">+18% vs prior week</div></div>
+      <div class="kpi"><div class="k-label">Orders created</div><div class="k-value">24</div><div class="k-sub">12 direct · 12 via proposals</div></div>
+      <div class="kpi"><div class="k-label">Orders completed</div><div class="k-value">18</div><div class="k-sub">settlement rate 92%</div></div>
+      <div class="kpi"><div class="k-label">Open disputes</div><div class="k-value">3</div><div class="k-sub">1 SLA-breach risk</div></div>
+      <div class="kpi"><div class="k-label">Pending withdrawals</div><div class="k-value">₦470k</div><div class="k-sub">2 in review queue</div></div>
+      <div class="kpi"><div class="k-label">Open reports</div><div class="k-value">5</div><div class="k-sub">2 above threshold</div></div></div>
+
+      <div class="grid grid-2 mt-3" style="align-items:start">
+        <!-- GMV chart -->
+        <div class="card card-pad">
+          <div class="row spread mb-1">
+            <h3 style="font-size:14px">GMV — last 7 days</h3>
+            <span class="st st-green">+18% vs prior week</span>
+          </div>
+          <div class="bars" id="gmxBars" style="height:150px"><div class="bar" style="height:58%"><span class="bar-tip">₦420k</span></div><div class="bar" style="height:71%"><span class="bar-tip">₦510k</span></div><div class="bar" style="height:53%"><span class="bar-tip">₦380k</span></div><div class="bar" style="height:89%"><span class="bar-tip">₦640k</span></div><div class="bar peak" style="height:100%"><span class="bar-tip">₦720k</span></div><div class="bar" style="height:78%"><span class="bar-tip">₦560k</span></div><div class="bar" style="height:42%"><span class="bar-tip">₦300k</span></div></div>
+          <div class="bar-labels" id="gmxLabels"><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span></div>
+        </div>
+
+        <!-- Oldest disputes -->
+        <div class="card card-pad">
+          <div class="row spread mb-2">
+            <h3 style="font-size:14px">Oldest open disputes</h3>
+            <a class="link" style="font-size:13px" href="disputes.html">Queue (3) →</a>
+          </div>
+          <div id="gmxDisputes"><div class="queue-row"><div class="qr-main"><div class="qr-t">DSP-2031 · Wiring — 4-bed bungalow, GRA</div><div class="qr-s">₦₦450,000 frozen · opened Sep 13, 2026 by Worker</div></div><span class="sla warn">2 days left</span><a class="btn btn-secondary btn-sm" href="../dispute-detail.html">Open</a></div>
+          <div class="queue-row"><div class="qr-main"><div class="qr-t">DSP-2033 · Landing page — Naija Foods</div><div class="qr-s">₦₦85,000 frozen · opened Sep 15, 2026 by Client</div></div><span class="sla ">5 days left</span><a class="btn btn-secondary btn-sm" href="../dispute-detail.html">Open</a></div>
+          <div class="queue-row"><div class="qr-main"><div class="qr-t">DSP-2028 · AC service — Ikoyi</div><div class="qr-s">₦₦35,000 frozen · opened Sep 9, 2026 by Client</div></div><span class="sla over">1 day overdue</span><a class="btn btn-secondary btn-sm" href="../dispute-detail.html">Open</a></div></div>
+        </div>
+      </div>
+
+      <div class="grid grid-2 mt-3" style="align-items:start">
+        <!-- Withdrawals pending -->
+        <div class="card card-pad">
+          <div class="row spread mb-2">
+            <h3 style="font-size:14px">Withdrawals awaiting action</h3>
+            <a class="link" style="font-size:13px" href="withdrawals.html">Queue (2) →</a>
+          </div>
+          <div id="gmxWd"><div class="queue-row"><span class="avatar sm a1">CO</span><div class="qr-main"><div class="qr-t">Chinedu Okafor</div><div class="qr-s">GTBank ····0234 · Sep 16, 2026</div></div><span class="amount" style="font-size:14px">₦350,000</span><button class="btn btn-primary btn-sm" data-act="approve" data-name="WD-2217 (₦350,000)" type="button">Approve</button> <button class="btn btn-danger btn-sm" data-act="reject" data-name="WD-2217" type="button">Hold</button></div>
+          <div class="queue-row"><span class="avatar sm a1">IO</span><div class="qr-main"><div class="qr-t">Ifeanyi Okoro</div><div class="qr-s">Zenith ····4410 · Sep 16, 2026</div></div><span class="amount" style="font-size:14px">₦120,000</span><button class="btn btn-primary btn-sm" data-act="approve" data-name="WD-2216 (₦120,000)" type="button">Approve</button> <button class="btn btn-danger btn-sm" data-act="reject" data-name="WD-2216" type="button">Hold</button></div></div>
+        </div>
+
+        <!-- New signups -->
+        <div class="card card-pad">
+          <div class="row spread mb-2">
+            <h3 style="font-size:14px">New signups today</h3>
+            <a class="link" style="font-size:13px" href="users.html">All users →</a>
+          </div>
+          <div class="queue-card" style="border:0;box-shadow:none">
+            <div class="queue-row"><span class="avatar sm a5">SA</span><div class="qr-main"><div class="qr-t">Sarah Adamu</div><div class="qr-s">+234 808 445 5667 · Worker · Lagos</div></div><span class="st st-royal">1h ago</span></div>
+            <div class="queue-row"><span class="avatar sm a1">JB</span><div class="qr-main"><div class="qr-t">John Bello</div><div class="qr-s">+234 802 112 2334 · Client · Abuja</div></div><span class="st st-royal">3h ago</span></div>
+            <div class="queue-row"><span class="avatar sm a2">PC</span><div class="qr-main"><div class="qr-t">Precious Chukwu</div><div class="qr-s">+234 806 778 8990 · Both · Port Harcourt</div></div><span class="st st-royal">5h ago</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Ops alerts -->
+      <div class="card card-pad mt-3">
+        <h3 style="font-size:14px">Needs attention</h3>
+        <div class="stack mt-2">
+          <div class="row spread" style="gap:12px;flex-wrap:wrap"><span class="st st-red">SLA breach</span><span class="small">Dispute DSP-2028 is 1 day past resolution target — escalated to supervisor queue.</span><a class="link" style="font-size:13px" href="disputes.html">Open →</a></div>
+          <div class="row spread" style="gap:12px;flex-wrap:wrap"><span class="st st-amber">Payment failures</span><span class="small">3 failed card payments in the last 24h (2.1% failure rate — within normal range).</span><a class="link" style="font-size:13px" href="payments.html">Review →</a></div>
+          <div class="row spread" style="gap:12px;flex-wrap:wrap"><span class="st st-amber">Reports threshold</span><span class="small">User u3 (Peter Anya) crossed the 3-report threshold — risk flag raised, no auto-action taken.</span><a class="link" style="font-size:13px" href="users.html">Review →</a></div>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+
+<script src="../assets/js/mock.js?v=4"></script>
+<script src="../assets/js/skilvi.js?v=4"></script>
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const I = SkIconSvg;
+    const kpis = [
+      ["GMV (7d)", "₦3.53M", "+18% vs prior week"],
+      ["Orders created", "24", "12 direct · 12 via proposals"],
+      ["Orders completed", "18", "settlement rate 92%"],
+      ["Open disputes", "3", "1 SLA-breach risk"],
+      ["Pending withdrawals", "₦470k", "2 in review queue"],
+      ["Open reports", "5", "2 above threshold"]
+    ];
+    $("#kpiGrid").innerHTML = kpis.map(([l, v, s]) =>
+      '<div class="kpi"><div class="k-label">' + l + '</div><div class="k-value">' + v + '</div><div class="k-sub">' + s + "</div></div>").join("");
+
+    const data = MOCK.admin.gmv, max = Math.max(...data.map((d) => d.v));
+    $("#gmxBars").innerHTML = data.map((d, i) =>
+      '<div class="bar' + (i === 4 ? " peak" : "") + '" style="height:' + Math.round((d.v / max) * 100) + '%"><span class="bar-tip">₦' + d.v + "k</span></div>").join("");
+    $("#gmxLabels").innerHTML = data.map((d) => "<span>" + d.day + "</span>").join("");
+
+    $("#gmxDisputes").innerHTML = MOCK.admin.disputes.map((d) =>
+      '<div class="queue-row"><div class="qr-main"><div class="qr-t">' + d.id + " · " + d.title + '</div><div class="qr-s">₦' + Sk.ngn(d.amount) + " frozen · opened " + d.opened + " by " + d.by + "</div></div>" +
+      '<span class="sla ' + d.slaClass + '">' + d.sla + '</span><a class="btn btn-secondary btn-sm" href="../dispute-detail.html">Open</a></div>').join("");
+
+    $("#gmxWd").innerHTML = MOCK.admin.withdrawals.filter((w) => w.state === "review").map((w) =>
+      '<div class="queue-row"><span class="avatar sm ' + w.tone + '">' + w.worker.split(" ").map((x) => x[0]).join("") + "</span>" +
+      '<div class="qr-main"><div class="qr-t">' + w.worker + '</div><div class="qr-s">' + w.bank + " · " + w.date + "</div></div>" +
+      '<span class="amount" style="font-size:14px">' + Sk.ngn(w.amount) + "</span>" +
+      '<button class="btn btn-primary btn-sm" data-act="approve" data-name="WD-2217 (₦350,000)" type="button">Approve</button> ' +
+      '<button class="btn btn-danger btn-sm" data-act="reject" data-name="WD-2217" type="button">Hold</button></div>').join("");
+  });
+</script>
+</body>
+</html>

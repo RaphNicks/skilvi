@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 24 24%27%3E%3Cpath fill=%27%232B4ADB%27 d=%27M12 2 4 5v6.5c0 5 3.4 8.6 8 10.5 4.6-1.9 8-5.5 8-10.5V5l-8-3Z%27/%3E%3Cpath fill=%27%23fff%27 d=%27m8.6 11.8 2.3 2.3 4.6-4.6-1.4-1.4-3.2 3.2-.9-.9-1.4 1.4Z%27/%3E%3C/svg%3E">
+  <title>My work — Skilvi</title>
+  <meta name="description" content="Manage your Skilvi orders: deliver work, submit for approval, and get paid from escrow.">
+  <link rel="stylesheet" href="assets/css/skilvi.css?v=4">
+</head>
+<body data-shell="worker" data-active="orders" data-page="worker-orders">
+
+<div class="shell">
+  <aside class="side">
+  <div class="side-brand"><a class="brand" href="worker-dashboard.html"><span class="brand-mark"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 5 6v6c0 4.4 3 7.4 7 9 4-1.6 7-4.6 7-9V6l-7-3Z"/><path d="m9 12 2 2 4-4"/></svg></span>Skilvi</a></div>
+  <div class="side-label">Work</div>
+    <a class="side-item" href="worker-dashboard.html"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="7" height="7" rx="1.5"/><rect x="13" y="4" width="7" height="7" rx="1.5"/><rect x="4" y="13" width="7" height="7" rx="1.5"/><rect x="13" y="13" width="7" height="7" rx="1.5"/></svg><span>Overview</span></a>
+    <a class="side-item active" href="worker-orders.html"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="8" width="18" height="12" rx="2"/><path d="M9 8V6a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2M3 13h18"/></svg><span>My work</span></a>
+    <a class="side-item" href="worker-services.html"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3 9 5-9 5-9-5 9-5Z"/><path d="m3 13 9 5 9-5"/></svg><span>Services</span></a>
+    <a class="side-item" href="worker-jobs.html"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M9 9h6M9 13h6M9 17h3"/></svg><span>Jobs & proposals</span> <span class="badge-n">3</span></a>
+  <div class="side-label">Money</div>
+    <a class="side-item" href="worker-wallet.html"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 7H5a2 2 0 0 1 0-4h13v4"/><path d="M20 7a1.5 1.5 0 0 1 1.5 1.5v11A1.5 1.5 0 0 1 20 21H6a2 2 0 0 1-2-2V5"/><circle cx="16.5" cy="14" r="1"/></svg><span>Wallet</span></a>
+    <a class="side-item" href="worker-wallet.html?tab=withdrawals"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v13"/><path d="m8 7 4-4 4 4"/><path d="M4 14v4a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-4"/></svg><span>Withdrawals</span></a>
+    <a class="side-item" href="verification.html"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 5 6v6c0 4.4 3 7.4 7 9 4-1.6 7-4.6 7-9V6l-7-3Z"/><path d="m9 12 2 2 4-4"/></svg><span>Verification</span></a>
+    <a class="side-item" href="promotion.html"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 4 14h6l-1 8 9-12h-6l1-8Z"/></svg><span>Promotion</span></a>
+  <div class="side-label">Account</div>
+    <a class="side-item" href="messages.html"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H8l-4 4V6a1 1 0 0 1 1-1Z"/></svg><span>Messages</span> <span class="badge-n">2</span></a>
+    <a class="side-item" href="disputes.html"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v16m-7 0h14"/><path d="m5 7-3 6a3.5 3.5 0 0 0 6 0L5 7Zm14 0-3 6a3.5 3.5 0 0 0 6 0l-3-6Z"/><path d="M5 7h14"/></svg><span>Disputes</span></a>
+    <a class="side-item" href="account-settings.html"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19 12a7 7 0 0 0-.1-1.2l2-1.6-2-3.4-2.4 1a7 7 0 0 0-2-1.2L14 3h-4l-.5 2.6a7 7 0 0 0-2 1.2l-2.4-1-2 3.4 2 1.6a7 7 0 0 0 0 2.4l-2 1.6 2 3.4 2.4-1a7 7 0 0 0 2 1.2L10 21h4l.5-2.6a7 7 0 0 0 2-1.2l2.4 1 2-3.4-2-1.6c.06-.4.1-.8.1-1.2Z"/></svg><span>Settings</span></a>
+  <div class="side-foot"><div class="side-user"><span class="avatar sm a1">CO</span><div><div class="su-name">Chinedu Okafor</div><div class="su-role">Worker · Verified</div></div></div></div>
+</aside>
+  <div class="shell-main">
+    <header class="subbar">
+  <div class="sb-actions">
+    <a class="link-muted" href="index.html">View marketplace</a>
+    <a class="icon-btn" href="notifications.html" aria-label="Notifications"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9a6 6 0 1 1 12 0c0 5 2 6 2 6H4s2-1 2-6"/><path d="M10 19a2 2 0 0 0 4 0"/></svg><span class="dot"></span></button>
+    <a class="sb-user" href="account-settings.html"><span class="avatar sm a1">CO</span><span class="su-name">Chinedu</span></a>
+  </div>
+</header>
+    <main class="content">
+      <div class="page-head">
+        <div>
+          <h1 class="ph-title">My work</h1>
+          <p class="ph-sub">Every order, its escrow state, and the next action for you.</p>
+        </div>
+      </div>
+
+      <div data-tabs>
+        <div class="tabs" id="woTabs">
+          <button class="tab active" data-tab="all">All <span class="count">12</span></button>
+          <button class="tab" data-tab="active">In progress <span class="count">1</span></button>
+          <button class="tab" data-tab="delivered">Delivered <span class="count">1</span></button>
+          <button class="tab" data-tab="completed">Completed <span class="count">7</span></button>
+          <button class="tab" data-tab="disputed">Disputed <span class="count">1</span></button>
+        </div>
+
+        <div class="tab-panel active" data-panel="all">
+          <div class="table-wrap mt-2" id="woTable"><table class="table"><thead><tr><th>Order</th><th class="num">Amount</th><th>Escrow</th><th>Status</th><th>Next action</th><th></th></tr></thead><tbody><tr><td><span class="cell-main">Landing page — Naija Foods</span><div class="cell-sub">OR-1042 · Adaeze Boutique</div></td><td class="num amount">₦85,000</td><td><span class="tag">Held</span></td><td><span class="st st-teal">Awaiting client approval</span></td><td class="cell-sub">Reply within 24h if asked</td><td class="right nowrap"><a class="btn btn-secondary btn-sm" href="order-detail.html">Open</a> <a class="btn btn-ghost btn-sm" href="messages.html">Chat</a></td></tr>
+<tr><td><span class="cell-main">WordPress rebuild — Brew & Co</span><div class="cell-sub">OR-1036 · Brew & Co</div></td><td class="num amount">₦120,000</td><td><span class="tag">Held</span></td><td><span class="st st-amber">In progress</span></td><td class="cell-sub">Deliver by Sep 24</td><td class="right nowrap"><a class="btn btn-secondary btn-sm" href="order-detail.html">Open</a> <a class="btn btn-ghost btn-sm" href="messages.html">Chat</a></td></tr>
+<tr><td><span class="cell-main">WordPress site — Naija Foods</span><div class="cell-sub">OR-1031 · Naija Foods Ltd</div></td><td class="num amount">₦85,000</td><td><span class="tag">Released</span></td><td><span class="st st-green">Settled Sep 15</span></td><td class="cell-sub">₦76,500 in wallet</td><td class="right nowrap"><a class="btn btn-secondary btn-sm" href="order-detail.html">Open</a> <a class="btn btn-ghost btn-sm" href="messages.html">Chat</a></td></tr>
+<tr><td><span class="cell-main">Landing page — Zara Wears</span><div class="cell-sub">OR-1024 · Zara Wears</div></td><td class="num amount">₦75,000</td><td><span class="tag">Released</span></td><td><span class="st st-green">Settled Sep 8</span></td><td class="cell-sub">₦67,500 in wallet</td><td class="right nowrap"><a class="btn btn-secondary btn-sm" href="order-detail.html">Open</a> <a class="btn btn-ghost btn-sm" href="messages.html">Chat</a></td></tr>
+<tr><td><span class="cell-main">Shopify fixes — Zara Wears</span><div class="cell-sub">OR-1011 · Zara Wears</div></td><td class="num amount">₦50,000</td><td><span class="tag">Released</span></td><td><span class="st st-green">Settled Sep 1</span></td><td class="cell-sub">Review received: 5★</td><td class="right nowrap"><a class="btn btn-secondary btn-sm" href="order-detail.html">Open</a> <a class="btn btn-ghost btn-sm" href="messages.html">Chat</a></td></tr>
+<tr><td><span class="cell-main">Wiring estimate follow-up — GRA</span><div class="cell-sub">OR-1003 · M. Okonkwo</div></td><td class="num amount">₦450,000</td><td><span class="tag">Frozen</span></td><td><span class="st st-red">Dispute DSP-2031</span></td><td class="cell-sub">Evidence uploaded</td><td class="right nowrap"><a class="btn btn-secondary btn-sm" href="order-detail.html">Open</a> <a class="btn btn-ghost btn-sm" href="messages.html">Chat</a></td></tr>
+<tr><td><span class="cell-main">Brand site — Harbour Estates</span><div class="cell-sub">OR-0998 · Harbour Estates</div></td><td class="num amount">₦150,000</td><td><span class="tag">Released</span></td><td><span class="st st-green">Settled Aug 24</span></td><td class="cell-sub">Review received: 5★</td><td class="right nowrap"><a class="btn btn-secondary btn-sm" href="order-detail.html">Open</a> <a class="btn btn-ghost btn-sm" href="messages.html">Chat</a></td></tr></tbody></table></div>
+        </div>
+        <div class="tab-panel" data-panel="active"><div class="table-wrap mt-2" id="woTableActive"><table class="table"><thead><tr><th>Order</th><th class="num">Amount</th><th>Escrow</th><th>Status</th><th>Next action</th><th></th></tr></thead><tbody><tr><td><span class="cell-main">WordPress rebuild — Brew & Co</span><div class="cell-sub">OR-1036 · Brew & Co</div></td><td class="num amount">₦120,000</td><td><span class="tag">Held</span></td><td><span class="st st-amber">In progress</span></td><td class="cell-sub">Deliver by Sep 24</td><td class="right nowrap"><a class="btn btn-secondary btn-sm" href="order-detail.html">Open</a> <a class="btn btn-ghost btn-sm" href="messages.html">Chat</a></td></tr></tbody></table></div></div>
+        <div class="tab-panel" data-panel="delivered"><div class="table-wrap mt-2" id="woTableDelivered"><table class="table"><thead><tr><th>Order</th><th class="num">Amount</th><th>Escrow</th><th>Status</th><th>Next action</th><th></th></tr></thead><tbody><tr><td><span class="cell-main">Landing page — Naija Foods</span><div class="cell-sub">OR-1042 · Adaeze Boutique</div></td><td class="num amount">₦85,000</td><td><span class="tag">Held</span></td><td><span class="st st-teal">Awaiting client approval</span></td><td class="cell-sub">Reply within 24h if asked</td><td class="right nowrap"><a class="btn btn-secondary btn-sm" href="order-detail.html">Open</a> <a class="btn btn-ghost btn-sm" href="messages.html">Chat</a></td></tr></tbody></table></div></div>
+        <div class="tab-panel" data-panel="completed"><div class="table-wrap mt-2" id="woTableCompleted"><table class="table"><thead><tr><th>Order</th><th class="num">Amount</th><th>Escrow</th><th>Status</th><th>Next action</th><th></th></tr></thead><tbody><tr><td><span class="cell-main">WordPress site — Naija Foods</span><div class="cell-sub">OR-1031 · Naija Foods Ltd</div></td><td class="num amount">₦85,000</td><td><span class="tag">Released</span></td><td><span class="st st-green">Settled Sep 15</span></td><td class="cell-sub">₦76,500 in wallet</td><td class="right nowrap"><a class="btn btn-secondary btn-sm" href="order-detail.html">Open</a> <a class="btn btn-ghost btn-sm" href="messages.html">Chat</a></td></tr>
+<tr><td><span class="cell-main">Landing page — Zara Wears</span><div class="cell-sub">OR-1024 · Zara Wears</div></td><td class="num amount">₦75,000</td><td><span class="tag">Released</span></td><td><span class="st st-green">Settled Sep 8</span></td><td class="cell-sub">₦67,500 in wallet</td><td class="right nowrap"><a class="btn btn-secondary btn-sm" href="order-detail.html">Open</a> <a class="btn btn-ghost btn-sm" href="messages.html">Chat</a></td></tr>
+<tr><td><span class="cell-main">Shopify fixes — Zara Wears</span><div class="cell-sub">OR-1011 · Zara Wears</div></td><td class="num amount">₦50,000</td><td><span class="tag">Released</span></td><td><span class="st st-green">Settled Sep 1</span></td><td class="cell-sub">Review received: 5★</td><td class="right nowrap"><a class="btn btn-secondary btn-sm" href="order-detail.html">Open</a> <a class="btn btn-ghost btn-sm" href="messages.html">Chat</a></td></tr>
+<tr><td><span class="cell-main">Brand site — Harbour Estates</span><div class="cell-sub">OR-0998 · Harbour Estates</div></td><td class="num amount">₦150,000</td><td><span class="tag">Released</span></td><td><span class="st st-green">Settled Aug 24</span></td><td class="cell-sub">Review received: 5★</td><td class="right nowrap"><a class="btn btn-secondary btn-sm" href="order-detail.html">Open</a> <a class="btn btn-ghost btn-sm" href="messages.html">Chat</a></td></tr></tbody></table></div></div>
+        <div class="tab-panel" data-panel="disputed"><div class="table-wrap mt-2" id="woTableDisputed"><table class="table"><thead><tr><th>Order</th><th class="num">Amount</th><th>Escrow</th><th>Status</th><th>Next action</th><th></th></tr></thead><tbody><tr><td><span class="cell-main">Wiring estimate follow-up — GRA</span><div class="cell-sub">OR-1003 · M. Okonkwo</div></td><td class="num amount">₦450,000</td><td><span class="tag">Frozen</span></td><td><span class="st st-red">Dispute DSP-2031</span></td><td class="cell-sub">Evidence uploaded</td><td class="right nowrap"><a class="btn btn-secondary btn-sm" href="order-detail.html">Open</a> <a class="btn btn-ghost btn-sm" href="messages.html">Chat</a></td></tr></tbody></table></div></div>
+      </div>
+    </main>
+  </div>
+</div>
+
+<script src="assets/js/mock.js?v=4"></script>
+<script src="assets/js/skilvi.js?v=4"></script>
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const orders = [
+      { id: "OR-1042", title: "Landing page — Naija Foods", client: "Adaeze Boutique", tone: "a2", amount: 85000, escrow: "Held", state: "delivered", chip: "st-teal", label: "Awaiting client approval", next: "Reply within 24h if asked" },
+      { id: "OR-1036", title: "WordPress rebuild — Brew & Co", client: "Brew & Co", tone: "a3", amount: 120000, escrow: "Held", state: "active", chip: "st-amber", label: "In progress", next: "Deliver by Sep 24" },
+      { id: "OR-1031", title: "WordPress site — Naija Foods", client: "Naija Foods Ltd", tone: "a4", amount: 85000, escrow: "Released", state: "completed", chip: "st-green", label: "Settled Sep 15", next: "₦76,500 in wallet" },
+      { id: "OR-1024", title: "Landing page — Zara Wears", client: "Zara Wears", tone: "a5", amount: 75000, escrow: "Released", state: "completed", chip: "st-green", label: "Settled Sep 8", next: "₦67,500 in wallet" },
+      { id: "OR-1011", title: "Shopify fixes — Zara Wears", client: "Zara Wears", tone: "a5", amount: 50000, escrow: "Released", state: "completed", chip: "st-green", label: "Settled Sep 1", next: "Review received: 5★" },
+      { id: "OR-1003", title: "Wiring estimate follow-up — GRA", client: "M. Okonkwo", tone: "a1", amount: 450000, escrow: "Frozen", state: "disputed", chip: "st-red", label: "Dispute DSP-2031", next: "Evidence uploaded" },
+      { id: "OR-0998", title: "Brand site — Harbour Estates", client: "Harbour Estates", tone: "a3", amount: 150000, escrow: "Released", state: "completed", chip: "st-green", label: "Settled Aug 24", next: "Review received: 5★" }
+    ];
+    const row = (o) =>
+      '<tr><td><span class="cell-main">' + o.title + '</span><div class="cell-sub">' + o.id + " · " + o.client + "</div></td>" +
+      '<td class="num amount">' + Sk.ngn(o.amount) + "</td>" +
+      '<td><span class="tag' + (o.escrow === "Frozen" ? "" : "") + '">' + o.escrow + "</span></td>" +
+      '<td><span class="st ' + o.chip + '">' + o.label + "</span></td>" +
+      '<td class="cell-sub">' + o.next + "</td>" +
+      '<td class="right nowrap"><a class="btn btn-secondary btn-sm" href="order-detail.html">Open</a> <a class="btn btn-ghost btn-sm" href="messages.html">Chat</a></td></tr>';
+    const head = '<thead><tr><th>Order</th><th class="num">Amount</th><th>Escrow</th><th>Status</th><th>Next action</th><th></th></tr></thead>';
+    $("#woTable").innerHTML = head + "<tbody>" + orders.map(row).join("") + "</tbody>";
+    $("#woTableActive").innerHTML = head + "<tbody>" + orders.filter((o) => o.state === "active").map(row).join("") + "</tbody>";
+    $("#woTableDelivered").innerHTML = head + "<tbody>" + orders.filter((o) => o.state === "delivered").map(row).join("") + "</tbody>";
+    $("#woTableCompleted").innerHTML = head + "<tbody>" + orders.filter((o) => o.state === "completed").map(row).join("") + "</tbody>";
+    $("#woTableDisputed").innerHTML = head + "<tbody>" + orders.filter((o) => o.state === "disputed").map(row).join("") + "</tbody>";
+  });
+</script>
+</body>
+</html>
