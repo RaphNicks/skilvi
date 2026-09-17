@@ -46,15 +46,16 @@
 
   /* Type */
   --font-body: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-  --font-display: 'Sora', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-display: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
 }
 
 /* ---------- Reset & base ---------- */
 *, *::before, *::after { box-sizing: border-box; }
-html { -webkit-text-size-adjust: 100%; }
+html { -webkit-text-size-adjust: 100%; overflow-x: clip; }
 body {
   margin: 0;
   font-family: var(--font-body);
+  font-optical-sizing: auto;
   font-size: 14px;
   line-height: 1.55;
   color: var(--ink);
@@ -804,4 +805,38 @@ details.acc .acc-body { padding: 0 16px 14px; font-size: 13.5px; color: var(--in
   .side-check:checked ~ .side { transform: translateX(0); }
   .side-check:checked ~ .side-backdrop { display: block; position: fixed; inset: 0; z-index: 65; background: rgba(11,14,26,.45); }
   .side-toggle { display: inline-flex; }
+  /* small-screen audit: spacing, overflow, form zoom */
+  .lp-wrap { padding: 0 16px; }
+  .lp-sec { padding: 56px 0; }
+  .lp-h2 { font-size: 30px; }
+  .lp-sec-head { flex-wrap: wrap; }
+  .lp-hero-in { padding: 44px 0 52px; }
+  .lp-hero-vis { min-height: 460px; }
+  .lp-circle { width: 360px; height: 360px; right: 0; top: 10px; }
+  .lp-hero-photo { width: 290px; }
+  .lp-float-1 { left: -4px; top: 70px; }
+  .lp-float-2 { right: 0; bottom: 24px; }
+  .lp-bd-1 { right: 210px; top: 18px; }
+  .lp-split .lp-circle { width: 360px; height: 360px; }
+  .lp-split-photo { width: 280px; }
+  .lp-foot-bottom { flex-direction: column; align-items: flex-start; }
+  .lp-meta { flex-wrap: wrap; }
+  .subbar { height: 56px; padding: 0 14px; }
+  .kpi-grid { grid-template-columns: repeat(2, 1fr) !important; }
+  .ph-title { font-size: 20px; }
+  /* 16px inputs stop iOS focus-zoom */
+  .input, .select, .textarea, .lp-search-box input, .otp-box, .lp-news-form input { font-size: 16px; }
+}
+
+@media (max-width: 480px) {
+  .hero-search { flex-direction: column; }
+  .hero-search .btn { width: 100%; }
+  .table-wrap { font-size: 12.5px; }
+  .lp-btn { padding: 12px 22px; }
+  .lp-float { padding: 9px 11px; gap: 8px; }
+  .lp-float .f-ico { width: 34px; height: 34px; }
+  .lp-float .f-t b { font-size: 12.5px; }
+  .lp-chip { font-size: 11.5px; }
+  .lp-stat .n { font-size: 32px; }
+  .lp-checks li { font-size: 14px; }
 }
