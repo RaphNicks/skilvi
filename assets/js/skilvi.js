@@ -72,9 +72,10 @@
     '<a class="brand" href="' + href + '"><span class="brand-mark">' + I.mark + '</span>Skilvi</a>';
 
   const PUBLIC_NAV = [
-    { label: "Explore", href: "search.html", key: "explore" },
-    { label: "Jobs", href: "jobs.html", key: "jobs" },
-    { label: "How it works", href: "help.html", key: "help" }
+    { label: "Find Work", href: "jobs.html", key: "jobs" },
+    { label: "Find Talent", href: "search.html", key: "search" },
+    { label: "Learn", href: "index.html#learn", key: "learn" },
+    { label: "Categories", href: "category.html", key: "category" }
   ];
 
   const WORKER_NAV = [
@@ -147,16 +148,17 @@
     el.className = "topbar";
     el.innerHTML =
       '<input type="checkbox" id="navCheck" class="nav-check" aria-hidden="true">' +
-      '<div class="container topbar-in">' + brand("index.html") +
+      '<div class="container topbar-in">' +
+      '<a class="brand" href="index.html"><img class="brand-logo" src="assets/img/skilvi-logo.png" alt="Skilvi"></a>' +
       '<nav class="mainnav">' + nav + "</nav>" +
       '<div class="topact">' +
-      '<a class="btn btn-ghost" href="login.html">Log in</a>' +
-      '<a class="btn btn-primary" href="login.html#regForm">Join free</a>' +
+      '<a class="btn btn-ghost" href="login.html">Sign In</a>' +
+      '<a class="btn btn-primary" href="login.html#regForm">Sign Up</a>' +
       "</div>" +
       '<label class="icon-btn nav-toggle" for="navCheck" aria-label="Menu">' + I.menu + "</label>" +
       "</div>" +
       '<div class="mobile-nav" id="mobileNav">' + mnav +
-      '<a href="login.html">Log in</a><a href="login.html#regForm">Join free</a></div>';
+      '<a href="login.html">Sign In</a><a href="login.html#regForm">Sign Up</a></div>';
   }
 
   function renderFooter() {

@@ -115,18 +115,19 @@ function cdOrderRow(o) {
 /* ---------- chrome builders ---------- */
 function publicHeader(active) {
   const nav = [
-    ["Explore", "search.html", "explore"],
-    ["Jobs", "jobs.html", "jobs"],
-    ["How it works", "help.html", "help"]
+    ["Find Work", "jobs.html", "jobs"],
+    ["Find Talent", "search.html", "search"],
+    ["Learn", "index.html#learn", "learn"],
+    ["Categories", "category.html", "category"]
   ];
   const links = nav.map((n) => '<a href="' + n[1] + '"' + (n[2] === active ? ' class="active"' : "") + ">" + n[0] + "</a>").join("\n      ");
   const mobile = nav.map((n) => '<a href="' + n[1] + '"' + (n[2] === active ? ' class="active"' : "") + ">" + n[0] + "</a>").join("\n    ");
   return '<header class="topbar">\n  <input type="checkbox" id="navCheck" class="nav-check" aria-hidden="true">\n' +
-    '  <div class="container topbar-in">\n    <a class="brand" href="index.html"><span class="brand-mark">' + I.mark + "</span>Skilvi</a>\n" +
+    '  <div class="container topbar-in">\n    <a class="brand" href="index.html"><img class="brand-logo" src="assets/img/skilvi-logo.png" alt="Skilvi"></a>\n' +
     '    <nav class="mainnav">\n      ' + links + "\n    </nav>\n" +
-    '    <div class="topact">\n      <a class="btn btn-ghost" href="login.html">Log in</a>\n      <a class="btn btn-primary" href="login.html#regForm">Join free</a>\n    </div>\n' +
+    '    <div class="topact">\n      <a class="btn btn-ghost" href="login.html">Sign In</a>\n      <a class="btn btn-primary" href="login.html#regForm">Sign Up</a>\n    </div>\n' +
     '    <label class="icon-btn nav-toggle" for="navCheck" aria-label="Menu">' + I.menu + "</label>\n  </div>\n" +
-    '  <div class="mobile-nav" id="mobileNav">\n    ' + mobile + '\n    <a href="login.html">Log in</a>\n    <a href="login.html#regForm">Join free</a>\n  </div>\n</header>';
+    '  <div class="mobile-nav" id="mobileNav">\n    ' + mobile + '\n    <a href="login.html">Sign In</a>\n    <a href="login.html#regForm">Sign Up</a>\n  </div>\n</header>';
 }
 function footer() {
   return '<footer class="footer">\n  <div class="footer-in">\n    <div class="footer-grid">\n' +
