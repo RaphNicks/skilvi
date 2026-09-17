@@ -196,9 +196,9 @@ function adminSide(a) {
 function subbar(kind) {
   const user = kind === "worker" ? ['a1', 'CO', 'Chinedu'] : kind === "client" ? ['a2', 'AB', 'Aisha'] : ['a1', 'AO', 'Admin'];
   const home = kind === "admin" ? "../index.html" : "index.html";
-  return '<header class="subbar">\n  ' + (kind === "admin" ? '<span class="sb-crumb">Admin console</span>\n  ' : "") +
+  return '<header class="subbar">\n    <label class="icon-btn side-toggle" for="sideCheck" aria-label="Menu">' + I.menu + '</label>\n  ' + (kind === "admin" ? '<span class="sb-crumb">Admin console</span>\n  ' : "") +
     '<div class="sb-actions">\n    <a class="link-muted" href="' + home + '">View marketplace</a>\n' +
-    '    <button class="icon-btn" data-toast="3 new notifications" aria-label="Notifications">' + I.bell + '<span class="dot"></span></button>\n' +
+    '    <a class="icon-btn" href="notifications.html" aria-label="Notifications">' + I.bell + '<span class="dot"></span></a>\n' +
     '    <a class="sb-user" href="' + (kind === "admin" ? "users.html" : "account-settings.html") + '"><span class="avatar sm ' + user[0] + '">' + user[1] + '</span><span class="su-name">' + user[2] + "</span></a>\n" +
     "  </div>\n</header>";
 }

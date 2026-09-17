@@ -6,11 +6,13 @@
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 24 24%27%3E%3Cpath fill=%27%232B4ADB%27 d=%27M12 2 4 5v6.5c0 5 3.4 8.6 8 10.5 4.6-1.9 8-5.5 8-10.5V5l-8-3Z%27/%3E%3Cpath fill=%27%23fff%27 d=%27m8.6 11.8 2.3 2.3 4.6-4.6-1.4-1.4-3.2 3.2-.9-.9-1.4 1.4Z%27/%3E%3C/svg%3E">
   <title>Admin — Audit log</title>
   <meta name="description" content="Skilvi admin console: orders, escrow, payments, withdrawals, disputes, verification, and platform health.">
-  <link rel="stylesheet" href="../assets/css/skilvi.css?v=6">
+  <link rel="stylesheet" href="../assets/css/skilvi.css?v=7">
 </head>
 <body data-shell="admin" data-active="audit" data-page="admin">
 
 <div class="shell admin">
+  <input type="checkbox" id="sideCheck" class="side-check" aria-hidden="true">
+  <div class="side-backdrop"></div>
   <aside class="side">
   <div class="side-brand"><a class="brand" href="../index.html"><span class="brand-mark"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 5 6v6c0 4.4 3 7.4 7 9 4-1.6 7-4.6 7-9V6l-7-3Z"/><path d="m9 12 2 2 4-4"/></svg></span>Skilvi</a><span class="admin-tag">Admin</span></div>
   <div class="side-label">Operations</div>
@@ -33,6 +35,7 @@
 </aside>
   <div class="shell-main">
     <header class="subbar">
+    <label class="icon-btn side-toggle" for="sideCheck" aria-label="Menu"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg></label>
   <span class="sb-crumb">Admin console</span>
   <div class="sb-actions">
     <a class="link-muted" href="../index.html">View marketplace</a>
@@ -73,8 +76,8 @@
   </div>
 </div>
 
-<script src="../assets/js/mock.js?v=6"></script>
-<script src="../assets/js/skilvi.js?v=6"></script>
+<script src="../assets/js/mock.js?v=7"></script>
+<script src="../assets/js/skilvi.js?v=7"></script>
 <script>
   document.addEventListener("DOMContentLoaded", () => {
     $("#aBody").innerHTML = MOCK.admin.audit.map((a) =>

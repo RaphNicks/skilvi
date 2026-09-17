@@ -371,6 +371,7 @@ table.table { width: 100%; border-collapse: collapse; font-size: 13.5px; min-wid
 .subbar .sb-actions { margin-left: auto; display: flex; align-items: center; gap: 10px; }
 .sb-user { display: flex; align-items: center; gap: 9px; padding: 4px 6px 4px 4px; border-radius: var(--r-full); }
 .sb-user:hover { background: var(--bg); }
+.side-toggle { display: none; }
 .sb-user .su-name { font-size: 13px; font-weight: 600; }
 .content { padding: 28px; flex: 1; }
 
@@ -787,4 +788,16 @@ details.acc .acc-body { padding: 0 16px 14px; font-size: 13.5px; color: var(--in
   .help-topic-grid { grid-template-columns: 1fr; }
   .content { padding: 18px; }
   .bubble { max-width: 82%; }
+  /* shell sidebar -> off-canvas drawer */
+  .shell { grid-template-columns: 1fr; }
+  .side {
+    position: fixed; top: 0; left: 0; bottom: 0; width: 272px; z-index: 70;
+    transform: translateX(-105%); transition: transform .18s ease;
+    box-shadow: 0 12px 40px rgba(11,14,26,.18);
+  }
+  .side-check { position: absolute; opacity: 0; pointer-events: none; width: 0; height: 0; }
+  .side-backdrop { display: none; }
+  .side-check:checked ~ .side { transform: translateX(0); }
+  .side-check:checked ~ .side-backdrop { display: block; position: fixed; inset: 0; z-index: 65; background: rgba(11,14,26,.45); }
+  .side-toggle { display: inline-flex; }
 }

@@ -290,7 +290,7 @@
     background: none; border: 1px solid var(--line); border-radius: 8px; cursor: pointer; color: #0B0E1A;
   }
   .lp-burger svg { width: 19px; height: 19px; }
-  .lp-menu { display: block; }
+  .lp-menu { display: none; }
   .lp-menu-check:checked ~ .lp-menu { display: block; border-top: 1px solid var(--line); }
   .lp-menu-in { display: grid; gap: 2px; padding: 14px 24px 20px; }
   .lp-menu-in a { font-size: 15px; font-weight: 500; color: #0B0E1A; padding: 10px 6px; border-radius: 8px; }

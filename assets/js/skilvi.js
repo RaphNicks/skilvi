@@ -207,6 +207,7 @@
     const sub = $("#subbar");
     if (sub) {
       sub.innerHTML =
+        '<label class="icon-btn side-toggle" for="sideCheck" aria-label="Menu">' + I.menu + "</label>" +
         (role === "admin" ? '<span class="sb-crumb">Admin console</span>' : "") +
         '<div class="sb-actions">' +
         '<a class="link-muted" href="' + (role === "admin" ? "../index.html" : "index.html") + '">View marketplace</a>' +
@@ -668,6 +669,13 @@
     const navCheck = $("#navCheck");
     if (navCheck) $$("#mobileNav a").forEach((a) =>
       a.addEventListener("click", () => { navCheck.checked = false; }));
+
+    /* shell sidebar (mobile drawer): close on backdrop or item tap */
+    const sideCheck = $("#sideCheck");
+    if (sideCheck) {
+      $$(".side-backdrop").forEach((b) => b.addEventListener("click", () => { sideCheck.checked = false; }));
+      $$("#side a").forEach((a) => a.addEventListener("click", () => { sideCheck.checked = false; }));
+    }
 
     initTabs(document);
     initModals();
