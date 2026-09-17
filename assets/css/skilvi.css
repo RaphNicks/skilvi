@@ -111,9 +111,9 @@ ul { margin: 0; padding: 0; list-style: none; }
 .btn svg { width: 16px; height: 16px; flex: none; }
 .btn-primary {
   background: var(--royal-600); color: #fff; border-radius: 999px;
-  box-shadow: 6px 6px 0 var(--hard); transition: transform .12s ease, box-shadow .12s ease, background .12s ease;
+  transition: transform .12s ease, box-shadow .12s ease, background .12s ease;
 }
-.btn-primary:hover { background: var(--royal-700); color: #fff; transform: translate(2px, 2px); box-shadow: 4px 4px 0 var(--hard); }
+.btn-primary:hover { background: var(--royal-700); color: #fff; transform: translate(2px, 2px); box-shadow: 5px 5px 0 var(--hard); }
 .btn-primary:disabled { opacity: .6; transform: none; }
 .btn-secondary { background: #fff; border-color: var(--line-2); color: var(--ink); }
 .btn-secondary:hover { border-color: var(--ink-3); color: var(--ink); }
