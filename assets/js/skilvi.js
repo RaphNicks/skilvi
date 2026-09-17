@@ -149,7 +149,7 @@
     el.innerHTML =
       '<input type="checkbox" id="navCheck" class="nav-check" aria-hidden="true">' +
       '<div class="container topbar-in">' +
-      '<a class="brand" href="index.html"><img class="brand-logo" src="assets/img/skilvi-logo.png" alt="Skilvi"></a>' +
+      '<a class="brand" href="index.html"><img class="brand-logo" src="assets/img/skilvi-logo-word.png" alt="Skilvi"></a>' +
       '<nav class="mainnav">' + nav + "</nav>" +
       '<div class="topact">' +
       '<a class="btn btn-ghost" href="login.html">Sign In</a>' +
@@ -497,8 +497,8 @@
       });
       $("#regForm")?.addEventListener("submit", (e) => {
         e.preventDefault();
-        const pill = $$("#regForm .radio-pill.active")[0];
-        regRole = pill && pill.textContent.toLowerCase().includes("worker") ? "worker" : "client";
+        const sel = $$("#regForm input.pill-check:checked")[0];
+        regRole = sel && sel.id === "joinAs_1_0" ? "worker" : "client";
         showOtp("Account created — we sent a 6-digit code to your phone.");
       });
       const boxes = $$(".otp-box");

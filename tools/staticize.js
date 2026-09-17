@@ -123,7 +123,7 @@ function publicHeader(active) {
   const links = nav.map((n) => '<a href="' + n[1] + '"' + (n[2] === active ? ' class="active"' : "") + ">" + n[0] + "</a>").join("\n      ");
   const mobile = nav.map((n) => '<a href="' + n[1] + '"' + (n[2] === active ? ' class="active"' : "") + ">" + n[0] + "</a>").join("\n    ");
   return '<header class="topbar">\n  <input type="checkbox" id="navCheck" class="nav-check" aria-hidden="true">\n' +
-    '  <div class="container topbar-in">\n    <a class="brand" href="index.html"><img class="brand-logo" src="assets/img/skilvi-logo.png" alt="Skilvi"></a>\n' +
+    '  <div class="container topbar-in">\n    <a class="brand" href="index.html"><img class="brand-logo" src="assets/img/skilvi-logo-word.png" alt="Skilvi"></a>\n' +
     '    <nav class="mainnav">\n      ' + links + "\n    </nav>\n" +
     '    <div class="topact">\n      <a class="btn btn-ghost" href="login.html">Sign In</a>\n      <a class="btn btn-primary" href="login.html#regForm">Sign Up</a>\n    </div>\n' +
     '    <label class="icon-btn nav-toggle" for="navCheck" aria-label="Menu">' + I.menu + "</label>\n  </div>\n" +

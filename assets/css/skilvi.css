@@ -264,6 +264,10 @@ button.chip.active:hover { color: #fff; }
 .radio-pill.active { border-color: var(--royal-600); background: var(--royal-50); color: var(--royal-800); }
 .radio-pill .rd { width: 14px; height: 14px; border-radius: 50%; border: 1.5px solid var(--line-2); flex: none; }
 .radio-pill.active .rd { border: 4.5px solid var(--royal-600); background: #fff; }
+/* CSS-only radio pills (work without JS) */
+.pill-check { position: absolute; opacity: 0; pointer-events: none; width: 0; height: 0; }
+.pill-check:checked + .radio-pill { border-color: var(--royal-600); background: var(--royal-50); color: var(--royal-800); }
+.pill-check:checked + .radio-pill .rd { border: 4.5px solid var(--royal-600); background: #fff; }
 
 .file-drop {
   border: 1.5px dashed var(--line-2); border-radius: var(--r-lg); background: #fff;
@@ -320,7 +324,7 @@ table.table { width: 100%; border-collapse: collapse; font-size: 13.5px; min-wid
 .topbar-in { display: flex; align-items: center; gap: 34px; height: 72px; }
 .brand { display: inline-flex; align-items: center; gap: 9px; color: var(--navy-900); font-family: var(--font-display); font-size: 19px; font-weight: 700; letter-spacing: -0.02em; }
 .brand:hover { color: var(--navy-900); }
-.brand-logo { height: 34px; width: auto; display: block; }
+.brand-logo { height: 40px; width: auto; display: block; }
 .brand-mark { width: 30px; height: 30px; border-radius: var(--r-md); background: var(--royal-600); display: inline-flex; align-items: center; justify-content: center; color: #fff; flex: none; }
 .brand-mark svg { width: 17px; height: 17px; }
 .mainnav { display: flex; gap: 26px; }
