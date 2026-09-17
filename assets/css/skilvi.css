@@ -5,16 +5,16 @@
    ============================================================ */
 
 :root {
-  /* Royal blue scale */
-  --royal-50:  #EEF3FF;
-  --royal-100: #DCE6FF;
-  --royal-200: #B9CDFF;
-  --royal-300: #8FADFF;
-  --royal-400: #6489FA;
-  --royal-500: #3D63F0;
-  --royal-600: #2B4ADB;
-  --royal-700: #233DB2;
-  --royal-800: #1E3390;
+  /* Royal blue scale — matched to the Skilvi logo */
+  --royal-50:  #F2F6FE;
+  --royal-100: #DFE8FD;
+  --royal-200: #C3D4FB;
+  --royal-300: #97B4F7;
+  --royal-400: #6690F1;
+  --royal-500: #3A6BE8;
+  --royal-600: #1F44BE;
+  --royal-700: #18369E;
+  --royal-800: #142C7F;
   --navy-900:  #0B1B4D;
 
   /* Neutrals */

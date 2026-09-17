@@ -4,181 +4,499 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 24 24%27%3E%3Cpath fill=%27%232B4ADB%27 d=%27M12 2 4 5v6.5c0 5 3.4 8.6 8 10.5 4.6-1.9 8-5.5 8-10.5V5l-8-3Z%27/%3E%3Cpath fill=%27%23fff%27 d=%27m8.6 11.8 2.3 2.3 4.6-4.6-1.4-1.4-3.2 3.2-.9-.9-1.4 1.4Z%27/%3E%3C/svg%3E">
-  <title>Skilvi — Hire trusted Nigerian skills, paid securely</title>
-  <meta name="description" content="Discover skilled workers in Nigeria — digital and hands-on trades. Pay securely into escrow. Discover. Learn. Earn.">
-  <link rel="stylesheet" href="assets/css/skilvi.css?v=4">
+  <title>Skilvi — Skills that take you further</title>
+  <meta name="description" content="Skilvi is Nigeria's skills and work marketplace — discover digital skills and hands-on trades, learn what you need, and earn from what you know. Every order is escrow-protected.">
+  <link rel="stylesheet" href="assets/css/skilvi.css?v=5">
+  <link rel="stylesheet" href="assets/css/landing.css?v=5">
 </head>
-<body data-chrome="public" data-active="home">
+<body class="lp">
 
-<header class="topbar">
-  <input type="checkbox" id="navCheck" class="nav-check" aria-hidden="true">
-  <div class="container topbar-in">
-    <a class="brand" href="index.html"><span class="brand-mark"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 5 6v6c0 4.4 3 7.4 7 9 4-1.6 7-4.6 7-9V6l-7-3Z"/><path d="m9 12 2 2 4-4"/></svg></span>Skilvi</a>
-    <nav class="mainnav">
-      <a href="search.html">Explore</a>
-      <a href="jobs.html">Jobs</a>
-      <a href="help.html">How it works</a>
+<!-- ================= NAV ================= -->
+<header class="lp-nav">
+  <div class="lp-wrap lp-nav-in">
+    <a class="lp-logo" href="index.html" aria-label="Skilvi home"><img src="assets/img/skilvi-logo.png" alt="Skilvi — Discover. Learn. Earn."></a>
+    <nav class="lp-nav-mid" aria-label="Primary">
+      <a href="jobs.html">Find Work</a>
+      <a href="search.html">Find Talent</a>
+      <a href="#learn">Learn</a>
+      <a href="category.html">Categories</a>
     </nav>
-    <div class="topact">
-      <a class="btn btn-ghost" href="login.html">Log in</a>
-      <a class="btn btn-primary" href="login.html#regForm">Join free</a>
+    <div class="lp-nav-right">
+      <a class="lp-signin" href="login.html">Sign In</a>
+      <a class="lp-btn lp-btn-solid lp-btn-sm" href="login.html#regForm">Sign Up</a>
     </div>
-    <label class="icon-btn nav-toggle" for="navCheck" aria-label="Menu"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg></label>
+    <label class="lp-burger" for="lpMenu" aria-label="Menu">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+    </label>
   </div>
-  <div class="mobile-nav" id="mobileNav">
-    <a href="search.html">Explore</a>
-    <a href="jobs.html">Jobs</a>
-    <a href="help.html">How it works</a>
-    <a href="login.html">Log in</a>
-    <a href="login.html#regForm">Join free</a>
+  <input type="checkbox" id="lpMenu" class="lp-menu-check">
+  <div class="lp-menu">
+    <div class="lp-menu-in">
+      <a href="jobs.html">Find Work</a>
+      <a href="search.html">Find Talent</a>
+      <a href="#learn">Learn</a>
+      <a href="category.html">Categories</a>
+      <a href="login.html">Sign In</a>
+      <a class="lp-btn lp-btn-solid lp-btn-sm" href="login.html#regForm">Sign Up — it's free</a>
+    </div>
   </div>
 </header>
 
-<!-- ============ HERO ============ -->
-<section class="hero">
-  <div class="hero-in">
-    <span class="hero-eyebrow" id="heroEyebrow"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 5 6v6c0 4.4 3 7.4 7 9 4-1.6 7-4.6 7-9V6l-7-3Z"/><path d="m9 12 2 2 4-4"/></svg> Nigeria-first · Escrow-protected</span>
-    <h1>Hire trusted Nigerian skills, with your money protected.</h1>
-    <p class="hero-sub">From web developers to tilers and electricians — find skilled workers, pay Skilvi, and your money is released only when the work is done properly.</p>
-    <form class="hero-search" action="search.html">
-      <input class="input" name="q" placeholder="Try “web developer”, “tiler”, “logo design”…" aria-label="Search skills">
-      <button class="btn btn-primary" type="submit"><span id="searchIco"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg></span> Search</button>
-    </form>
-    <div class="hero-quick">
-      <span>Popular:</span>
-      <a href="search.html?q=web developer">Web development</a>
-      <a href="search.html?q=tiling">Tiling</a>
-      <a href="search.html?q=electrical">Electrical</a>
-      <a href="search.html?q=logo">Logo design</a>
-    </div>
-    <div class="trust-strip" id="trustStrip"><span class="trust-item"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 5 6v6c0 4.4 3 7.4 7 9 4-1.6 7-4.6 7-9V6l-7-3Z"/><path d="m9 12 2 2 4-4"/></svg>Escrow-protected payments</span><span class="trust-item"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="m8.5 12 2.5 2.5 5-5"/></svg>Verified workers</span><span class="trust-item"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9.5 12 4l9 5.5"/><path d="M5 10v8m4.5-8v8m5-8v8M19 10v8M3 20h18"/></svg>Naira · card, bank transfer, USSD</span><span class="trust-item"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a8 8 0 0 1-8 8H4l2-3a8 8 0 1 1 15-5Z"/></svg>Real support, in English</span></div>
-  </div>
-</section>
-
-<!-- ============ CATEGORIES ============ -->
-<section class="section">
-  <div class="section-head">
-    <h2>Browse by category</h2>
-    <a class="link" href="search.html">View all services →</a>
-  </div>
-  <div class="cat-grid" id="catGrid"><a class="cat-tile" href="search.html"><span class="cat-ico"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="7" height="7" rx="1.5"/><rect x="13" y="4" width="7" height="7" rx="1.5"/><rect x="4" y="13" width="7" height="7" rx="1.5"/><rect x="13" y="13" width="7" height="7" rx="1.5"/></svg></span><span><span class="cat-name">All services</span><br><span class="cat-count">1,400+ workers</span></span></a><a class="cat-tile" href="category.html"><span class="cat-ico"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m8 8-4 4 4 4m8-8 4 4-4 4m-3-10-2 12"/></svg></span><span><span class="cat-name">Digital & Tech</span><br><span class="cat-count">412 workers</span></span></a><a class="cat-tile" href="category.html"><span class="cat-ico"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h4L19.5 8.5a2.1 2.1 0 0 0-3-3L5 17v3Z"/><path d="m13.5 6.5 3 3"/></svg></span><span><span class="cat-name">Creative & Media</span><br><span class="cat-count">356 workers</span></span></a><a class="cat-tile" href="category.html"><span class="cat-ico"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a4.5 4.5 0 0 0-6 5.6L3 17.6V21h3.4l5.7-5.7a4.5 4.5 0 0 0 5.6-6L14.5 12l-2.5-2.5 2.7-3.2Z"/></svg></span><span><span class="cat-name">Trades & Home Services</span><br><span class="cat-count">289 workers</span></span></a><a class="cat-tile" href="category.html"><span class="cat-ico"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="8" width="18" height="12" rx="2"/><path d="M9 8V6a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2M3 13h18"/></svg></span><span><span class="cat-name">Business & Professional</span><br><span class="cat-count">204 workers</span></span></a><a class="cat-tile" href="category.html"><span class="cat-ico"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20.5S4 15 4 9.5A4.5 4.5 0 0 1 12 7a4.5 4.5 0 0 1 8 2.5c0 5.5-8 11-8 11Z"/></svg></span><span><span class="cat-name">Education & Personal</span><br><span class="cat-count">148 workers</span></span></a></div>
-</section>
-
-<!-- ============ HOW IT WORKS ============ -->
-<section class="section">
-  <div class="section-head">
-    <h2>How Skilvi protects you</h2>
-  </div>
-  <div class="steps" id="howSteps"><div class="step"><span class="step-num">1</span><h3>Find & compare</h3><p>Search by skill or category. Compare ratings, verified badges, prices and past reviews before you hire.</p></div><div class="step"><span class="step-num">2</span><h3>Pay Skilvi, not the worker</h3><p>Your payment is held safely in escrow by Skilvi. The worker starts only after you've paid — you're protected from day one.</p></div><div class="step"><span class="step-num">3</span><h3>Release when it's done</h3><p>Approve the delivered work to release the payment. Not satisfied? Request revisions or open a dispute — we mediate.</p></div></div>
-</section>
-
-<!-- ============ TOP WORKERS ============ -->
-<section class="section">
-  <div class="section-head">
-    <h2>Top-rated workers</h2>
-    <a class="link" href="search.html">See everyone →</a>
-  </div>
-  <div class="stack" id="topWorkers"><div class="worker-row"><span class="avatar a1">CO</span><div class="wr-main"><div class="wr-name"><a href="worker-profile.html">Chinedu Okafor</a> <span class="badge-verified"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 5 6v6c0 4.4 3 7.4 7 9 4-1.6 7-4.6 7-9V6l-7-3Z"/><path d="m9 12 2 2 4-4"/></svg>Verified</span></div><div class="wr-head">Frontend developer & WordPress specialist</div><div class="wr-meta"><span><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-5.3-7-11a7 7 0 0 1 14 0c0 5.7-7 11-7 11Z"/><circle cx="12" cy="10" r="2.5"/></svg>Port Harcourt, Rivers</span><span><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>Replies 1 hr</span><span><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="m8.5 12 2.5 2.5 5-5"/></svg>187 orders completed</span></div></div><div class="wr-side"><div class="wr-price">from ₦45,000 <small>remote</small></div><span class="rating-line"><span class="stars"><span class="on"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 2.6l2.9 5.9 6.5.95-4.7 4.6 1.1 6.5L12 17.5l-5.8 3.05 1.1-6.5-4.7-4.6 6.5-.95L12 2.6z"/></svg></span><span class="on"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 2.6l2.9 5.9 6.5.95-4.7 4.6 1.1 6.5L12 17.5l-5.8 3.05 1.1-6.5-4.7-4.6 6.5-.95L12 2.6z"/></svg></span><span class="on"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 2.6l2.9 5.9 6.5.95-4.7 4.6 1.1 6.5L12 17.5l-5.8 3.05 1.1-6.5-4.7-4.6 6.5-.95L12 2.6z"/></svg></span><span class="on"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 2.6l2.9 5.9 6.5.95-4.7 4.6 1.1 6.5L12 17.5l-5.8 3.05 1.1-6.5-4.7-4.6 6.5-.95L12 2.6z"/></svg></span><span class="on"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 2.6l2.9 5.9 6.5.95-4.7 4.6 1.1 6.5L12 17.5l-5.8 3.05 1.1-6.5-4.7-4.6 6.5-.95L12 2.6z"/></svg></span></span> <b>4.9</b> (132)</span></div></div>
-    <div class="worker-row"><span class="avatar a3">EO</span><div class="wr-main"><div class="wr-name"><a href="worker-profile.html">Emeka Obi</a> <span class="badge-verified"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 5 6v6c0 4.4 3 7.4 7 9 4-1.6 7-4.6 7-9V6l-7-3Z"/><path d="m9 12 2 2 4-4"/></svg>Verified</span></div><div class="wr-head">Plumber — 12 years experience</div><div class="wr-meta"><span><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-5.3-7-11a7 7 0 0 1 14 0c0 5.7-7 11-7 11Z"/><circle cx="12" cy="10" r="2.5"/></svg>Lagos, Lagos</span><span><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>Replies 3 hrs</span><span><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="m8.5 12 2.5 2.5 5-5"/></svg>342 orders completed</span></div></div><div class="wr-side"><div class="wr-price">from ₦8,000 <small>on-site</small></div><span class="rating-line"><span class="stars"><span class="on"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 2.6l2.9 5.9 6.5.95-4.7 4.6 1.1 6.5L12 17.5l-5.8 3.05 1.1-6.5-4.7-4.6 6.5-.95L12 2.6z"/></svg></span><span class="on"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 2.6l2.9 5.9 6.5.95-4.7 4.6 1.1 6.5L12 17.5l-5.8 3.05 1.1-6.5-4.7-4.6 6.5-.95L12 2.6z"/></svg></span><span class="on"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 2.6l2.9 5.9 6.5.95-4.7 4.6 1.1 6.5L12 17.5l-5.8 3.05 1.1-6.5-4.7-4.6 6.5-.95L12 2.6z"/></svg></span><span class="on"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 2.6l2.9 5.9 6.5.95-4.7 4.6 1.1 6.5L12 17.5l-5.8 3.05 1.1-6.5-4.7-4.6 6.5-.95L12 2.6z"/></svg></span><span class="on"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 2.6l2.9 5.9 6.5.95-4.7 4.6 1.1 6.5L12 17.5l-5.8 3.05 1.1-6.5-4.7-4.6 6.5-.95L12 2.6z"/></svg></span></span> <b>4.9</b> (210)</span></div></div>
-    <div class="worker-row"><span class="avatar a1">IO</span><div class="wr-main"><div class="wr-name"><a href="worker-profile.html">Ifeanyi Okoro</a> <span class="badge-verified"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 5 6v6c0 4.4 3 7.4 7 9 4-1.6 7-4.6 7-9V6l-7-3Z"/><path d="m9 12 2 2 4-4"/></svg>Verified</span></div><div class="wr-head">Tiler & mason — clean finishing</div><div class="wr-meta"><span><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-5.3-7-11a7 7 0 0 1 14 0c0 5.7-7 11-7 11Z"/><circle cx="12" cy="10" r="2.5"/></svg>Port Harcourt, Rivers</span><span><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>Replies 2 hrs</span><span><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="m8.5 12 2.5 2.5 5-5"/></svg>91 orders completed</span></div></div><div class="wr-side"><div class="wr-price">from ₦25,000 <small>on-site</small></div><span class="rating-line"><span class="stars"><span class="on"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 2.6l2.9 5.9 6.5.95-4.7 4.6 1.1 6.5L12 17.5l-5.8 3.05 1.1-6.5-4.7-4.6 6.5-.95L12 2.6z"/></svg></span><span class="on"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 2.6l2.9 5.9 6.5.95-4.7 4.6 1.1 6.5L12 17.5l-5.8 3.05 1.1-6.5-4.7-4.6 6.5-.95L12 2.6z"/></svg></span><span class="on"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 2.6l2.9 5.9 6.5.95-4.7 4.6 1.1 6.5L12 17.5l-5.8 3.05 1.1-6.5-4.7-4.6 6.5-.95L12 2.6z"/></svg></span><span class="on"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 2.6l2.9 5.9 6.5.95-4.7 4.6 1.1 6.5L12 17.5l-5.8 3.05 1.1-6.5-4.7-4.6 6.5-.95L12 2.6z"/></svg></span><span class="on"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 2.6l2.9 5.9 6.5.95-4.7 4.6 1.1 6.5L12 17.5l-5.8 3.05 1.1-6.5-4.7-4.6 6.5-.95L12 2.6z"/></svg></span></span> <b>4.9</b> (64)</span></div></div>
-    <div class="worker-row"><span class="avatar a2">AB</span><div class="wr-main"><div class="wr-name"><a href="worker-profile.html">Aisha Bello</a> <span class="badge-verified"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 5 6v6c0 4.4 3 7.4 7 9 4-1.6 7-4.6 7-9V6l-7-3Z"/><path d="m9 12 2 2 4-4"/></svg>Verified</span></div><div class="wr-head">UI/UX designer for web & mobile</div><div class="wr-meta"><span><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-5.3-7-11a7 7 0 0 1 14 0c0 5.7-7 11-7 11Z"/><circle cx="12" cy="10" r="2.5"/></svg>Abuja, FCT</span><span><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>Replies 2 hrs</span><span><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="m8.5 12 2.5 2.5 5-5"/></svg>120 orders completed</span></div></div><div class="wr-side"><div class="wr-price">from ₦30,000 <small>remote</small></div><span class="rating-line"><span class="stars"><span class="on"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 2.6l2.9 5.9 6.5.95-4.7 4.6 1.1 6.5L12 17.5l-5.8 3.05 1.1-6.5-4.7-4.6 6.5-.95L12 2.6z"/></svg></span><span class="on"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 2.6l2.9 5.9 6.5.95-4.7 4.6 1.1 6.5L12 17.5l-5.8 3.05 1.1-6.5-4.7-4.6 6.5-.95L12 2.6z"/></svg></span><span class="on"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 2.6l2.9 5.9 6.5.95-4.7 4.6 1.1 6.5L12 17.5l-5.8 3.05 1.1-6.5-4.7-4.6 6.5-.95L12 2.6z"/></svg></span><span class="on"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 2.6l2.9 5.9 6.5.95-4.7 4.6 1.1 6.5L12 17.5l-5.8 3.05 1.1-6.5-4.7-4.6 6.5-.95L12 2.6z"/></svg></span><span class="on"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 2.6l2.9 5.9 6.5.95-4.7 4.6 1.1 6.5L12 17.5l-5.8 3.05 1.1-6.5-4.7-4.6 6.5-.95L12 2.6z"/></svg></span></span> <b>4.8</b> (98)</span></div></div></div>
-</section>
-
-<!-- ============ NEW JOBS ============ -->
-<section class="section">
-  <div class="section-head">
-    <h2>New jobs for workers</h2>
-    <a class="link" href="jobs.html">Browse all jobs →</a>
-  </div>
-  <div class="grid grid-3" id="newJobs"><div class="job-card"><div class="jc-top"><h3><a href="job-detail.html">Bathroom tiling — 2 rooms, Lekki Phase 1</a></h3><span class="jc-budget">₦300,000</span></div><div class="jc-meta"><span><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="12" height="10" rx="1"/><path d="M14 10h4l3 3v3h-3"/><circle cx="7" cy="18.5" r="1.8"/><circle cx="17" cy="18.5" r="1.8"/></svg>on-site</span><span><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-5.3-7-11a7 7 0 0 1 14 0c0 5.7-7 11-7 11Z"/><circle cx="12" cy="10" r="2.5"/></svg>Lekki, Lagos</span><span><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>2 days ago</span></div><div class="jc-foot"><span class="jc-proposals">5 proposals</span><a class="btn btn-secondary btn-sm" href="job-detail.html">View job</a></div></div>
-    <div class="job-card"><div class="jc-top"><h3><a href="job-detail.html">Landing page for a restaurant (Figma to web)</a></h3><span class="jc-budget">₦85,000</span></div><div class="jc-meta"><span><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m8 8-4 4 4 4m8-8 4 4-4 4m-3-10-2 12"/></svg>remote</span><span><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-5.3-7-11a7 7 0 0 1 14 0c0 5.7-7 11-7 11Z"/><circle cx="12" cy="10" r="2.5"/></svg>Remote</span><span><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>5 hrs ago</span></div><div class="jc-foot"><span class="jc-proposals">3 proposals</span><a class="btn btn-secondary btn-sm" href="job-detail.html">View job</a></div></div>
-    <div class="job-card"><div class="jc-top"><h3><a href="job-detail.html">Bookkeeping & monthly reports for a fashion brand</a></h3><span class="jc-budget">₦60,000</span></div><div class="jc-meta"><span><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m8 8-4 4 4 4m8-8 4 4-4 4m-3-10-2 12"/></svg>remote</span><span><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-5.3-7-11a7 7 0 0 1 14 0c0 5.7-7 11-7 11Z"/><circle cx="12" cy="10" r="2.5"/></svg>Remote</span><span><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>1 day ago</span></div><div class="jc-foot"><span class="jc-proposals">2 proposals</span><a class="btn btn-secondary btn-sm" href="job-detail.html">View job</a></div></div></div>
-</section>
-
-<!-- ============ WORKER CTA ============ -->
-<section class="section section-last">
-  <div class="cta-band">
+<main>
+<!-- ================= HERO ================= -->
+<section class="lp-hero">
+  <div class="lp-wrap lp-hero-in">
     <div>
-      <h2>Have a skill? Turn it into income.</h2>
-      <p>Create a free profile, list what you can do, get verified, and start receiving orders — digital or hands-on. No degree required.</p>
+      <p class="lp-eyebrow">#1 platform for skills &amp; work in Nigeria</p>
+      <h1 class="lp-h1">Skills that take<br>you further.</h1>
+      <p class="lp-sub">Discover work that fits your hands and head — digital skills and practical trades. Learn what you need, build a profile clients trust, and earn from what you know. Every order protected by escrow.</p>
+
+      <form class="lp-search" id="heroSearch">
+        <div class="lp-search-box">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+          <input type="search" name="q" placeholder="Search skills, jobs, or services…" aria-label="Search skills, jobs, or services">
+        </div>
+        <button class="lp-btn lp-btn-solid" type="submit">Explore Skilvi</button>
+      </form>
+
+      <div class="lp-popular">
+        <b>Popular:</b>
+        <a href="search.html?q=Web%20Development">Web Development</a>
+        <a href="search.html?q=Graphic%20Design">Graphic Design</a>
+        <a href="search.html?q=Plumbing">Plumbing</a>
+        <a href="search.html?q=Electrical">Electrical</a>
+        <a href="search.html?q=UI/UX">UI/UX Design</a>
+      </div>
     </div>
-    <a class="btn btn-primary btn-lg" href="login.html#regForm">Join free <span id="ctaIco"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></span></a>
+
+    <div class="lp-hero-vis" aria-hidden="true">
+      <div class="lp-circle"></div>
+      <img class="lp-hero-photo" src="assets/img/hero-worker.jpg" alt="">
+      <div class="lp-float lp-float-1">
+        <span class="f-ico">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 5 6v6c0 4.4 3 7.4 7 9 4-1.6 7-4.6 7-9V6l-7-3Z"/><path d="m9 12 2 2 4-4"/></svg>
+        </span>
+        <span class="f-t">Adaeze Boutique · <b>Verified client</b><span>Hiring Graphic Designer</span></span>
+      </div>
+      <div class="lp-float hard lp-float-2">
+        <span class="f-ico">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 4 14h6l-1 8 9-12h-6l1-8Z"/></svg>
+        </span>
+        <span class="f-t"><b>UI/UX Designer</b><span>40 open projects this week</span></span>
+      </div>
+      <span class="lp-badge-dot lp-bd-1"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m8 8-4 4 4 4m8-8 4 4-4 4m-3-10-2 12"/></svg></span>
+      <span class="lp-badge-dot lp-bd-2"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 5 6v6c0 4.4 3 7.4 7 9 4-1.6 7-4.6 7-9V6l-7-3Z"/><path d="m9 12 2 2 4-4"/></svg></span>
+      <span class="lp-badge-dot lp-bd-3"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="8.5"/><path d="M12 7v5l3 2"/></svg></span>
+    </div>
   </div>
 </section>
 
-<footer class="footer">
-  <div class="footer-in">
-    <div class="footer-grid">
-      <div>
-        <div class="f-brand"><span class="brand-mark"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 5 6v6c0 4.4 3 7.4 7 9 4-1.6 7-4.6 7-9V6l-7-3Z"/><path d="m9 12 2 2 4-4"/></svg></span>Skilvi</div>
-        <p class="f-desc">Discover. Learn. Earn. A marketplace built for Nigeria — digital skills and hands-on trades, paid securely in Naira.</p>
-      </div>
-      <div><h4>For clients</h4><a href="search.html">Browse workers</a><a href="jobs.html">Post a job</a><a href="help.html#faq-escrow">How escrow works</a><a href="help.html#faq-fees">Fees &amp; pricing</a></div>
-      <div><h4>For workers</h4><a href="login.html#regForm">Create a free profile</a><a href="verification.html">Get verified</a><a href="help.html#faq-withdrawals">Withdraw your money</a><a href="promotion.html">Promote your profile</a></div>
-      <div><h4>Company</h4><a href="about.html">About Skilvi</a><a href="help.html">Help center</a><a href="terms.html">Terms of service</a><a href="privacy.html">Privacy policy</a><a href="help.html">Contact support</a></div>
+<!-- ================= TRUSTED ================= -->
+<section class="lp-trusted">
+  <div class="lp-wrap">
+    <p>Trusted by teams and workers across Nigeria</p>
+    <div class="lp-logos">
+      <span class="lp-logo-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v10M8.5 9.5h5a2 2 0 1 1 0 4h-5"/></svg>NairaPay</span>
+      <span class="lp-logo-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 12h16M12 4v16"/></svg>ChopMarket</span>
+      <span class="lp-logo-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="m12 3 9 5-9 5-9-5 9-5Z"/><path d="m3 13 9 5 9-5"/></svg>GridWorks</span>
+      <span class="lp-logo-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="m4 11 8-7 8 7v8a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-8Z"/></svg>BuildRight</span>
+      <span class="lp-logo-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M13 2 4 14h6l-1 8 9-12h-6l1-8Z"/></svg>VoltHub</span>
+      <span class="lp-logo-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="6" width="18" height="13" rx="2"/><path d="M3 10h18"/></svg>KaiMoney</span>
+      <span class="lp-logo-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M4 20 20 4M8 20h12V8"/></svg>TilePro</span>
+      <span class="lp-logo-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M13 2 4 14h6l-1 8 9-12h-6l1-8Z"/></svg>SwiftFix</span>
+      <span class="lp-logo-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 5 6v6c0 4.4 3 7.4 7 9 4-1.6 7-4.6 7-9V6l-7-3Z"/></svg>AdaLabs</span>
+      <span class="lp-logo-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M3.5 12h17M12 3.5c2.5 2.4 3.8 5.6 3.8 8.5s-1.3 6.1-3.8 8.5c-2.5-2.4-3.8-5.6-3.8-8.5s1.3-6.1 3.8-8.5Z"/></svg>LagosGrid</span>
     </div>
-    <div class="footer-bottom"><span>© 2026 Skilvi Technologies Ltd. All rights reserved.</span><span>Built in Nigeria · Payments held securely in escrow</span></div>
+  </div>
+</section>
+
+<!-- ================= LATEST OPPORTUNITIES ================= -->
+<section class="lp-sec">
+  <div class="lp-wrap">
+    <div class="lp-center">
+      <h2 class="lp-h2">Latest opportunities</h2>
+      <p class="lp-h2-sub">Find opportunities that match your skills and start earning.</p>
+    </div>
+
+    <div class="lp-opp-grid">
+      <article class="lp-card">
+        <div class="lp-meta">
+          <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 21s-7-5.3-7-11a7 7 0 0 1 14 0c0 5.7-7 11-7 11Z"/><circle cx="12" cy="10" r="2.5"/></svg>Lagos, Nigeria</span>
+          <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>2 days ago</span>
+        </div>
+        <h3><a href="job-detail.html">Frontend Developer</a></h3>
+        <div class="lp-chips"><span class="lp-chip">Full-time</span><span class="lp-chip">Remote OK</span></div>
+        <div class="lp-client">
+          <span class="lp-ava">AB</span>
+          <span><span class="c-name">Adaeze Boutique</span><br><span class="lp-verified"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 5 6v6c0 4.4 3 7.4 7 9 4-1.6 7-4.6 7-9V6l-7-3Z"/><path d="m9 12 2 2 4-4"/></svg>Verified</span></span>
+        </div>
+        <a class="lp-btn lp-btn-outline lp-btn-sm lp-btn-block" href="job-detail.html">View job</a>
+      </article>
+
+      <article class="lp-card featured">
+        <div class="lp-meta">
+          <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 21s-7-5.3-7-11a7 7 0 0 1 14 0c0 5.7-7 11-7 11Z"/><circle cx="12" cy="10" r="2.5"/></svg>Abuja, Nigeria</span>
+          <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>3 days ago</span>
+        </div>
+        <h3><a href="job-detail.html">Graphic Designer</a></h3>
+        <div class="lp-chips"><span class="lp-chip">Project</span><span class="lp-chip">On-site</span></div>
+        <div class="lp-client">
+          <span class="lp-ava a4">KM</span>
+          <span><span class="c-name">KaiMoney</span><br><span class="lp-verified"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 5 6v6c0 4.4 3 7.4 7 9 4-1.6 7-4.6 7-9V6l-7-3Z"/><path d="m9 12 2 2 4-4"/></svg>Verified</span></span>
+        </div>
+        <a class="lp-btn lp-btn-outline lp-btn-sm lp-btn-block" href="job-detail.html">View job</a>
+      </article>
+
+      <article class="lp-card">
+        <div class="lp-meta">
+          <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 21s-7-5.3-7-11a7 7 0 0 1 14 0c0 5.7-7 11-7 11Z"/><circle cx="12" cy="10" r="2.5"/></svg>Port Harcourt</span>
+          <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>1 day ago</span>
+        </div>
+        <h3><a href="job-detail.html">Plumber — leak repair &amp; installations</a></h3>
+        <div class="lp-chips"><span class="lp-chip">Gig</span><span class="lp-chip">Same week</span></div>
+        <div class="lp-client">
+          <span class="lp-ava a2">GW</span>
+          <span><span class="c-name">GridWorks</span><br><span class="lp-verified"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 5 6v6c0 4.4 3 7.4 7 9 4-1.6 7-4.6 7-9V6l-7-3Z"/><path d="m9 12 2 2 4-4"/></svg>Verified</span></span>
+        </div>
+        <a class="lp-btn lp-btn-outline lp-btn-sm lp-btn-block" href="job-detail.html">View job</a>
+      </article>
+
+      <article class="lp-card">
+        <div class="lp-meta">
+          <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 21s-7-5.3-7-11a7 7 0 0 1 14 0c0 5.7-7 11-7 11Z"/><circle cx="12" cy="10" r="2.5"/></svg>Remote, nationwide</span>
+          <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>5 days ago</span>
+        </div>
+        <h3><a href="job-detail.html">UI/UX Designer</a></h3>
+        <div class="lp-chips"><span class="lp-chip">Contract</span><span class="lp-chip">3 months</span></div>
+        <div class="lp-client">
+          <span class="lp-ava a3">BR</span>
+          <span><span class="c-name">BuildRight</span><br><span class="lp-verified"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 5 6v6c0 4.4 3 7.4 7 9 4-1.6 7-4.6 7-9V6l-7-3Z"/><path d="m9 12 2 2 4-4"/></svg>Verified</span></span>
+        </div>
+        <a class="lp-btn lp-btn-outline lp-btn-sm lp-btn-block" href="job-detail.html">View job</a>
+      </article>
+
+      <article class="lp-card featured">
+        <div class="lp-meta">
+          <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 21s-7-5.3-7-11a7 7 0 0 1 14 0c0 5.7-7 11-7 11Z"/><circle cx="12" cy="10" r="2.5"/></svg>Ibadan, Nigeria</span>
+          <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>4 days ago</span>
+        </div>
+        <h3><a href="job-detail.html">Electrical Technician</a></h3>
+        <div class="lp-chips"><span class="lp-chip">Full-time</span><span class="lp-chip">On-site</span></div>
+        <div class="lp-client">
+          <span class="lp-ava a5">VH</span>
+          <span><span class="c-name">VoltHub</span><br><span class="lp-verified"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 5 6v6c0 4.4 3 7.4 7 9 4-1.6 7-4.6 7-9V6l-7-3Z"/><path d="m9 12 2 2 4-4"/></svg>Verified</span></span>
+        </div>
+        <a class="lp-btn lp-btn-outline lp-btn-sm lp-btn-block" href="job-detail.html">View job</a>
+      </article>
+
+      <article class="lp-card">
+        <div class="lp-meta">
+          <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 21s-7-5.3-7-11a7 7 0 0 1 14 0c0 5.7-7 11-7 11Z"/><circle cx="12" cy="10" r="2.5"/></svg>Kano, Nigeria</span>
+          <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>6 hours ago</span>
+        </div>
+        <h3><a href="job-detail.html">Video Editor</a></h3>
+        <div class="lp-chips"><span class="lp-chip">Project</span><span class="lp-chip">Remote OK</span></div>
+        <div class="lp-client">
+          <span class="lp-ava a6">CM</span>
+          <span><span class="c-name">ChopMarket</span><br><span class="lp-verified"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 5 6v6c0 4.4 3 7.4 7 9 4-1.6 7-4.6 7-9V6l-7-3Z"/><path d="m9 12 2 2 4-4"/></svg>Verified</span></span>
+        </div>
+        <a class="lp-btn lp-btn-outline lp-btn-sm lp-btn-block" href="job-detail.html">View job</a>
+      </article>
+    </div>
+
+    <div class="lp-center" style="margin-top:44px">
+      <a class="lp-btn lp-btn-solid" href="jobs.html">View All Jobs</a>
+    </div>
+  </div>
+</section>
+
+<!-- ================= STATS ================= -->
+<section style="padding: 26px 0 10px">
+  <div class="lp-wrap lp-stats">
+    <div class="lp-stat"><div class="n">12,000+</div><div class="l">Verified workers</div></div>
+    <div class="lp-stat"><div class="n">₦4.2B</div><div class="l">Paid out in escrow</div></div>
+    <div class="lp-stat"><div class="n">8,500+</div><div class="l">Jobs completed</div></div>
+  </div>
+</section>
+
+<!-- ================= POPULAR CATEGORIES ================= -->
+<section class="lp-sec lp-pop">
+  <div class="lp-wrap">
+    <div class="lp-sec-head">
+      <h2 class="lp-h2">Most popular categories</h2>
+      <a class="lp-btn lp-btn-outline lp-btn-sm" href="category.html">All categories</a>
+    </div>
+    <div class="lp-pop-grid">
+      <a class="lp-card" href="category.html?c=design" style="text-decoration:none">
+        <span class="lp-pop-ava"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h4L19.5 8.5a2.1 2.1 0 0 0-3-3L5 17v3Z"/><path d="m13.5 6.5 3 3"/></svg></span>
+        <h3>Design</h3>
+        <div class="cnt">388 opportunities</div>
+        <p class="desc">Brand, UI/UX, and print work from designers clients rate 4.8+.</p>
+        <div class="lp-chips"><span class="lp-chip">Project</span><span class="lp-chip">Full-time</span></div>
+      </a>
+      <a class="lp-card featured" href="category.html?c=development" style="text-decoration:none">
+        <span class="lp-pop-ava"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m8 8-4 4 4 4m8-8 4 4-4 4m-3-10-2 12"/></svg></span>
+        <h3>Web Development</h3>
+        <div class="cnt">542 opportunities</div>
+        <p class="desc">Landing pages to full platforms — escrow-protected from quote to payout.</p>
+        <div class="lp-chips"><span class="lp-chip">Project</span><span class="lp-chip">Full-time</span></div>
+      </a>
+      <a class="lp-card" href="category.html?c=trades" style="text-decoration:none">
+        <span class="lp-pop-ava"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a4.5 4.5 0 0 0-6 5.6L3 17.6V21h3.4l5.7-5.7a4.5 4.5 0 0 0 5.6-6L14.5 12l-2.5-2.5 2.7-3.2Z"/></svg></span>
+        <h3>Trades &amp; Repairs</h3>
+        <div class="cnt">267 opportunities</div>
+        <p class="desc">Plumbing, electrical, tiling, painting and carpentry — vetted, on time.</p>
+        <div class="lp-chips"><span class="lp-chip">Gig</span><span class="lp-chip">Same week</span></div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ================= SKILL GRID ================= -->
+<section class="lp-sec" style="padding-top:0">
+  <div class="lp-wrap">
+    <div class="lp-center">
+      <h2 class="lp-h2">Find the right skill<br>that matches with you</h2>
+      <p class="lp-h2-sub" style="max-width:460px;margin-left:auto;margin-right:auto">From code to carpentry — browse by trade and see who's available near you.</p>
+    </div>
+    <div class="lp-skill-grid">
+      <a class="lp-skill" href="search.html?q=Web%20Development"><span class="s-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m8 8-4 4 4 4m8-8 4 4-4 4m-3-10-2 12"/></svg></span><h3>Web Development</h3><span class="cnt">486 jobs</span></a>
+      <a class="lp-skill" href="search.html?q=UI/UX"><span class="s-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M3 9h18M8 21h8"/></svg></span><h3>UI/UX Design</h3><span class="cnt">214 jobs</span></a>
+      <a class="lp-skill" href="search.html?q=Graphic%20Design"><span class="s-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h4L19.5 8.5a2.1 2.1 0 0 0-3-3L5 17v3Z"/><path d="m13.5 6.5 3 3"/></svg></span><h3>Graphic Design</h3><span class="cnt">198 jobs</span></a>
+      <a class="lp-skill" href="search.html?q=Digital%20Marketing"><span class="s-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11v3a1 1 0 0 0 1 1h2l4 4V6L6 10H4a1 1 0 0 0-1 1Z"/><path d="M15 9a4 4 0 0 1 0 6M18 6.5a8 8 0 0 1 0 11"/></svg></span><h3>Digital Marketing</h3><span class="cnt">176 jobs</span></a>
+      <a class="lp-skill" href="search.html?q=Plumbing"><span class="s-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a4.5 4.5 0 0 0-6 5.6L3 17.6V21h3.4l5.7-5.7a4.5 4.5 0 0 0 5.6-6L14.5 12l-2.5-2.5 2.7-3.2Z"/></svg></span><h3>Plumbing</h3><span class="cnt">142 jobs</span></a>
+      <a class="lp-skill featured" href="search.html?q=Electrical"><span class="s-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 4 14h6l-1 8 9-12h-6l1-8Z"/></svg></span><h3>Electrical</h3><span class="cnt">158 jobs</span></a>
+      <a class="lp-skill" href="search.html?q=Carpentry"><span class="s-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m3 21 6-6M9 15l-2.5-2.5L14 5a2.1 2.1 0 0 1 3 3l-7.5 7.5Z"/><path d="m13 9 2 2"/></svg></span><h3>Carpentry</h3><span class="cnt">97 jobs</span></a>
+      <a class="lp-skill" href="search.html?q=Video%20Editing"><span class="s-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="13" height="12" rx="2"/><path d="m16 10 5-3v10l-5-3"/></svg></span><h3>Video Editing</h3><span class="cnt">121 jobs</span></a>
+    </div>
+    <div class="lp-center" style="margin-top:44px">
+      <a class="lp-btn lp-btn-solid" href="category.html">Browse All Categories</a>
+    </div>
+  </div>
+</section>
+
+<!-- ================= EARN SPLIT ================= -->
+<section class="lp-sec" style="padding-top:0">
+  <div class="lp-wrap lp-split">
+    <div class="lp-split-vis" aria-hidden="true">
+      <div class="lp-circle"></div>
+      <img class="lp-split-photo" src="assets/img/earn-worker.jpg" alt="">
+    </div>
+    <div>
+      <h2 class="lp-h2">Earn from what<br>you already know.</h2>
+      <p class="lp-sub">You don't need to be a “tech person” to earn here. Plumbers, electricians, designers and developers are all paid the same way — safely, through escrow, straight to a Nigerian bank account.</p>
+      <ul class="lp-checks">
+        <li><span class="ck"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5 9-9"/></svg></span>Create your free profile in minutes</li>
+        <li><span class="ck"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5 9-9"/></svg></span>Get paid safely through escrow</li>
+        <li><span class="ck"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5 9-9"/></svg></span>Withdraw to your bank in 1 business day</li>
+      </ul>
+      <div style="display:flex;gap:14px;flex-wrap:wrap">
+        <a class="lp-btn lp-btn-solid" href="login.html#regForm">Become a worker</a>
+        <a class="lp-btn lp-btn-outline" href="#how">How it works</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= WORKER DISCOVERY ================= -->
+<section class="lp-sec">
+  <div class="lp-wrap">
+    <div class="lp-center">
+      <h2 class="lp-h2">Find skilled people</h2>
+      <p class="lp-h2-sub">Verified profiles, real reviews, and a payment method that protects both sides.</p>
+    </div>
+    <div class="lp-worker-grid">
+      <article class="lp-card">
+        <div class="lp-w-head">
+          <span class="lp-w-ava a1">IO</span>
+          <div>
+            <div class="lp-w-name">Ifeanyi Okoro <span class="lp-verified"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 5 6v6c0 4.4 3 7.4 7 9 4-1.6 7-4.6 7-9V6l-7-3Z"/><path d="m9 12 2 2 4-4"/></svg>Verified</span></div>
+            <div class="lp-w-skill">Plumber · Lekki, Lagos</div>
+          </div>
+        </div>
+        <div class="lp-w-rate"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.6l2.9 5.9 6.5.95-4.7 4.6 1.1 6.5L12 17.5l-5.8 3.05 1.1-6.5-4.7-4.6 6.5-.95L12 2.6z"/></svg><b>4.9</b>(64 reviews)</div>
+        <p class="lp-w-bio">Twelve years fixing what breaks. Same-week availability across Lekki and Ikeja.</p>
+        <a class="lp-btn lp-btn-outline lp-btn-sm lp-btn-block" href="worker-profile.html">View profile</a>
+      </article>
+      <article class="lp-card featured">
+        <div class="lp-w-head">
+          <span class="lp-w-ava a3">AB</span>
+          <div>
+            <div class="lp-w-name">Aisha Bello <span class="lp-verified"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 5 6v6c0 4.4 3 7.4 7 9 4-1.6 7-4.6 7-9V6l-7-3Z"/><path d="m9 12 2 2 4-4"/></svg>Verified</span></div>
+            <div class="lp-w-skill">UI/UX Designer · Abuja</div>
+          </div>
+        </div>
+        <div class="lp-w-rate"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.6l2.9 5.9 6.5.95-4.7 4.6 1.1 6.5L12 17.5l-5.8 3.05 1.1-6.5-4.7-4.6 6.5-.95L12 2.6z"/></svg><b>4.8</b>(41 reviews)</div>
+        <p class="lp-w-bio">App and web design for fintech and commerce teams. Replies within the hour.</p>
+        <a class="lp-btn lp-btn-outline lp-btn-sm lp-btn-block" href="worker-profile.html">View profile</a>
+      </article>
+      <article class="lp-card">
+        <div class="lp-w-head">
+          <span class="lp-w-ava a2">EO</span>
+          <div>
+            <div class="lp-w-name">Emeka Obi <span class="lp-verified"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 5 6v6c0 4.4 3 7.4 7 9 4-1.6 7-4.6 7-9V6l-7-3Z"/><path d="m9 12 2 2 4-4"/></svg>Verified</span></div>
+            <div class="lp-w-skill">Web Developer · Port Harcourt</div>
+          </div>
+        </div>
+        <div class="lp-w-rate"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.6l2.9 5.9 6.5.95-4.7 4.6 1.1 6.5L12 17.5l-5.8 3.05 1.1-6.5-4.7-4.6 6.5-.95L12 2.6z"/></svg><b>4.9</b>(57 reviews)</div>
+        <p class="lp-w-bio">Landing pages to full platforms. Fast, clean code and honest delivery dates.</p>
+        <a class="lp-btn lp-btn-outline lp-btn-sm lp-btn-block" href="worker-profile.html">View profile</a>
+      </article>
+    </div>
+    <div class="lp-center" style="margin-top:44px">
+      <a class="lp-btn lp-btn-solid" href="search.html">View all workers</a>
+    </div>
+  </div>
+</section>
+
+<!-- ================= LEARN ================= -->
+<section class="lp-sec lp-learn-band" id="learn">
+  <div class="lp-wrap">
+    <div class="lp-center">
+      <h2 class="lp-h2">Learn a skill. Build your future.</h2>
+      <p class="lp-h2-sub">Short, practical courses — and the chance to get hired the moment you finish.</p>
+    </div>
+    <div class="lp-learn-grid">
+      <article class="lp-learn">
+        <span class="s-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m8 8-4 4 4 4m8-8 4 4-4 4m-3-10-2 12"/></svg></span>
+        <div class="meta">Beginner · 12 weeks</div>
+        <h3>Learn Web Development</h3>
+        <p class="desc">HTML to deploy. Build three real projects and a portfolio clients trust.</p>
+        <div class="price">₦35,000 <span>· instalments available</span></div>
+        <button class="lp-btn lp-btn-outline lp-btn-sm lp-btn-block" data-toast="The learning beta opens soon — we'll notify you first" type="button">Start learning</button>
+      </article>
+      <article class="lp-learn">
+        <span class="s-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h4L19.5 8.5a2.1 2.1 0 0 0-3-3L5 17v3Z"/><path d="m13.5 6.5 3 3"/></svg></span>
+        <div class="meta">All levels · 8 weeks</div>
+        <h3>Master Graphic Design</h3>
+        <p class="desc">Branding, layout and the tools. Finish with a paid gig from a real client.</p>
+        <div class="price">₦25,000 <span>· instalments available</span></div>
+        <button class="lp-btn lp-btn-outline lp-btn-sm lp-btn-block" data-toast="The learning beta opens soon — we'll notify you first" type="button">Start learning</button>
+      </article>
+      <article class="lp-learn">
+        <span class="s-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a4.5 4.5 0 0 0-6 5.6L3 17.6V21h3.4l5.7-5.7a4.5 4.5 0 0 0 5.6-6L14.5 12l-2.5-2.5 2.7-3.2Z"/></svg></span>
+        <div class="meta">Beginner · 10 weeks</div>
+        <h3>Start Plumbing</h3>
+        <p class="desc">Tooling, fittings and site discipline — mentorship from working tradesmen.</p>
+        <div class="price">₦30,000 <span>· instalments available</span></div>
+        <button class="lp-btn lp-btn-outline lp-btn-sm lp-btn-block" data-toast="The learning beta opens soon — we'll notify you first" type="button">Start learning</button>
+      </article>
+      <article class="lp-learn">
+        <span class="s-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 4 14h6l-1 8 9-12h-6l1-8Z"/></svg></span>
+        <div class="meta">Beginner · 12 weeks</div>
+        <h3>Learn Electrical Installation</h3>
+        <p class="desc">Safe wiring for homes and offices, from load calculation to certification prep.</p>
+        <div class="price">₦35,000 <span>· instalments available</span></div>
+        <button class="lp-btn lp-btn-outline lp-btn-sm lp-btn-block" data-toast="The learning beta opens soon — we'll notify you first" type="button">Start learning</button>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ================= HOW IT WORKS ================= -->
+<section class="lp-sec" id="how">
+  <div class="lp-wrap">
+    <div class="lp-how-head">
+      <h2 class="lp-h2">How Skilvi helps<br>you get work done</h2>
+      <p>We built Skilvi so both sides can trust the process. That's why every order is escrow-protected, every worker is reachable, and disputes are handled by real people.</p>
+    </div>
+    <div class="lp-how-grid">
+      <article class="lp-how">
+        <span class="num">1</span>
+        <h3>Create one profile</h3>
+        <p>Free for workers and clients. A verified identity sets you apart — and it only takes a one-time fee to add.</p>
+        <a class="lp-btn lp-btn-outline lp-btn-sm" href="login.html#regForm">Sign Up Now</a>
+      </article>
+      <article class="lp-how featured">
+        <span class="num">2</span>
+        <h3>Get matched, pay escrow</h3>
+        <p>Browse skills or post your work. The client pays Skilvi first — funds are held until the required milestone is delivered.</p>
+        <a class="lp-btn lp-btn-solid lp-btn-sm" href="jobs.html">Post a Job</a>
+      </article>
+      <article class="lp-how">
+        <span class="num">3</span>
+        <h3>Get it done, get paid</h3>
+        <p>Approve delivery or open a dispute — never leave it to luck. Workers withdraw to their Nigerian bank in 1 business day.</p>
+        <a class="lp-btn lp-btn-outline lp-btn-sm" href="login.html#regForm">Sign Up Now</a>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ================= NEWSLETTER ================= -->
+<section class="lp-news">
+  <div class="lp-wrap">
+    <h2 class="lp-h2">Get opportunities<br>in your inbox</h2>
+    <p class="lp-h2-sub" style="max-width:440px;margin-left:auto;margin-right:auto">New work, learning, and marketplace updates. No spam — unsubscribe anytime.</p>
+    <form class="lp-news-form" data-toast="You're on the list — check your phone to confirm.">
+      <div class="lp-search-box">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>
+        <input type="email" name="email" placeholder="Enter your email address" aria-label="Email address" required>
+      </div>
+      <button class="lp-btn lp-btn-solid" type="submit">Subscribe</button>
+    </form>
+  </div>
+</section>
+</main>
+
+<!-- ================= FOOTER ================= -->
+<footer class="lp-footer">
+  <div class="lp-wrap">
+    <div class="lp-foot-grid">
+      <div class="lp-foot-brand">
+        <img src="assets/img/skilvi-logo.png" alt="Skilvi">
+        <div class="lp-foot-tag">DISCOVER. LEARN. EARN.</div>
+        <p class="lp-foot-desc">The Nigeria-first marketplace for skills and work — digital and hands-on. Every order protected by escrow.</p>
+      </div>
+      <div class="lp-foot-col">
+        <h4>Marketplace</h4>
+        <a href="jobs.html">Find work</a>
+        <a href="search.html">Find talent</a>
+        <a href="category.html">Categories</a>
+        <a href="post-job.html">Post a job</a>
+      </div>
+      <div class="lp-foot-col">
+        <h4>For workers</h4>
+        <a href="login.html#regForm">Become a worker</a>
+        <a href="verification.html">Get verified</a>
+        <a href="promotion.html">Promotion</a>
+        <a href="worker-wallet.html">Wallet</a>
+      </div>
+      <div class="lp-foot-col">
+        <h4>Trust</h4>
+        <a href="help.html#faq-escrow">How escrow works</a>
+        <a href="disputes.html">Disputes</a>
+        <a href="verification.html">Verification</a>
+        <a href="help.html">Help center</a>
+      </div>
+      <div class="lp-foot-col">
+        <h4>Company</h4>
+        <a href="about.html">About</a>
+        <a href="privacy.html">Privacy</a>
+        <a href="terms.html">Terms</a>
+        <a href="help.html">Contact support</a>
+      </div>
+    </div>
+    <div class="lp-foot-bottom">
+      <span>© 2026 Skilvi Technologies Ltd. All rights reserved.</span>
+      <span>Made in Nigeria · Payments held securely in escrow</span>
+    </div>
   </div>
 </footer>
 
-<script src="assets/js/mock.js?v=4"></script>
-<script src="assets/js/skilvi.js?v=4"></script>
+<script src="assets/js/skilvi.js?v=5"></script>
 <script>
   document.addEventListener("DOMContentLoaded", () => {
-    const I = SkIconSvg;
-    const ngn = Sk.ngn;
-
-    $("#heroEyebrow").innerHTML = I.shield + " Nigeria-first · Escrow-protected";
-    $("#searchIco").innerHTML = I.search;
-    $("#ctaIco").innerHTML = I.arrow;
-
-    /* trust strip */
-    const trust = [
-      [I.shield, "Escrow-protected payments"],
-      [I.checkc, "Verified workers"],
-      [I.bank, "Naira · card, bank transfer, USSD"],
-      [I.chat, "Real support, in English"]
-    ];
-    $("#trustStrip").innerHTML = trust.map(([i, t]) => '<span class="trust-item">' + i + t + "</span>").join("");
-
-    /* category tiles */
-    const catIcon = { code: I.code, pen: I.pen, wrench: I.wrench, briefcase: I.briefcase, heart: I.heart };
-    const tiles = MOCK.categories.map((c) =>
-      '<a class="cat-tile" href="category.html"><span class="cat-ico">' + catIcon[c.icon] + "</span>" +
-      "<span><span class=\"cat-name\">" + c.name + '</span><br><span class="cat-count">' + c.workers + " workers</span></span></a>");
-    tiles.unshift('<a class="cat-tile" href="search.html"><span class="cat-ico">' + I.grid + "</span>" +
-      '<span><span class="cat-name">All services</span><br><span class="cat-count">1,400+ workers</span></span></a>');
-    $("#catGrid").innerHTML = tiles.join("");
-
-    /* how it works */
-    const steps = [
-      ["1", "Find & compare", "Search by skill or category. Compare ratings, verified badges, prices and past reviews before you hire."],
-      ["2", "Pay Skilvi, not the worker", "Your payment is held safely in escrow by Skilvi. The worker starts only after you've paid — you're protected from day one."],
-      ["3", "Release when it's done", "Approve the delivered work to release the payment. Not satisfied? Request revisions or open a dispute — we mediate."]
-    ];
-    $("#howSteps").innerHTML = steps.map(([n, t, d]) =>
-      '<div class="step"><span class="step-num">' + n + "</span><h3>" + t + "</h3><p>" + d + "</p></div>").join("");
-
-    /* top workers */
-    const top = ["w01", "w03", "w06", "w02"].map((id) => MOCK.workers.find((w) => w.id === id));
-    $("#topWorkers").innerHTML = top.map((w) =>
-      '<div class="worker-row"><span class="avatar a' + (w.tone === "a1" ? 1 : w.tone === "a2" ? 2 : w.tone === "a3" ? 3 : w.tone === "a4" ? 4 : 5) + '">' + w.init + "</span>" +
-      '<div class="wr-main"><div class="wr-name"><a href="worker-profile.html">' + w.name + "</a>" +
-      (w.verified ? '<span class="badge-verified">' + I.shield + "Verified</span>" : "") + "</div>" +
-      '<div class="wr-head">' + w.headline + "</div>" +
-      '<div class="wr-meta"><span>' + I.pin + w.city + ", " + w.state + '</span><span>' + I.clock + "Replies " + w.resp + "</span>" +
-      '<span>' + I.checkc + w.jobs + " orders completed</span></div></div>" +
-      '<div class="wr-side"><div class="wr-price">from ' + ngn(w.from) + ' <small>' + w.mode + "</small></div>" +
-      '<span class="rating-line">' + SkStars(w.rating) + " <b>" + w.rating + "</b> (" + w.reviews + ")</span></div></div>").join("");
-
-    /* new jobs */
-    const jobMode = (m) => m === "remote" ? I.code : I.truck;
-    $("#newJobs").innerHTML = MOCK.jobs.slice(0, 3).map((j) =>
-      '<div class="job-card"><div class="jc-top"><h3><a href="job-detail.html">' + j.title + "</a></h3>" +
-      '<span class="jc-budget">' + (j.budgetType === "fixed" ? ngn(j.budget) : "Negotiable") + "</span></div>" +
-      '<div class="jc-meta"><span>' + jobMode(j.mode) + j.mode + '</span><span>' + I.pin + j.loc + '</span><span>' + I.clock + j.time + "</span></div>" +
-      '<div class="jc-foot"><span class="jc-proposals">' + j.proposals + " proposals</span>" +
-      '<a class="btn btn-secondary btn-sm" href="job-detail.html">View job</a></div></div>').join("");
+    /* hero search -> search.html?q= */
+    $("#heroSearch")?.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const q = (e.target.querySelector("input[name=q]").value || "").trim();
+      location.href = "search.html" + (q ? "?q=" + encodeURIComponent(q) : "");
+    });
+    /* close mobile menu after tapping a link (menu open/close itself is pure CSS) */
+    const menu = $("#lpMenu");
+    if (menu) $$(".lp-menu-in a").forEach((a) =>
+      a.addEventListener("click", () => { menu.checked = false; }));
   });
 </script>
 </body>
