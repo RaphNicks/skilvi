@@ -15,7 +15,7 @@
 
 /* ---------- shell ---------- */
 .lp { background: #fff; color: var(--ink); }
-.lp-wrap { max-width: var(--lp-max); margin: 0 auto; padding: 0 40px; }
+.lp-wrap { max-width: var(--lp-max); margin: 0 auto; padding: 0 48px; }
 .lp-eyebrow { font-size: 13px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-2); }
 .lp-h1 { font-size: clamp(42px, 6.2vw, 74px); line-height: 1.02; letter-spacing: -0.025em; font-weight: 800; color: #0B0E1A; margin: 14px 0 0; }
 .lp-sub { font-size: 16.5px; line-height: 1.6; color: var(--ink-2); max-width: 520px; margin-top: 18px; }
@@ -266,6 +266,7 @@
 
 /* ---------- responsive ---------- */
 @media (max-width: 1024px) {
+  .lp-wrap { padding: 0 32px; }
   .lp-hero-in { grid-template-columns: 1fr; padding: 56px 0 72px; }
   .lp-hero-vis { min-height: 470px; max-width: 520px; margin: 0 auto; }
   .lp-opp-grid, .lp-pop-grid, .lp-worker-grid, .lp-how-grid { grid-template-columns: repeat(2, 1fr); }
