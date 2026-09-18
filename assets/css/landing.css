@@ -89,6 +89,8 @@
   flex: 1; border: 0; outline: none; font-size: 14.5px; padding: 14px 0; background: transparent; color: var(--ink); min-width: 0;
 }
 .lp-popular { margin-top: 16px; font-size: 13.5px; color: var(--ink-3); display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+.lp-hero-alt { display: inline-block; margin-top: 18px; font-size: 13.5px; font-weight: 500; color: var(--royal-700); text-decoration: underline; text-decoration-thickness: 1.5px; text-underline-offset: 3px; }
+.lp-hero-alt:hover { color: var(--royal-800); }
 .lp-popular b { font-weight: 600; color: var(--ink-3); }
 .lp-popular a { color: var(--ink); font-weight: 500; text-decoration: underline; text-decoration-thickness: 1.5px; text-underline-offset: 3px; }
 .lp-popular a:hover { color: var(--royal-700); }
@@ -200,9 +202,9 @@
 
 /* ---------- split (photo + checklist) ---------- */
 .lp-split { display: grid; grid-template-columns: .9fr 1.1fr; gap: 60px; align-items: center; }
-.lp-split-vis { position: relative; min-height: 460px; }
-.lp-split .lp-circle { right: 50%; transform: translateX(50%); top: 0; width: 420px; height: 420px; }
-.lp-split-photo { position: absolute; left: 50%; transform: translateX(-46%); bottom: -6px; width: 320px; border-radius: 18px; object-fit: cover; aspect-ratio: 4 / 5; }
+.lp-split-vis { position: relative; min-height: 460px; overflow: hidden; }
+.lp-split .lp-circle { left: 50%; right: auto; top: 0; transform: translateX(-50%); width: min(420px, 96%); height: min(420px, 96%); }
+.lp-split-photo { position: absolute; left: 50%; transform: translateX(-46%); bottom: 0; width: 320px; border-radius: 18px; object-fit: cover; aspect-ratio: 4 / 5; }
 .lp-checks { list-style: none; margin: 26px 0 30px; padding: 0; display: grid; gap: 14px; }
 .lp-checks li { display: flex; align-items: center; gap: 11px; font-size: 15px; font-weight: 500; color: #0B0E1A; }
 .lp-checks .ck {
