@@ -73,7 +73,7 @@
   -webkit-mask-image: linear-gradient(to right, #000 55%, rgba(0,0,0,.25) 80%, transparent 96%);
   mask-image: linear-gradient(to right, #000 55%, rgba(0,0,0,.25) 80%, transparent 96%);
 }
-.lp-hero-in { position: relative; z-index: 1; display: grid; grid-template-columns: 1.05fr .95fr; gap: 40px; align-items: center; padding: 76px 0 88px; }
+.lp-hero-in { position: relative; z-index: 1; display: grid; grid-template-columns: 1.05fr .95fr; gap: 40px; align-items: center; padding-top: 76px; padding-bottom: 88px; }
 
 .lp-search { display: flex; gap: 12px; margin-top: 30px; }
 .lp-search-box {
@@ -267,8 +267,8 @@
 
 /* ---------- responsive ---------- */
 @media (max-width: 1024px) {
-  .lp-wrap { padding: 0 32px; }
-  .lp-hero-in { grid-template-columns: 1fr; padding: 56px 0 72px; }
+  .lp-wrap { padding: 0 36px; }
+  .lp-hero-in { grid-template-columns: 1fr; padding-top: 56px; padding-bottom: 72px; }
   .lp-hero-vis { min-height: 470px; max-width: 520px; margin: 0 auto; }
   .lp-opp-grid, .lp-pop-grid, .lp-worker-grid, .lp-how-grid { grid-template-columns: repeat(2, 1fr); }
   .lp-skill-grid, .lp-learn-grid { grid-template-columns: repeat(2, 1fr); }
@@ -320,6 +320,7 @@
 }
 
 @media (max-width: 480px) {
+  .lp-wrap { padding: 0 16px; }
   .lp-h1 { font-size: 34px; }
   .lp-hero-vis { min-height: 390px; }
   .lp-circle { width: 262px; height: 262px; }
