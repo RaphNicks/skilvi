@@ -1,0 +1,12 @@
+/storage/*.sqlite
+/storage/*.sqlite-wal
+/storage/*.sqlite-shm
+/storage/uploads/*
+/storage/logs/*
+/storage/backups/*
+/storage/.app_key
+!/storage/uploads/.gitkeep
+!/storage/logs/.gitkeep
+!/storage/backups/.gitkeep
+/config/env.local.php
+.DS_Store

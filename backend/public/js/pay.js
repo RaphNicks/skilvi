@@ -1,0 +1,245 @@
+(function () {
+  "use strict";
+  const api = (window.SkApi && window.SkApi.api) || (async (p) => (await fetch(p)).json().then((b) => b.data));
+  const toast = (window.SkApi && window.SkApi.toast) || (window.Sk && window.Sk.toast) || ((m) => console.log(m));
+  const busy = (window.SkApi && window.SkApi.busy) || function () {};
+  const $ = (s, r) => (r || document).querySelector(s);
+  const $$ = (s, r) => Array.from((r || document).querySelectorAll(s));
+  const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  const params = new URLSearchParams(location.search);
+  const page = document.body.getAttribute("data-page") || "";
+
+  function gate(err) {
+    if (err && err.status === 401) {
+      location.href = "/login.html?next=" + encodeURIComponent(location.pathname + location.search);
+      return true;
+    }
+    return false;
+  }
+
+  function methodFromUi() {
+    const pills = $$(".radio-pill");
+    const active = pills.find((p) => p.classList.contains("active")) || pills[0];
+    const t = (active && active.textContent) || "";
+    if (/card/i.test(t)) return "card";
+    if (/ussd/i.test(t)) return "ussd";
+    if (/mobile/i.test(t)) return "mobile_money";
+    return "transfer";
+  }
+
+  function bindMethodPills(root) {
+    const pills = $$((root || document.body).querySelector ? undefined : ".radio-pill");
+    $$(".radio-pill").forEach((p) => {
+      p.addEventListener("click", (e) => {
+        e.preventDefault();
+        $$(".radio-pill").forEach((x) => x.classList.remove("active"));
+        p.classList.add("active");
+      });
+    });
+  }
+
+  function showVa(pay) {
+    const box = document.querySelector(".alert.alert-info");
+    if (!box || !pay.virtual_account) return;
+    const va = pay.virtual_account;
+    box.innerHTML = "<span><b>Instant transfer instructions:</b> Pay <b>" + esc(va.amount_label) + "</b> to <b>" +
+      esc(va.account_name) + "</b> · " + esc(va.bank) + " <span class=\"mono\">" + esc(va.account_number) +
+      "</span> · reference <span class=\"mono\">" + esc(va.reference) + "</span>. In this sandbox, tap “I’ve paid” to simulate the Paystack webhook.</span>";
+  }
+
+  async function pollUntilDone(code) {
+    for (let i = 0; i < 20; i++) {
+      const st = await api("/api/payments/" + encodeURIComponent(code) + "/status");
+      if (st.status === "succeeded") {
+        location.href = st.success_url || ("payment-success.html?id=" + encodeURIComponent(code));
+        return;
+      }
+      if (st.status === "failed") {
+        toast("Payment failed. Try another method.", "error");
+        return;
+      }
+      await new Promise((r) => setTimeout(r, i < 4 ? 2000 : 4000));
+    }
+  }
+
+  async function checkout() {
+    bindMethodPills();
+    let orderId = params.get("order") || params.get("id") || "";
+    const service = params.get("service");
+    const pkg = params.get("pkg") || "";
+    if (!orderId && service) {
+      const o = await api("/api/orders/from-service", { body: { service_id: service, pkg } });
+      orderId = o.id;
+      history.replaceState(null, "", "checkout.html?order=" + encodeURIComponent(orderId));
+    }
+    if (!orderId) {
+      toast("No order to pay for.", "error");
+      return;
+    }
+    const o = await api("/api/orders/" + encodeURIComponent(orderId));
+    const crumb = $("main .small.muted");
+    if (crumb) crumb.innerHTML = '<a href="client-dashboard.html">Orders</a> / Checkout';
+    const h1 = $(".ph-title");
+    if (h1) h1.textContent = "Confirm & pay";
+    const sub = $(".ph-sub");
+    if (sub) sub.textContent = "Order " + o.id + " · pay Skilvi — not the worker.";
+    const price = $(".sc-price");
+    if (price) price.textContent = o.amount_label;
+    $$(".sc-price, #payBtn").forEach((el) => {
+      if (el.id === "payBtn") el.textContent = "Pay " + o.amount_label;
+    });
+    const nameEls = document.querySelectorAll(".bold");
+    if (nameEls[0] && o.worker_name) {
+      const badge = nameEls[0].querySelector(".badge-verified");
+      nameEls[0].childNodes[0].textContent = o.worker_name + " ";
+      if (!badge) { /* keep */ }
+    }
+    const kvs = $$(".card .kv .v");
+    if (kvs[0]) kvs[0].textContent = o.title;
+    const payBtn = $("#payBtn");
+    if (o.status !== "pending_payment") {
+      if (payBtn) {
+        payBtn.textContent = "Already paid — open order";
+        payBtn.addEventListener("click", () => { location.href = "order-detail.html?id=" + encodeURIComponent(o.id); });
+      }
+      return;
+    }
+    let currentPay = null;
+    async function startPay() {
+      busy(payBtn, true);
+      try {
+        currentPay = await api("/api/payments/initiate", {
+          body: { purpose: "order", order_id: o.id, method: methodFromUi() },
+        });
+        showVa(currentPay);
+        if (currentPay.dev_simulate) {
+          toast("Dev mode: simulating a successful Paystack webhook.", "success");
+          await api("/api/payments/" + encodeURIComponent(currentPay.id) + "/simulate", { body: { result: "success" } });
+          location.href = currentPay.success_url;
+          return;
+        }
+        toast("Waiting for the bank to confirm…", "success");
+        await pollUntilDone(currentPay.id);
+      } catch (err) {
+        if (!gate(err)) toast(err.message, "error");
+      } finally {
+        busy(payBtn, false);
+      }
+    }
+    if (payBtn) {
+      payBtn.addEventListener("click", (e) => { e.preventDefault(); startPay(); });
+    }
+  }
+
+  async function successPage() {
+    const id = params.get("id") || params.get("pay") || "";
+    if (!id) return;
+    const p = await api("/api/payments/" + encodeURIComponent(id));
+    $$(".kv .v").forEach((el, i) => {
+      if (i === 0 && p.order) el.textContent = p.order.id;
+      if (i === 3) el.textContent = p.amount_label;
+      if (i === 4) el.textContent = p.method === "card" ? "Card" : "Bank transfer (instant)";
+      if (i === 5) el.textContent = p.provider_ref || p.id;
+    });
+    const track = document.querySelector('a.btn.btn-primary[href*="order-detail"]');
+    if (track && p.order) track.href = "order-detail.html?id=" + encodeURIComponent(p.order.id);
+    const h1 = $("h1");
+    if (h1 && p.status === "succeeded") h1.textContent = "Payment verified — your order is live";
+  }
+
+  async function verifyPage() {
+    let st = null;
+    try { st = await api("/api/verification/status"); } catch (err) {
+      if (err.status === 401) return;
+      throw err;
+    }
+    const form = $("#vrForm");
+    if (!form) return;
+    const inputs = form.querySelectorAll("input:not([type=checkbox]):not([type=radio]), select");
+    if (inputs[0] && !inputs[0].name) inputs[0].name = "full_name";
+    if (inputs[1] && !inputs[1].name) inputs[1].name = "id_type";
+    if (inputs[2] && !inputs[2].name) inputs[2].name = "id_number";
+    if (st.status === "approved") {
+      toast("This account is already verified.", "success");
+    }
+    if (st.status === "pending") {
+      toast("Your identity check is with the review team — usually within 2 business days.", "success");
+    }
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const btn = form.querySelector("button[type=submit]");
+      busy(btn, true);
+      try {
+        if (st.status !== "pending" && st.status !== "approved") {
+          const pay = await api("/api/payments/initiate", { body: { purpose: "verification", method: "transfer" } });
+          if (pay.dev_simulate) {
+            await api("/api/payments/" + encodeURIComponent(pay.id) + "/simulate", { body: { result: "success" } });
+          } else {
+            await pollUntilDone(pay.id);
+          }
+        }
+        const body = {
+          full_name: (form.querySelector("[name=full_name]") || inputs[0]).value,
+          id_type: (form.querySelector("[name=id_type]") || inputs[1]).value,
+          id_number: (form.querySelector("[name=id_number]") || inputs[2]).value,
+        };
+        await api("/api/verification/submit", { body });
+        toast("Application in. Identity only — this never certifies skill. Decision by SMS within 2 business days.", "success");
+      } catch (err) {
+        if (!gate(err)) toast(err.message, "error");
+      } finally {
+        busy(btn, false);
+      }
+    });
+  }
+
+  async function promoPage() {
+    let data;
+    try { data = await api("/api/promotions"); } catch (err) {
+      if (err.status === 401) return;
+      throw err;
+    }
+    const form = $("#prForm");
+    if (!form) return;
+    if (data.active) {
+      toast("A promotion is already running until " + data.active.ends_at + ".", "success");
+    }
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const btn = form.querySelector("button[type=submit]");
+      const active = form.querySelector("[data-radio] .radio-pill.active");
+      const plan = active && /5,000/.test(active.textContent) ? "category" : "search";
+      busy(btn, true);
+      try {
+        const pay = await api("/api/promotions/" + plan + "/purchase", { body: { method: "transfer", plan } });
+        if (pay.dev_simulate) {
+          await api("/api/payments/" + encodeURIComponent(pay.id) + "/simulate", { body: { result: "success" } });
+        }
+        toast("Promotion started — labelled Promoted, never a skill badge.", "success");
+        setTimeout(() => location.href = "worker-dashboard.html", 900);
+      } catch (err) {
+        if (!gate(err)) toast(err.message, "error");
+      } finally {
+        busy(btn, false);
+      }
+    });
+  }
+
+  document.addEventListener("DOMContentLoaded", () => {
+    const current = document.body.getAttribute("data-page") || (/checkout/.test(location.pathname) ? "checkout" : "");
+    const run = async () => {
+      try {
+        if (current === "checkout") await checkout();
+        else if (current === "pay-success") await successPage();
+        else if (current === "verify") await verifyPage();
+        else if (current === "promo") await promoPage();
+      } catch (err) {
+        if (!gate(err)) {
+          console.error(err);
+          toast(err.message || "Could not load payment.", "error");
+        }
+      }
+    };
+    run();
+  });
+})();

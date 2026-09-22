@@ -77,16 +77,33 @@
           <p class="tiny faint mt-1">Instant transfer · usually credited within 1 business day · minimum ₦5,000 · currently free.</p>
           <form id="withdrawForm" class="mt-3">
             <div class="field mb-2">
-              <label>Bank account</label>
-              <select class="select" id="wdBank">
-                <option>GTBank ····0234 — Chinedu Okafor (verified)</option>
-                <option>Access Bank ····8871 — C. Okafor (unverified)</option>
+              <label>Bank</label>
+              <select class="select" id="wdBank" name="bank_name">
+                <option value="">Pick a bank</option>
+                <option>GTBank</option>
+                <option>Access Bank</option>
+                <option>First Bank</option>
+                <option>UBA</option>
+                <option>Zenith Bank</option>
               </select>
+            </div>
+            <div class="field mb-2">
+              <label>Account number</label>
+              <input class="input" id="wdAcct" name="account_number" inputmode="numeric" maxlength="10" placeholder="10-digit NUBAN">
+            </div>
+            <div class="field mb-2">
+              <label>Account name</label>
+              <input class="input" id="wdName" name="account_name" placeholder="As it appears at the bank">
             </div>
             <div class="field mb-3">
               <label>Amount (₦)</label>
-              <input class="input money-input" id="wdAmount" placeholder="e.g. 150,000">
-              <span class="hint">Maximum: ₦412,500</span>
+              <input class="input money-input" id="wdAmount" name="amount" placeholder="e.g. 150,000">
+              <span class="hint">Minimum ₦5,000</span>
+            </div>
+            <div class="field mb-3" id="wdOtpWrap" style="display:none">
+              <label>SMS code</label>
+              <input class="input" id="wdCode" name="code" inputmode="numeric" maxlength="6" placeholder="6-digit code">
+              <span class="hint" id="wdOtpHint">We send a code to the phone on your account.</span>
             </div>
             <div class="row spread">
               <button type="button" class="link-muted" data-toast="Add-bank flow verifies with a test transfer of ₦10">＋ Add a new bank account</button>

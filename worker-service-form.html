@@ -57,12 +57,12 @@
             <h3 style="font-size:14px">Basics</h3>
             <div class="field mt-2 mb-2">
               <label>Service title <span style="color:var(--red)">*</span></label>
-              <input class="input" placeholder="e.g. React dashboard — admin panels" required>
+              <input class="input" name="title" placeholder="e.g. React dashboard — admin panels" required>
             </div>
             <div class="form-row-2 mb-2">
               <div class="field">
                 <label>Category <span style="color:var(--red)">*</span></label>
-                <select class="select" required>
+                <select class="select" name="category" required>
                   <optgroup label="Digital & Tech"><option>Web Development</option><option>App Development</option><option>UI/UX Design</option></optgroup>
                   <optgroup label="Trades & Home"><option>Plumbing</option><option>Electrical</option><option>Tiling & Masonry</option><option>Painting</option></optgroup>
                   <optgroup label="Creative"><option>Graphic Design & Branding</option><option>Video & Motion</option></optgroup>
@@ -71,8 +71,12 @@
               <div class="field">
                 <label>Work mode <span style="color:var(--red)">*</span></label>
                 <div class="row" data-radio style="gap:8px">
-              <input type="radio" name="pj1" id="pj_1_0" class="pill-check">
-              <label class="radio-pill" for="pj_1_0" style="flex:1"><span class="rd"></span>Hybrid</label>
+              <input type="radio" name="work_mode" value="remote" id="modeRemote" class="pill-check" checked>
+              <label class="radio-pill" for="modeRemote" style="flex:1"><span class="rd"></span>Remote</label>
+              <input type="radio" name="work_mode" value="on-site" id="modeOnsite" class="pill-check">
+              <label class="radio-pill" for="modeOnsite" style="flex:1"><span class="rd"></span>On-site</label>
+              <input type="radio" name="work_mode" value="hybrid" id="modeHybrid" class="pill-check">
+              <label class="radio-pill" for="modeHybrid" style="flex:1"><span class="rd"></span>Hybrid</label>
             </div>
               </div>
             </div>
@@ -86,7 +90,7 @@
             </div>
             <div class="field">
               <label>Description <span style="color:var(--red)">*</span></label>
-              <textarea class="textarea" placeholder="What you deliver, what's included, what makes your work reliable. Plain language wins."></textarea>
+              <textarea class="textarea" name="description" placeholder="What you deliver, what's included, what makes your work reliable. Plain language wins."></textarea>
             </div>
           </div>
 

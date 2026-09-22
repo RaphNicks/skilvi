@@ -1,0 +1,363 @@
+(function () {
+  "use strict";
+  const api = (window.SkApi && window.SkApi.api) || (async (p) => (await fetch(p)).json().then((b) => b.data));
+  const toast = (window.SkApi && window.SkApi.toast) || (window.Sk && window.Sk.toast) || ((m) => console.log(m));
+  const busy = (window.SkApi && window.SkApi.busy) || function () {};
+  const $ = (s, r) => (r || document).querySelector(s);
+  const $$ = (s, r) => Array.from((r || document).querySelectorAll(s));
+  const I = window.SkIconSvg || {};
+  const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  const params = new URLSearchParams(location.search);
+  const page = document.body.getAttribute("data-page") || "";
+
+  function init(s) {
+    const p = String(s || "").trim().split(/\s+/);
+    if (!p[0]) return "?";
+    return (p[0][0] + (p[1] ? p[1][0] : "")).toUpperCase();
+  }
+
+  function gate(err) {
+    if (err && err.status === 401) {
+      location.href = "/login.html?next=" + encodeURIComponent(location.pathname + location.search);
+      return true;
+    }
+    return false;
+  }
+
+  function paintMe(me) {
+    if (!me) return;
+    document.querySelectorAll(".su-name").forEach((el, i) => {
+      el.textContent = i === 0 ? me.full_name : me.full_name.split(" ")[0];
+    });
+    document.querySelectorAll(".avatar.sm, .side-user .avatar").forEach((el) => {
+      el.textContent = me.initials;
+    });
+    const role = document.querySelector(".su-role");
+    if (role) role.textContent = me.verified ? "Worker · Verified" : "Worker";
+  }
+
+  async function dash() {
+    const me = await api("/api/me");
+    paintMe(me);
+    const d = await api("/api/dashboard/worker");
+    const s = d.stats || {};
+    const first = (me.full_name || "").split(" ")[0];
+    const h1 = $(".ph-title");
+    if (h1) {
+      h1.innerHTML = "Hello, " + esc(first) +
+        (s.verified
+          ? ' <span class="badge-verified" id="wbBadge">' + (I.shield || "") + " Verified</span>"
+          : "");
+    }
+    const sub = $(".ph-sub");
+    if (sub) {
+      const pct = s.profile_strength != null ? s.profile_strength : d.profile_strength;
+      sub.textContent = (pct != null ? "Your profile is " + pct + "% complete. " : "")
+        + (s.verified
+          ? "Identity checked — not a skill certificate."
+          : "Add a bio and a live service so clients can hire you.");
+    }
+    if ($("#wdStats")) {
+      const stats = [
+        [I.wallet2 || "", "Available balance", s.available_label || "₦0", (s.pending_label || "₦0") + " pending in escrow"],
+        [I.briefcase || "", "Active orders", String(s.active_orders || 0), (s.delivered || 0) + " delivered, " + (s.in_progress || 0) + " in progress"],
+        [I.jobs || "", "Proposals pending", String(s.proposals_pending || 0), "waiting on clients"],
+        [I.star || "", "Rating", String(s.rating || 0), (s.reviews || 0) + " reviews"],
+      ];
+      $("#wdStats").innerHTML = stats.map(([i, l, v, delta]) =>
+        '<div class="stat-card"><div class="label">' + i + l + '</div><div class="value">' + esc(v) + '</div><div class="delta">' + esc(delta) + "</div></div>"
+      ).join("");
+    }
+    const q = document.querySelector(".queue-card");
+    if (q) {
+      const needs = d.needs || [];
+      q.innerHTML = needs.map((n) =>
+        '<div class="queue-row"><span class="avatar ' + esc(n.tone || "a2") + '">' + esc(init(n.who)) + "</span>" +
+        '<div class="qr-main"><div class="qr-t">' + esc(n.title) + '</div><div class="qr-s">' + esc(n.sub) + "</div></div>" +
+        '<span class="st ' + esc(n.chip) + '">' + esc(n.label) + "</span>" +
+        '<a class="btn btn-secondary btn-sm" href="' + esc(n.href) + '">Open</a></div>'
+      ).join("") || '<p class="tiny faint">Nothing needs you right now.</p>';
+      const tag = q.closest(".card") && q.closest(".card").querySelector(".tag");
+      if (tag) tag.textContent = String(needs.length);
+    }
+    const kvs = $$(".grid.grid-2 .card.card-pad .kv .v.amount, .grid.grid-2 .card.card-pad .kv .v");
+    if (kvs[0]) kvs[0].textContent = (d.wallet && d.wallet.available_label) || "₦0";
+    if (kvs[1]) kvs[1].textContent = (d.wallet && d.wallet.pending_label) || "₦0";
+    const week = document.querySelector(".grid.grid-2 .card.card-pad .amount");
+    if (week && d.wallet) week.textContent = d.wallet.lifetime_label;
+    if ($("#wdRecent")) {
+      $("#wdRecent").innerHTML = (d.recent || []).map((o) =>
+        '<tr><td><span class="cell-main">' + esc(o.title) + '</span><div class="cell-sub">' + esc(o.id) + "</div></td>" +
+        "<td>" + esc(o.client_name) + '</td><td class="num amount">' + esc(o.amount_label) + '</td><td class="num">' + esc(o.worker_net) + "</td>" +
+        '<td><span class="st ' + esc(o.chip) + '">' + esc(o.stateLabel) + "</span></td>" +
+        '<td class="right"><a class="btn btn-secondary btn-sm" href="order-detail.html?id=' + encodeURIComponent(o.id) + '">Open</a></td></tr>'
+      ).join("") || '<tr><td colspan="6" class="muted">No orders yet.</td></tr>';
+    }
+  }
+
+  async function wallet() {
+    const me = await api("/api/me");
+    paintMe(me);
+    const d = await api("/api/wallet");
+    const w = d.wallet || {};
+    const cards = $$(".wallet-card .value");
+    if (cards[0]) cards[0].textContent = w.available_label || "₦0";
+    if (cards[1]) cards[1].textContent = w.pending_label || "₦0";
+    if (cards[2]) cards[2].textContent = w.lifetime_label || "₦0";
+    const hint = $("#wdAmount") && $("#wdAmount").closest(".field") && $("#wdAmount").closest(".field").querySelector(".hint");
+    if (hint) hint.textContent = "Maximum: " + (w.available_label || "₦0") + " · minimum " + (w.min_label || "₦5,000");
+    const sel = $("#wdBank");
+    if (sel) {
+      const saved = w.banks || [];
+      const opts = w.bank_options || [];
+      sel.innerHTML = '<option value="">Pick a bank</option>' +
+        saved.map((b) => '<option value="' + esc(b.bank_name) + '" data-acct="' + esc(b.account_number) + '" data-name="' + esc(b.account_name) + '">' + esc(b.label) + "</option>").join("") +
+        opts.map((b) => '<option value="' + esc(b) + '">' + esc(b) + "</option>").join("");
+      sel.addEventListener("change", () => {
+        const o = sel.options[sel.selectedIndex];
+        if (o && o.dataset.acct && $("#wdAcct")) $("#wdAcct").value = o.dataset.acct;
+        if (o && o.dataset.name && $("#wdName")) $("#wdName").value = o.dataset.name;
+      });
+    }
+    const form = $("#withdrawForm");
+    if (form && !$("#wdAcct")) {
+      const extra = document.createElement("div");
+      extra.innerHTML =
+        '<div class="field mb-2"><label>Account number</label><input class="input" id="wdAcct" name="account_number" inputmode="numeric" maxlength="10" placeholder="10-digit NUBAN"></div>' +
+        '<div class="field mb-2"><label>Account name</label><input class="input" id="wdName" name="account_name" placeholder="As it appears at the bank"></div>' +
+        '<div class="field mb-2" id="wdOtpWrap" style="display:none"><label>SMS code</label><input class="input" id="wdCode" inputmode="numeric" maxlength="6" placeholder="6-digit code">' +
+        '<span class="hint" id="wdOtpHint"></span></div>';
+      const amt = $("#wdAmount") && $("#wdAmount").closest(".field");
+      if (amt) amt.parentNode.insertBefore(extra, amt);
+      else form.insertBefore(extra, form.firstChild);
+    }
+    const list = $("#wdList");
+    if (list) {
+      const rows = d.withdrawals || [];
+      list.innerHTML = rows.map((wrow) =>
+        '<div class="kv"><span class="k">' + esc(wrow.date) + " · " + esc(wrow.bank) + ' <span class="cell-sub">' + esc(wrow.id) + "</span></span>" +
+        '<span class="v"><span class="amount">' + esc(wrow.amount_label) + '</span> <span class="st ' + esc(wrow.chip) + '" style="margin-left:8px">' + esc(wrow.stateLabel) + "</span></span></div>"
+      ).join("") || '<p class="tiny faint">No withdrawals yet.</p>';
+    }
+    const typeDot = { settlement: "var(--green)", commission: "var(--red)", withdrawal: "var(--amber)" };
+    if ($("#wdLedger")) {
+      $("#wdLedger").innerHTML = (d.transactions || []).map((l) =>
+        '<tr><td class="cell-sub">' + esc(l.date) + '</td><td><span class="ledger-type"><span class="lt-dot" style="background:' + (typeDot[l.type] || "var(--ink-3)") + '"></span>' + esc(l.label) + "</span>" +
+        '<div class="cell-sub">' + esc(l.ref) + "</div></td>" +
+        '<td class="num amount" style="color:' + (l.amount_kobo < 0 ? "var(--red)" : "var(--ink)") + '">' + esc(l.amount_label) + "</td>" +
+        '<td class="num cell-sub">' + esc(l.bal_label) + "</td></tr>"
+      ).join("") || '<tr><td colspan="4" class="muted">Ledger is empty until escrow releases.</td></tr>';
+    }
+    if (form) {
+      form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const btn = form.querySelector('button[type="submit"]');
+        const wrap = $("#wdOtpWrap");
+        const code = $("#wdCode") && $("#wdCode").value.trim();
+        busy(btn, true);
+        try {
+          if (wrap && wrap.style.display !== "none" && code) {
+            await api("/api/withdrawals/confirm", { body: { code } });
+            toast("Withdrawal requested. We will pay it to your bank.", "success");
+            location.reload();
+            return;
+          }
+          const otp = await api("/api/withdrawals/start", {
+            body: {
+              amount_naira: String($("#wdAmount") && $("#wdAmount").value),
+              bank_name: ($("#wdBank") && $("#wdBank").value) || "",
+              account_number: ($("#wdAcct") && $("#wdAcct").value) || "",
+              account_name: ($("#wdName") && $("#wdName").value) || "",
+            },
+          });
+          if (wrap) wrap.style.display = "";
+          if ($("#wdOtpHint")) {
+            $("#wdOtpHint").textContent = "Code sent to " + (otp.phone_mask || "your phone") +
+              (otp.dev_code ? " · dev " + otp.dev_code : "") + ".";
+          }
+          if ($("#wdCode")) $("#wdCode").focus();
+          toast("Enter the SMS code to confirm.", "success");
+        } catch (err) {
+          if (!gate(err)) toast(err.message, "error");
+        } finally {
+          busy(btn, false);
+        }
+      });
+    }
+  }
+
+  function pkgLine(p) {
+    const naira = p.price_naira || Math.round((p.price_kobo || 0) / 100);
+    const price = (window.Sk && window.Sk.ngn) ? window.Sk.ngn(naira) : "₦" + Number(naira).toLocaleString("en-NG");
+    return esc(p.name || "Package") + " · " + price + " · " + (p.days || 0) + " days · " + (p.revisions || 0) + " revision" + ((p.revisions === 1) ? "" : "s");
+  }
+
+  async function services() {
+    const me = await api("/api/me");
+    paintMe(me);
+    const list = await api("/api/services?owner=me");
+    let host = $("#wsList");
+    if (!host) {
+      host = document.createElement("div");
+      host.id = "wsList";
+      const alert = $("#svAlert");
+      if (alert && alert.parentNode) alert.parentNode.insertBefore(host, alert.nextSibling);
+    }
+    if (!list.length) {
+      host.innerHTML = '<div class="card card-pad"><p class="tiny faint">No services yet. Add one so clients can hire you without posting a job.</p></div>';
+      return;
+    }
+    host.innerHTML = list.map((s) => {
+      const pkgs = (s.packages || []).map((p) => '<div class="kv"><span class="k">' + esc(p.name) + '</span><span class="v">' + pkgLine(p) + "</span></div>").join("");
+      const live = s.live;
+      return '<div class="card card-pad mt-3" data-sid="' + esc(s.id) + '"><div class="row spread" style="align-items:flex-start;gap:12px"><div>' +
+        '<div class="row" style="gap:10px;flex-wrap:wrap"><h3 style="font-size:16px">' + esc(s.title) + '</h3>' +
+        '<span class="st ' + (live ? "st-green" : "st-gray") + '">' + (live ? "Active · searchable" : "Paused · hidden from search") + "</span></div>" +
+        '<p class="small muted mt-1">' + esc(s.category || "Uncategorised") + " · " + esc(s.mode) + " · from " + esc(s.from_label) + "</p></div>" +
+        '<div class="row" style="gap:8px;flex:none">' +
+        '<a class="btn btn-secondary btn-sm" href="service-detail.html?id=' + encodeURIComponent(s.id) + '">View</a>' +
+        '<a class="btn btn-secondary btn-sm" href="worker-service-form.html?id=' + encodeURIComponent(s.id) + '">Edit</a>' +
+        '<label class="switch" title="Pause service"><input type="checkbox" class="live-toggle"' + (live ? "" : " checked") + '><span class="track"></span></label>' +
+        "</div></div><hr class=\"divider mt-3 mb-2\">" + pkgs + "</div>";
+    }).join("");
+    $$(".live-toggle", host).forEach((t) => t.addEventListener("change", async () => {
+      const card = t.closest("[data-sid]");
+      try {
+        const updated = await api("/api/services/" + encodeURIComponent(card.getAttribute("data-sid")) + "/pause", { body: {} });
+        const chip = card.querySelector(".st");
+        if (updated.live) {
+          chip.className = "st st-green";
+          chip.textContent = "Active · searchable";
+          toast("Service is live again.", "success");
+        } else {
+          chip.className = "st st-gray";
+          chip.textContent = "Paused · hidden from search";
+          toast("Service paused. Active orders are unaffected.", "success");
+        }
+      } catch (err) {
+        t.checked = !t.checked;
+        if (!gate(err)) toast(err.message, "error");
+      }
+    }));
+  }
+
+  function readPackages() {
+    return $$(".pkg-row").map((row) => {
+      const inputs = row.querySelectorAll("input");
+      return {
+        name: (inputs[0] && inputs[0].value) || "Package",
+        price_naira: Number(String((inputs[1] && inputs[1].value) || "0").replace(/\D/g, "")),
+        days: Number((inputs[2] && inputs[2].value) || 7),
+        revisions: Number((inputs[3] && inputs[3].value) || 1),
+      };
+    });
+  }
+
+  function modeValue() {
+    const checked = document.querySelector('input[name="work_mode"]:checked');
+    if (checked) return checked.value;
+    if ($("#pj_1_0") && $("#pj_1_0").checked) return "hybrid";
+    return "remote";
+  }
+
+  async function serviceForm() {
+    const me = await api("/api/me");
+    paintMe(me);
+    const form = $("#serviceForm");
+    if (!form) return;
+    const title = form.querySelector('input[name="title"]') || form.querySelector(".input");
+    const category = form.querySelector('select[name="category"]') || form.querySelector("select");
+    const desc = form.querySelector('textarea[name="description"]') || form.querySelector("textarea");
+    if (title && !title.name) title.name = "title";
+    if (category && !category.name) category.name = "category";
+    if (desc && !desc.name) desc.name = "description";
+
+    const id = params.get("id") || "";
+    if (id) {
+      try {
+        const s = await api("/api/me/services/" + encodeURIComponent(id));
+        const h1 = $(".ph-title");
+        if (h1) h1.textContent = "Edit service";
+        if (title) title.value = s.title || "";
+        if (desc) desc.value = s.description || "";
+        if (category && s.category) {
+          const opt = Array.from(category.options).find((o) => o.text === s.category || o.value === s.category);
+          if (opt) category.value = opt.value;
+        }
+        const mode = document.querySelector('input[name="work_mode"][value="' + (s.mode || "remote") + '"]');
+        if (mode) mode.checked = true;
+        const pkgs = s.packages || [];
+        const rows = $$(".pkg-row");
+        pkgs.forEach((p, i) => {
+          const row = rows[i];
+          if (!row) return;
+          const inputs = row.querySelectorAll("input");
+          if (inputs[0]) inputs[0].value = p.name || "";
+          if (inputs[1]) inputs[1].value = String(p.price_naira || Math.round((p.price_kobo || 0) / 100));
+          if (inputs[2]) inputs[2].value = String(p.days || "");
+          if (inputs[3]) inputs[3].value = String(p.revisions || "");
+        });
+      } catch (err) {
+        if (!gate(err)) toast(err.message, "error");
+      }
+    }
+
+    async function save(draft) {
+      const btn = form.querySelector(draft ? ".btn-secondary" : 'button[type="submit"]');
+      const body = {
+        title: (title && title.value) || "",
+        category: (category && (category.options[category.selectedIndex] ? category.options[category.selectedIndex].text : category.value)) || "",
+        description: (desc && desc.value) || "",
+        work_mode: modeValue(),
+        packages: readPackages(),
+        draft: !!draft,
+      };
+      busy(btn, true);
+      try {
+        let saved;
+        if (id) {
+          saved = await api("/api/services/" + encodeURIComponent(id), { method: "POST", body });
+        } else {
+          saved = await api("/api/services", { body });
+        }
+        toast(draft ? "Saved as draft." : "Service is live.", "success");
+        location.href = "worker-services.html";
+        return saved;
+      } catch (err) {
+        if (!gate(err)) toast(err.message, "error");
+      } finally {
+        busy(btn, false);
+      }
+    }
+
+    form.addEventListener("submit", (e) => {
+      e.preventDefault();
+      save(false);
+    });
+    const draftBtn = form.querySelector(".btn-secondary");
+    if (draftBtn && /draft/i.test(draftBtn.textContent)) {
+      draftBtn.removeAttribute("data-toast");
+      draftBtn.addEventListener("click", (e) => {
+        e.preventDefault();
+        save(true);
+      });
+    }
+  }
+
+  document.addEventListener("DOMContentLoaded", () => {
+    const run = async () => {
+      try {
+        if (page === "worker-dash") await dash();
+        else if (page === "wallet") await wallet();
+        else if (page === "worker-services") await services();
+        else if (page === "service-form") await serviceForm();
+      } catch (err) {
+        if (!gate(err)) {
+          console.error(err);
+          toast(err.message || "Could not load.", "error");
+        }
+      }
+    };
+    run();
+  });
+})();

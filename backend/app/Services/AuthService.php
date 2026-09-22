@@ -1,0 +1,280 @@
+<?php
+declare(strict_types=1);
+
+namespace App\Services;
+
+use App\AppError;
+use App\Core\Config;
+use App\Core\RateLimit;
+use App\Core\Session;
+use App\Models\Profile;
+use App\Models\User;
+
+final class AuthService
+{
+    public static function registerStart(string $name, string $phoneRaw, string $email, string $password, string $joinAs, string $ip): array
+    {
+        $fields = [];
+        $name = trim($name);
+        if (mb_strlen($name) < 2) {
+            $fields['full_name'] = 'Enter your full name.';
+        }
+        $phone = normalize_phone($phoneRaw);
+        if ($phone === '') {
+            $fields['phone'] = 'Use a Nigerian mobile, e.g. 0803 000 0000.';
+        }
+        $email = trim($email);
+        if ($email !== '' && !filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            $fields['email'] = 'That email does not look right.';
+        }
+        if (strlen($password) < 8) {
+            $fields['password'] = 'Use at least 8 characters.';
+        }
+        $roles = self::rolesFromJoin($joinAs);
+        if ($roles === '') {
+            $fields['join_as'] = 'Choose Worker, Client, or Both.';
+        }
+        if ($fields) {
+            throw new AppError('invalid', 'Please fix the highlighted fields.', 422, $fields);
+        }
+        if (User::findByPhone($phone)) {
+            throw new AppError('phone_taken', 'An account already uses this number. Log in instead.', 409);
+        }
+        if ($email !== '' && User::findByEmail($email)) {
+            throw new AppError('email_taken', 'That email is already on an account. Log in instead.', 409);
+        }
+
+        $rl = RateLimit::hit('register:ip:' . $ip, 5, 3600);
+        if (!$rl['ok']) {
+            throw new AppError('rate_limited', 'Too many accounts from this network. Try later.', 429);
+        }
+
+        Session::set('pending_register', [
+            'full_name'     => $name,
+            'phone'         => $phone,
+            'email'         => $email !== '' ? $email : null,
+            'password_hash' => password_hash($password, PASSWORD_DEFAULT),
+            'roles'         => $roles,
+            'at'            => time(),
+        ]);
+        Session::claim($phone, 'register');
+        return OtpService::issue($phone, 'register', $ip);
+    }
+
+    public static function loginStart(string $identifier, string $password, string $ip): array
+    {
+        $rl = RateLimit::hit('login:ip:' . $ip, 10, 15 * 60);
+        if (!$rl['ok']) {
+            throw new AppError('rate_limited', 'Too many login attempts. Try again shortly.', 429);
+        }
+        $user = User::findByIdentifier($identifier);
+        if ($user === null || !password_verify($password, $user['password_hash'])) {
+            throw new AppError('credentials', 'Phone/email or password is not right.', 401);
+        }
+        if ($user['status'] !== 'active') {
+            throw new AppError('suspended', 'This account is not active. Contact support.', 403);
+        }
+        Session::set('pending_login_id', (int) $user['id']);
+        Session::claim($user['phone'], 'login');
+        return OtpService::issue($user['phone'], 'login', $ip) + ['phone' => $user['phone']];
+    }
+
+    public static function verify(string $code, string $purpose, string $ip): array
+    {
+        $claim = Session::get('otp_claim');
+        if (!is_array($claim) || ($claim['purpose'] ?? '') !== $purpose) {
+            throw new AppError('otp_session', 'Start this step again — your session expired.', 401);
+        }
+        $phone = (string) $claim['phone'];
+        OtpService::verify($phone, $purpose, $code);
+
+        if ($purpose === 'register') {
+            $pending = Session::get('pending_register');
+            if (!is_array($pending) || ($pending['phone'] ?? '') !== $phone) {
+                throw new AppError('otp_session', 'Start registration again.', 401);
+            }
+            if (User::findByPhone($phone)) {
+                throw new AppError('phone_taken', 'An account already uses this number. Log in instead.', 409);
+            }
+            $id = User::create($pending);
+            Session::remove('pending_register');
+            Session::clearClaim();
+            return self::establish($id);
+        }
+
+        if ($purpose === 'login') {
+            $id = (int) Session::get('pending_login_id');
+            $user = User::find($id);
+            if ($user === null || $user['phone'] !== $phone) {
+                throw new AppError('otp_session', 'Start login again.', 401);
+            }
+            Session::remove('pending_login_id');
+            Session::clearClaim();
+            return self::establish($id);
+        }
+
+        if ($purpose === 'reset') {
+            Session::set('reset_ok', ['phone' => $phone, 'at' => time()]);
+            Session::clearClaim();
+            return ['reset_ok' => true, 'phone_mask' => mask_phone($phone)];
+        }
+
+        throw new AppError('otp_purpose', 'Unknown verification step.', 400);
+    }
+
+    public static function resend(string $ip): array
+    {
+        $claim = Session::get('otp_claim');
+        if (!is_array($claim)) {
+            throw new AppError('otp_session', 'Start this step again.', 401);
+        }
+        return OtpService::issue((string) $claim['phone'], (string) $claim['purpose'], $ip);
+    }
+
+    public static function forgot(string $identifier, string $ip): array
+    {
+        $user = User::findByIdentifier($identifier);
+        // Always look like success — no account enumeration.
+        $echo = trim($identifier);
+        $phone = $user['phone'] ?? normalize_phone($identifier);
+        $mask = $phone !== '' ? mask_phone($phone) : $echo;
+        if ($user !== null && $user['status'] === 'active') {
+            Session::claim($user['phone'], 'reset');
+            $otp = OtpService::issue($user['phone'], 'reset', $ip);
+            return $otp + ['echo' => $mask];
+        }
+        return [
+            'phone_mask' => $mask,
+            'expires_in' => (int) Config::get('otp.ttl'),
+            'purpose'    => 'reset',
+            'echo'       => $mask,
+        ];
+    }
+
+    public static function resetPassword(string $code, string $newPassword, string $ip): array
+    {
+        if (strlen($newPassword) < 8) {
+            throw new AppError('invalid', 'Use at least 8 characters.', 422, ['password' => 'Use at least 8 characters.']);
+        }
+        $reset = Session::get('reset_ok');
+        if (!is_array($reset) || (time() - (int) $reset['at']) > 900) {
+            $claim = Session::get('otp_claim');
+            if (!is_array($claim) || ($claim['purpose'] ?? '') !== 'reset') {
+                throw new AppError('otp_session', 'Start the reset again.', 401);
+            }
+            OtpService::verify((string) $claim['phone'], 'reset', $code);
+            $phone = (string) $claim['phone'];
+            Session::clearClaim();
+        } else {
+            $phone = (string) $reset['phone'];
+        }
+        $user = User::findByPhone($phone);
+        if ($user === null) {
+            throw new AppError('not_found', 'Account not found.', 404);
+        }
+        User::updatePassword((int) $user['id'], password_hash($newPassword, PASSWORD_DEFAULT));
+        Session::remove('reset_ok');
+        return self::establish((int) $user['id']);
+    }
+
+    public static function logout(): void
+    {
+        Session::logout();
+    }
+
+    public static function me(): array
+    {
+        $id = Session::userId();
+        if ($id === null) {
+            throw new AppError('unauth', 'Log in to continue.', 401);
+        }
+        $user = User::find($id);
+        if ($user === null) {
+            Session::logout();
+            throw new AppError('unauth', 'Log in to continue.', 401);
+        }
+        return User::public($user);
+    }
+
+    public static function updateProfile(int $id, array $in): array
+    {
+        $name = trim((string) ($in['full_name'] ?? ''));
+        if ($name !== '') {
+            if (mb_strlen($name) < 2) {
+                throw new AppError('invalid', 'Enter your full name.', 422, ['full_name' => 'Enter your full name.']);
+            }
+            User::updateName($id, $name);
+        }
+        $fields = [];
+        foreach (['headline', 'bio', 'state', 'city', 'work_mode', 'skill'] as $k) {
+            if (array_key_exists($k, $in)) {
+                $fields[$k] = $in[$k] === '' ? null : (string) $in[$k];
+            }
+        }
+        foreach (['notify_sms', 'notify_jobs', 'notify_marketing'] as $k) {
+            if (array_key_exists($k, $in)) {
+                $fields[$k] = !empty($in[$k]) ? 1 : 0;
+            }
+        }
+        Profile::update($id, $fields);
+        return User::public(User::find($id));
+    }
+
+    public static function updatePassword(int $id, string $current, string $new): void
+    {
+        $user = User::find($id);
+        if ($user === null || !password_verify($current, $user['password_hash'])) {
+            throw new AppError('credentials', 'Current password is not right.', 401);
+        }
+        if (strlen($new) < 8) {
+            throw new AppError('invalid', 'Use at least 8 characters.', 422, ['password' => 'Use at least 8 characters.']);
+        }
+        User::updatePassword($id, password_hash($new, PASSWORD_DEFAULT));
+    }
+
+    public static function updateEmail(int $id, string $email): array
+    {
+        $email = trim($email);
+        if ($email !== '' && !filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            throw new AppError('invalid', 'That email does not look right.', 422, ['email' => 'That email does not look right.']);
+        }
+        if ($email !== '') {
+            $other = User::findByEmail($email);
+            if ($other && (int) $other['id'] !== $id) {
+                throw new AppError('email_taken', 'That email is already on an account.', 409);
+            }
+        }
+        User::updateEmail($id, $email !== '' ? $email : null);
+        return User::public(User::find($id));
+    }
+
+    public static function homeFor(array $me): string
+    {
+        $roles = $me['roles'] ?? [];
+        if (in_array('admin', $roles, true)) {
+            return '/admin/index.html';
+        }
+        if (in_array('client', $roles, true)) {
+            return '/client-dashboard.html';
+        }
+        return '/worker-dashboard.html';
+    }
+
+    private static function establish(int $id): array
+    {
+        Session::login($id);
+        User::touchLogin($id);
+        $me = User::public(User::find($id));
+        return ['user' => $me, 'redirect' => self::homeFor($me)];
+    }
+
+    private static function rolesFromJoin(string $joinAs): string
+    {
+        return match ($joinAs) {
+            'worker' => 'worker',
+            'client' => 'client',
+            'both'   => 'client,worker',
+            default  => '',
+        };
+    }
+}
