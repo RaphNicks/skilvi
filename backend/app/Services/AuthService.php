@@ -81,6 +81,9 @@ final class AuthService
 
     public static function verify(string $code, string $purpose, string $ip): array
     {
+        if ($purpose === 'login' && Session::userId()) {
+            return self::establish((int) Session::userId());
+        }
         $claim = Session::get('otp_claim');
         if (!is_array($claim) || ($claim['purpose'] ?? '') !== $purpose) {
             throw new AppError('otp_session', 'Start this step again — your session expired.', 401);

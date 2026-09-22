@@ -90,25 +90,35 @@
 
   const otpForm = document.getElementById("otpForm");
   if (otpForm) {
+    let verifying = false;
     otpForm.addEventListener("submit", async (e) => {
       e.preventDefault();
+      e.stopImmediatePropagation();
+      if (verifying) return;
       const btn = otpForm.querySelector('[type="submit"]');
+      const status = document.getElementById("otpStatus");
       const code = readOtp();
       if (code.length !== 6) {
-        toast("Enter the 6-digit code.", "error");
+        toast("Enter all 6 digits, then click Verify.", "error");
+        if (status) status.textContent = "Enter all 6 digits.";
         return;
       }
+      verifying = true;
       busy(btn, true);
+      if (status) status.textContent = "Checking code…";
       try {
-        const purpose = document.getElementById("otpPurpose").value;
+        const purposeEl = document.getElementById("otpPurpose");
+        const purpose = (purposeEl && purposeEl.value) || "login";
         const data = await api("/api/auth/verify", { body: { code, purpose } });
-        toast("You're in.", "success");
+        if (status) status.textContent = "You're in — opening your dashboard…";
         const next = new URLSearchParams(location.search).get("next");
-        location.href = next || data.redirect || "/client-dashboard.html";
+        const dest = next || (data && data.redirect) || "/client-dashboard.html";
+        window.location.replace(dest);
       } catch (err) {
-        toast(err.message, "error");
-      } finally {
+        verifying = false;
         busy(btn, false);
+        if (status) status.textContent = err.message || "Could not verify.";
+        toast(err.message, "error");
       }
     });
   }

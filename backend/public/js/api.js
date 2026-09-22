@@ -72,11 +72,6 @@
       el.addEventListener("input", () => {
         el.value = el.value.replace(/\D/g, "").slice(0, 1);
         if (el.value && boxes[i + 1]) boxes[i + 1].focus();
-        const code = boxes.map((b) => b.value).join("");
-        if (code.length === 6) {
-          const form = el.closest("form");
-          if (form) form.requestSubmit();
-        }
       });
       el.addEventListener("keydown", (e) => {
         if (e.key === "Backspace" && !el.value && boxes[i - 1]) {

@@ -93,6 +93,7 @@ View::partial('head', ['title' => 'Log in — Skilvi', 'description' => 'Log in 
           <input class="input otp-box" inputmode="numeric" maxlength="1" aria-label="Digit 6">
         </div>
         <button class="btn btn-primary btn-block btn-lg mt-3" type="submit">Verify &amp; continue</button>
+        <p class="center small mt-2" id="otpStatus" style="color:var(--ink-2)"></p>
       </form>
       <p class="center small faint mt-2"><button class="link" style="font-size:13px" type="button" id="otpResend">Didn’t get it? Resend code</button></p>
     </div>
@@ -102,7 +103,7 @@ View::partial('head', ['title' => 'Log in — Skilvi', 'description' => 'Log in 
 </main>
 
 <?php View::partial('footer_public'); ?>
-<script src="/js/auth.js"></script>
+<script src="/js/auth.js?v=18"></script>
 <script>
   document.addEventListener("DOMContentLoaded", () => {
     const I = SkIconSvg;
