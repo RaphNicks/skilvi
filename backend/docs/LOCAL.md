@@ -119,7 +119,7 @@ Browser smoke:
 
 1. Home loads with CSS and logo.
 2. Search / jobs / a worker profile.
-3. Register or log in as Adaeze (`08052223344`) / Chinedu, complete OTP.
+3. Register or log in as Chinedu (`08031112233`), complete OTP. Sign out is in the dashboard sidebar.
 4. Post a job → propose → accept → checkout → **Simulate payment** (dev only) → start → submit → approve.
 5. Worker wallet: available balance after release.
 6. Admin (`08000000001`) → `/admin/index.html`.

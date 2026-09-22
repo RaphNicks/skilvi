@@ -10,13 +10,78 @@ final class Seed
     public static function run(): void
     {
         self::users();
-        self::catalog();
+        self::categoriesOnly();
         self::fixTree();
-        self::demoOrders();
-        self::demoComms();
-        self::demoAdmin();
-        \App\Services\WalletService::syncFromOrders();
         Db::pdo()->prepare('INSERT OR REPLACE INTO settings (key, value) VALUES (?, ?)')->execute(['min_withdrawal_kobo', '500000']);
+        Db::pdo()->prepare('INSERT OR REPLACE INTO settings (key, value) VALUES (?, ?)')->execute(['fee_percent', '10']);
+        Db::pdo()->prepare('INSERT OR REPLACE INTO settings (key, value) VALUES (?, ?)')->execute(['currency', 'NGN']);
+    }
+
+    /** Keep staff/test logins; wipe seeded marketplace jobs, orders, extra fake workers. */
+    public static function purgeDemo(): void
+    {
+        $keep = ['2348031112233', '2348010001028', '2348020000008', '2348000000001'];
+        $pdo = Db::pdo();
+        $pdo->exec('PRAGMA foreign_keys=OFF');
+        foreach ([
+            'messages', 'conversation_reads', 'ticket_messages', 'support_tickets',
+            'notifications', 'reviews', 'disputes', 'ledger', 'payments', 'withdrawals',
+            'proposals', 'orders', 'saved_workers', 'saved_jobs', 'jobs', 'services',
+            'promotions', 'reports', 'verifications', 'admin_audit', 'otp_codes',
+        ] as $table) {
+            try {
+                $pdo->exec("DELETE FROM $table");
+            } catch (\Throwable $e) {
+                /* table may not exist on older DBs */
+            }
+        }
+        $ph = implode(',', array_fill(0, count($keep), '?'));
+        $pdo->prepare("DELETE FROM wallets WHERE user_id NOT IN (SELECT id FROM users WHERE phone IN ($ph))")->execute($keep);
+        $pdo->prepare("DELETE FROM profiles WHERE user_id NOT IN (SELECT id FROM users WHERE phone IN ($ph))")->execute($keep);
+        $pdo->prepare("DELETE FROM users WHERE phone NOT IN ($ph)")->execute($keep);
+        $pdo->exec('UPDATE profiles SET rating_avg=0, review_count=0, orders_completed=0, verified=0, promo=0');
+        $pdo->exec('UPDATE wallets SET available_kobo=0, pending_kobo=0');
+        $pdo->exec('PRAGMA foreign_keys=ON');
+        self::categoriesOnly();
+    }
+
+    private static function categoriesOnly(): void
+    {
+        $pdo = Db::pdo();
+        $parents = [
+            ['digital-tech', 'Digital & Tech', 'digital', 'code', 'Remote', 'Web, apps, UI and IT — escrow-protected from quote to payout.', 1],
+            ['creative', 'Creative & Media', 'digital', 'pen', 'Remote', 'Brand, video, photo and writing from designers clients rate 4.8+.', 2],
+            ['trades', 'Trades & Home Services', 'trade', 'wrench', 'On-site', 'Plumbing, electrical, tiling, painting, AC, generator power and more.', 3],
+            ['business', 'Business & Professional', 'digital', 'briefcase', 'Remote', 'Accounts, VA, consulting and marketing for small Nigerian businesses.', 4],
+            ['education', 'Education & Personal', 'both', 'heart', 'Both', 'Tutoring, tailoring, hair, beauty and wellness.', 5],
+        ];
+        $insP = $pdo->prepare('INSERT OR IGNORE INTO categories (slug, name, kind, sort, icon, mode_label, blurb) VALUES (?,?,?,?,?,?,?)');
+        foreach ($parents as $c) {
+            $insP->execute([$c[0], $c[1], $c[2], $c[6], $c[3], $c[4], $c[5]]);
+        }
+        $parentId = [];
+        foreach (Db::fetchAll('SELECT id, slug FROM categories WHERE parent_id IS NULL') as $r) {
+            $parentId[$r['slug']] = (int) $r['id'];
+        }
+        $skills = [
+            ['web-dev', 'Web Development', 'digital-tech'],
+            ['uiux', 'UI/UX Design', 'digital-tech'],
+            ['graphic', 'Graphic Design', 'creative'],
+            ['video', 'Video & Motion', 'creative'],
+            ['writing', 'Writing & Content', 'creative'],
+            ['plumbing', 'Plumbing', 'trades'],
+            ['electrical', 'Electrical', 'trades'],
+            ['tiling', 'Tiling & Masonry', 'trades'],
+            ['painting', 'Painting', 'trades'],
+            ['power', 'Generator & Power', 'trades'],
+            ['accounting', 'Accounting & Bookkeeping', 'business'],
+            ['fashion', 'Fashion & Tailoring', 'education'],
+        ];
+        $insS = $pdo->prepare('INSERT OR IGNORE INTO categories (slug, name, kind, sort, parent_id) VALUES (?,?,?,?,?)');
+        $i = 10;
+        foreach ($skills as $s) {
+            $insS->execute([$s[0], $s[1], 'skill', $i++, $parentId[$s[2]] ?? null]);
+        }
     }
 
     /** Re-parent leftover v1 categories so filters work on existing DBs. */

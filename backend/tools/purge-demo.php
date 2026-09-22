@@ -4,13 +4,12 @@ declare(strict_types=1);
 require dirname(__DIR__) . '/app/bootstrap.php';
 
 App\Core\Schema::install();
-App\Core\Seed::run();
+App\Core\Seed::purgeDemo();
 
-echo "schema + seed ok\n";
-echo "sqlite: " . App\Core\Config::get('db.sqlite_path') . "\n";
-echo "seed logins (password: password1) — no demo jobs or orders\n";
+echo "demo marketplace data removed\n";
+echo "kept logins (password: password1)\n";
 echo "  Chinedu Okafor  +234 803 111 2233  (client,worker)\n";
 echo "  Ifeanyi Okoro   +234 801 000 1028  (client,worker)\n";
 echo "  Adaeze Nwosu    +234 802 000 0008  (worker)\n";
 echo "  Skilvi Admin    +234 800 000 0001  (admin)\n";
-echo "If an older install still shows fake jobs, run: php tools/purge-demo.php\n";
+echo "Dashboards, search, and jobs now show only live records.\n";

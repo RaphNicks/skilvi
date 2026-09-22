@@ -25,9 +25,10 @@
     <a class="side-item" href="saved.html"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20.3S3.8 15 3.8 9.6a4.6 4.6 0 0 1 8.2-2.9 4.6 4.6 0 0 1 8.2 2.9c0 5.4-8.2 10.7-8.2 10.7Z"/></svg><span>Saved workers</span></a>
     <a class="side-item" href="client-dashboard.html?tab=payments"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 10h18"/></svg><span>Payments</span></a>
   <div class="side-label">Account</div>
-    <a class="side-item" href="messages.html"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H8l-4 4V6a1 1 0 0 1 1-1Z"/></svg><span>Messages</span> <span class="badge-n">1</span></a>
+    <a class="side-item" href="messages.html"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H8l-4 4V6a1 1 0 0 1 1-1Z"/></svg><span>Messages</span> </a>
     <a class="side-item" href="disputes.html"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v16m-7 0h14"/><path d="m5 7-3 6a3.5 3.5 0 0 0 6 0L5 7Zm14 0-3 6a3.5 3.5 0 0 0 6 0l-3-6Z"/><path d="M5 7h14"/></svg><span>Disputes</span></a>
     <a class="side-item" href="account-settings.html"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19 12a7 7 0 0 0-.1-1.2l2-1.6-2-3.4-2.4 1a7 7 0 0 0-2-1.2L14 3h-4l-.5 2.6a7 7 0 0 0-2 1.2l-2.4-1-2 3.4 2 1.6a7 7 0 0 0 0 2.4l-2 1.6 2 3.4 2.4-1a7 7 0 0 0 2 1.2L10 21h4l.5-2.6a7 7 0 0 0 2-1.2l2.4 1 2-3.4-2-1.6c.06-.4.1-.8.1-1.2Z"/></svg><span>Settings</span></a>
+    <a class="side-item" href="/logout.html"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 4H5a1 1 0 0 0-1 1v14a1 1 0 0 0 1 1h4"/><path d="m15 8 4 4-4 4m4-4H9"/></svg><span>Sign out</span></a>
   <div class="side-foot"><div class="side-user"><span class="avatar sm a2">AB</span><div><div class="su-name">Aisha Bello</div><div class="su-role">Client · Adaeze Boutique</div></div></div></div>
 </aside>
   <div class="shell-main">
@@ -36,14 +37,15 @@
   <div class="sb-actions">
     <a class="link-muted" href="index.html">View marketplace</a>
     <a class="icon-btn" href="notifications.html" aria-label="Notifications"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9a6 6 0 1 1 12 0c0 5 2 6 2 6H4s2-1 2-6"/><path d="M10 19a2 2 0 0 0 4 0"/></svg><span class="dot"></span></button>
+    <a class="btn btn-ghost btn-sm" href="/logout.html">Sign out</a>
     <a class="sb-user" href="account-settings.html"><span class="avatar sm a2">AB</span><span class="su-name">Aisha</span></a>
   </div>
 </header>
     <main class="content">
       <div class="page-head">
         <div>
-          <h1 class="ph-title">Welcome back, Aisha</h1>
-          <p class="ph-sub">Adaeze Boutique · Lagos, Nigeria</p>
+          <h1 class="ph-title">Welcome back</h1>
+          <p class="ph-sub">Your client dashboard</p>
         </div>
         <div class="ph-actions">
           <a class="btn btn-secondary" href="search.html"><span class="ico" id="sIco"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg></span> Find a worker</a>
@@ -54,57 +56,24 @@
       <div data-tabs>
         <div class="tabs">
           <button class="tab active" data-tab="overview">Overview</button>
-          <button class="tab" data-tab="orders">My orders <span class="count">5</span></button>
-          <button class="tab" data-tab="jobs">My jobs <span class="count">1</span></button>
+          <button class="tab" data-tab="orders">My orders <span class="count">0</span></button>
+          <button class="tab" data-tab="jobs">My jobs <span class="count">0</span></button>
           <button class="tab" data-tab="payments">Payments</button>
         </div>
 
         <!-- OVERVIEW -->
         <div class="tab-panel active" data-panel="overview">
-          <div class="grid grid-4 mt-3" id="cdStats"><div class="stat-card"><div class="label"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="8" width="18" height="12" rx="2"/><path d="M9 8V6a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2M3 13h18"/></svg>Active orders</div><div class="value">2</div><div class="delta">1 needs your approval</div></div>
-          <div class="stat-card"><div class="label"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 7H5a2 2 0 0 1 0-4h13v4"/><path d="M20 7a1.5 1.5 0 0 1 1.5 1.5v11A1.5 1.5 0 0 1 20 21H6a2 2 0 0 1-2-2V5"/><circle cx="16.5" cy="14" r="1"/></svg>Spent this month</div><div class="value">₦130,000</div><div class="delta">2 orders</div></div>
-          <div class="stat-card"><div class="label"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M9 9h6M9 13h6M9 17h3"/></svg>Open jobs</div><div class="value">1</div><div class="delta">5 proposals</div></div>
-          <div class="stat-card"><div class="label"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 5 6v6c0 4.4 3 7.4 7 9 4-1.6 7-4.6 7-9V6l-7-3Z"/><path d="m9 12 2 2 4-4"/></svg>Escrow-protected</div><div class="value">100%</div><div class="delta">of your payments</div></div></div>
+          <div class="grid grid-4 mt-3" id="cdStats"></div>
 
           <div class="grid grid-2 mt-3">
             <div class="card card-pad">
               <div class="row spread mb-2"><h3 style="font-size:14px">Needs your action</h3></div>
-              <div class="queue-card" style="border:0;box-shadow:none">
-                <div class="queue-row">
-                  <span class="avatar a1">CO</span>
-                  <div class="qr-main">
-                    <div class="qr-t">OR-1042 · Landing page — Naija Foods</div>
-                    <div class="qr-s">Delivered 2 days ago — review the work and approve to release ₦85,000</div>
-                  </div>
-                  <span class="st st-teal">Awaiting approval</span>
-                  <a class="btn btn-primary btn-sm" href="order-detail.html">Review now</a>
-                </div>
-                <div class="queue-row">
-                  <span class="avatar a1">IO</span>
-                  <div class="qr-main">
-                    <div class="qr-t">Job · Bathroom tiling — Lekki Phase 1</div>
-                    <div class="qr-s">3 new proposals since yesterday — 2 are from verified tilers</div>
-                  </div>
-                  <span class="st st-royal">3 proposals</span>
-                  <a class="btn btn-secondary btn-sm" href="job-detail.html">Review</a>
-                </div>
-                <div class="queue-row">
-                  <span class="avatar a1">IO</span>
-                  <div class="qr-main">
-                    <div class="qr-t">OR-1028 · Bathroom tiling — Lekki</div>
-                    <div class="qr-s">Completed 2 weeks ago — rate Ifeanyi to build his reputation</div>
-                  </div>
-                  <span class="st st-green">Review due</span>
-                  <a class="btn btn-secondary btn-sm" href="order-detail.html">Rate</a>
-                </div>
-              </div>
+              <div class="queue-card" style="border:0;box-shadow:none"><p class="tiny faint">Nothing needs you right now.</p></div>
             </div>
 
             <div class="card card-pad">
               <div class="row spread mb-2"><h3 style="font-size:14px">Recent orders</h3><a class="link" style="font-size:13px" href="client-dashboard.html?tab=orders">View all</a></div>
-              <div id="cdRecent"><div class="queue-row" style="padding:10px 0"><span class="avatar sm a1">CO</span><div class="qr-main"><div class="qr-t">Landing page — Naija Foods</div><div class="qr-s">OR-1042 · ₦85,000</div></div><span class="st st-teal">Awaiting approval</span><a class="link" style="font-size:12.5px" href="order-detail.html">Open</a></div>
-            <div class="queue-row" style="padding:10px 0"><span class="avatar sm a4">NE</span><div class="qr-main"><div class="qr-t">Logo design — Adaeze Boutique</div><div class="qr-s">OR-1036 · ₦45,000</div></div><span class="st st-amber">In progress</span><a class="link" style="font-size:12.5px" href="order-detail.html">Open</a></div>
-            <div class="queue-row" style="padding:10px 0"><span class="avatar sm a1">IO</span><div class="qr-main"><div class="qr-t">Bathroom tiling — Lekki</div><div class="qr-s">OR-1028 · ₦300,000</div></div><span class="st st-green">Completed</span><a class="link" style="font-size:12.5px" href="order-detail.html">Open</a></div></div>
+              <div id="cdRecent"><p class="tiny faint" style="padding:12px 0">Nothing here yet.</p></div>
             </div>
           </div>
 
@@ -123,11 +92,7 @@
           <div class="table-wrap mt-3">
             <table class="table">
               <thead><tr><th>Order</th><th>Worker</th><th class="num">Amount</th><th>Placed</th><th>Status</th><th></th></tr></thead>
-              <tbody id="cdOrders"><tr><td><span class="cell-main">Landing page — Naija Foods</span><div class="cell-sub">OR-1042</div></td><td><span class="row" style="gap:8px"><span class="avatar sm a1">CO</span>Chinedu Okafor</span></td><td class="num amount">₦85,000</td><td>Sep 14, 2026</td><td><span class="st st-teal">Awaiting approval</span></td><td class="right"><a class="btn btn-secondary btn-sm" href="order-detail.html">Open</a></td></tr>
-              <tr><td><span class="cell-main">Logo design — Adaeze Boutique</span><div class="cell-sub">OR-1036</div></td><td><span class="row" style="gap:8px"><span class="avatar sm a4">NE</span>Ngozi Eze</span></td><td class="num amount">₦45,000</td><td>Sep 11, 2026</td><td><span class="st st-amber">In progress</span></td><td class="right"><a class="btn btn-secondary btn-sm" href="order-detail.html">Open</a></td></tr>
-              <tr><td><span class="cell-main">Bathroom tiling — Lekki</span><div class="cell-sub">OR-1028</div></td><td><span class="row" style="gap:8px"><span class="avatar sm a1">IO</span>Ifeanyi Okoro</span></td><td class="num amount">₦300,000</td><td>Sep 2, 2026</td><td><span class="st st-green">Completed</span></td><td class="right"><a class="btn btn-secondary btn-sm" href="order-detail.html">Open</a></td></tr>
-              <tr><td><span class="cell-main">Wiring — 4-bed bungalow, GRA</span><div class="cell-sub">OR-1019</div></td><td><span class="row" style="gap:8px"><span class="avatar sm a5">TA</span>Tunde Adeyemi</span></td><td class="num amount">₦450,000</td><td>Aug 28, 2026</td><td><span class="st st-royal">Paid · worker to start</span></td><td class="right"><a class="btn btn-secondary btn-sm" href="order-detail.html">Open</a></td></tr>
-              <tr><td><span class="cell-main">Bookkeeping — March close</span><div class="cell-sub">OR-1007</div></td><td><span class="row" style="gap:8px"><span class="avatar sm a4">KA</span>Kemi Adeleke</span></td><td class="num amount">₦60,000</td><td>Aug 12, 2026</td><td><span class="st st-green">Settled</span></td><td class="right"><a class="btn btn-secondary btn-sm" href="order-detail.html">Open</a></td></tr></tbody>
+              <tbody id="cdOrders"><tr><td colspan="6" class="muted">Nothing here yet.</td></tr></tbody>
             </table>
           </div>
         </div>
@@ -137,24 +102,7 @@
           <div class="table-wrap mt-3">
             <table class="table">
               <thead><tr><th>Job</th><th>Budget</th><th>Posted</th><th>Proposals</th><th>Status</th><th></th></tr></thead>
-              <tbody>
-                <tr>
-                  <td><span class="cell-main">Bathroom tiling — 2 rooms, Lekki Phase 1</span><div class="cell-sub">On-site · Lekki, Lagos</div></td>
-                  <td class="num amount">₦300,000</td>
-                  <td>Sep 14, 2026</td>
-                  <td><b>5</b> <span class="cell-sub">(2 new)</span></td>
-                  <td><span class="st st-royal">Open</span></td>
-                  <td class="right"><a class="btn btn-primary btn-sm" href="job-detail.html">Review proposals</a></td>
-                </tr>
-                <tr>
-                  <td><span class="cell-main">Logo + brand kit for Brew &amp; Co</span><div class="cell-sub">Remote · Closed</div></td>
-                  <td class="num amount">₦45,000</td>
-                  <td>Aug 30, 2026</td>
-                  <td>7</td>
-                  <td><span class="st st-green">Awarded</span></td>
-                  <td class="right"><a class="link" href="order-detail.html" style="font-size:13px">View order</a></td>
-                </tr>
-              </tbody>
+              <tbody><tr><td colspan="6" class="muted">No jobs posted yet.</td></tr></tbody>
             </table>
           </div>
         </div>
@@ -164,12 +112,7 @@
           <div class="table-wrap mt-3">
             <table class="table">
               <thead><tr><th>Payment</th><th>Order</th><th>Method</th><th class="num">Amount</th><th>Date</th><th>Status</th></tr></thead>
-              <tbody>
-                <tr><td class="cell-main">PAY-5521</td><td class="cell-sub">OR-1042 · Landing page — Naija Foods</td><td>Bank transfer</td><td class="num amount">₦85,000</td><td>Sep 14, 2026</td><td><span class="st st-royal">In escrow</span></td></tr>
-                <tr><td class="cell-main">PAY-5518</td><td class="cell-sub">OR-1036 · Logo design — Adaeze Boutique</td><td>Card</td><td class="num amount">₦45,000</td><td>Sep 11, 2026</td><td><span class="st st-amber">In escrow</span></td></tr>
-                <tr><td class="cell-main">PAY-5497</td><td class="cell-sub">OR-1028 · Bathroom tiling — Lekki</td><td>USSD</td><td class="num amount">₦300,000</td><td>Sep 2, 2026</td><td><span class="st st-green">Released</span></td></tr>
-                <tr><td class="cell-main">REF-0211</td><td class="cell-sub">OR-1007 · Bookkeeping — March close</td><td>Refund · Card</td><td class="num amount" style="color:var(--red)">−₦60,000</td><td>Aug 12, 2026</td><td><span class="st st-gray">Refunded</span></td></tr>
-              </tbody>
+              <tbody><tr><td colspan="6" class="muted">No payments yet.</td></tr></tbody>
             </table>
           </div>
           <p class="tiny faint mt-2">Refunds return to the original payment method and usually appear within 5–10 business days, depending on your bank.</p>
@@ -178,36 +121,7 @@
     </main>
   </div>
 </div>
+<script src="assets/js/skilvi.js?v=19"></script>
 
-<script src="assets/js/mock.js?v=16"></script>
-<script src="assets/js/skilvi.js?v=16"></script>
-<script>
-  document.addEventListener("DOMContentLoaded", () => {
-    const I = SkIconSvg;
-    $("#sIco").innerHTML = I.search;
-
-    const stats = [
-      [I.briefcase, "Active orders", "2", "1 needs your approval"],
-      [I.wallet2, "Spent this month", "₦130,000", "2 orders"],
-      [I.jobs, "Open jobs", "1", "5 proposals"],
-      [I.shield, "Escrow-protected", "100%", "of your payments"]
-    ];
-    $("#cdStats").innerHTML = stats.map(([i, l, v, d]) =>
-      '<div class="stat-card"><div class="label">' + i + l + '</div><div class="value">' + v + "</div><div class=\"delta\">" + d + "</div></div>").join("");
-
-    const stClass = { delivered: "st-teal", in_progress: "st-amber", completed: "st-green", paid: "st-royal", settled: "st-green" };
-    const orderRow = (o) =>
-      '<tr><td><span class="cell-main">' + o.title + '</span><div class="cell-sub">' + o.id + "</div></td>" +
-      '<td><span class="row" style="gap:8px"><span class="avatar sm ' + o.tone + '">' + (o.party[0] + o.party.split(" ")[1][0]) + "</span>" + o.party + "</span></td>" +
-      '<td class="num amount">' + Sk.ngn(o.amount) + "</td><td>" + o.date + "</td>" +
-      '<td><span class="st ' + stClass[o.state] + '">' + o.stateLabel + "</span></td>" +
-      '<td class="right nowrap"><a class="btn btn-secondary btn-sm" href="order-detail.html">Open</a></td></tr>';
-    $("#cdRecent").innerHTML = MOCK.orders.slice(0, 3).map((o) =>
-      '<div class="queue-row" style="padding:10px 0"><span class="avatar sm ' + o.tone + '">' + (o.party[0] + o.party.split(" ")[1][0]) + "</span>" +
-      '<div class="qr-main"><div class="qr-t">' + o.title + '</div><div class="qr-s">' + o.id + " · " + Sk.ngn(o.amount) + "</div></div>" +
-      '<span class="st ' + stClass[o.state] + '">' + o.stateLabel + '</span><a class="link" style="font-size:12.5px" href="order-detail.html">Open</a></div>').join("");
-    $("#cdOrders").innerHTML = MOCK.orders.map(orderRow).join("");
-  });
-</script>
 </body>
 </html>

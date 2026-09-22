@@ -110,6 +110,34 @@
     const tabCount = $$(".tabs .tab .count");
     if (tabCount[0]) tabCount[0].textContent = orders.length;
     if (tabCount[1]) tabCount[1].textContent = (d.jobs || []).length;
+    const actionHost = document.querySelector('[data-panel="overview"] .queue-card');
+    if (actionHost) {
+      const needs = (d.orders || []).filter((o) => o.status === "completion_submitted" || o.ui_status === "delivered");
+      const jobsNeed = (d.jobs || []).filter((j) => j.status === "open" && (j.proposals || 0) > 0);
+      const bits = [];
+      needs.forEach((o) => {
+        bits.push('<div class="queue-row"><span class="avatar sm ' + esc(o.tone) + '">' + esc(init(o.party)) + "</span>" +
+          '<div class="qr-main"><div class="qr-t">' + esc(o.id) + " · " + esc(o.title) + "</div>" +
+          '<div class="qr-s">Review the work and approve to release ' + esc(o.amount_label) + "</div></div>" +
+          '<span class="st ' + esc(o.chip) + '">' + esc(o.stateLabel) + "</span>" +
+          '<a class="btn btn-primary btn-sm" href="order-detail.html?id=' + encodeURIComponent(o.id) + '">Review</a></div>');
+      });
+      jobsNeed.forEach((j) => {
+        bits.push('<div class="queue-row"><div class="qr-main"><div class="qr-t">Job · ' + esc(j.title) + "</div>" +
+          '<div class="qr-s">' + j.proposals + " proposal" + (j.proposals === 1 ? "" : "s") + "</div></div>" +
+          '<a class="btn btn-secondary btn-sm" href="job-detail.html?id=' + encodeURIComponent(j.id) + '">Review</a></div>');
+      });
+      actionHost.innerHTML = bits.join("") || '<p class="tiny faint">Nothing needs you right now.</p>';
+    }
+    const payBody = document.querySelector('[data-panel="payments"] tbody');
+    if (payBody) {
+      const pays = d.payments || [];
+      payBody.innerHTML = pays.map((p) =>
+        "<tr><td class=\"cell-main\">" + esc(p.code) + "</td><td class=\"cell-sub\">" + esc(p.order || "—") +
+        "</td><td>" + esc(p.method) + '</td><td class="num amount">' + esc(p.amount_label) + "</td><td>" + esc(p.date) +
+        '</td><td><span class="st ' + esc(p.chip) + '">' + esc(p.stateLabel) + "</span></td></tr>"
+      ).join("") || '<tr><td colspan="6" class="muted">No payments yet.</td></tr>';
+    }
   }
 
   function setStateBlocks(ui) {

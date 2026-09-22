@@ -83,7 +83,7 @@
       { label: "Overview", href: "worker-dashboard.html", icon: "grid", key: "overview" },
       { label: "My work", href: "worker-orders.html", icon: "briefcase", key: "orders" },
       { label: "Services", href: "worker-services.html", icon: "layers", key: "services" },
-      { label: "Jobs & proposals", href: "worker-jobs.html", icon: "jobs", key: "jobs", badge: 3 }
+      { label: "Jobs & proposals", href: "worker-jobs.html", icon: "jobs", key: "jobs" }
     ]},
     { group: "Money", items: [
       { label: "Wallet", href: "worker-wallet.html", icon: "wallet2", key: "wallet" },
@@ -92,9 +92,10 @@
       { label: "Promotion", href: "promotion.html", icon: "zap", key: "promotion" }
     ]},
     { group: "Account", items: [
-      { label: "Messages", href: "messages.html", icon: "msg", key: "messages", badge: 2 },
+      { label: "Messages", href: "messages.html", icon: "msg", key: "messages" },
       { label: "Disputes", href: "disputes.html", icon: "scale", key: "disputes" },
-      { label: "Settings", href: "account-settings.html", icon: "gear", key: "settings" }
+      { label: "Settings", href: "account-settings.html", icon: "gear", key: "settings" },
+      { label: "Sign out", href: "/logout.html", icon: "logout", key: "logout" }
     ]}
   ];
 
@@ -107,9 +108,10 @@
       { label: "Payments", href: "client-dashboard.html?tab=payments", icon: "card", key: "payments" }
     ]},
     { group: "Account", items: [
-      { label: "Messages", href: "messages.html", icon: "msg", key: "messages", badge: 1 },
+      { label: "Messages", href: "messages.html", icon: "msg", key: "messages" },
       { label: "Disputes", href: "disputes.html", icon: "scale", key: "disputes" },
-      { label: "Settings", href: "account-settings.html", icon: "gear", key: "settings" }
+      { label: "Settings", href: "account-settings.html", icon: "gear", key: "settings" },
+      { label: "Sign out", href: "/logout.html", icon: "logout", key: "logout" }
     ]}
   ];
 
@@ -118,12 +120,12 @@
       { label: "Dashboard", href: "index.html", icon: "grid", key: "dashboard" },
       { label: "Orders", href: "orders.html", icon: "briefcase", key: "orders" },
       { label: "Payments", href: "payments.html", icon: "card", key: "payments" },
-      { label: "Withdrawals", href: "withdrawals.html", icon: "wallet2", key: "withdrawals", badge: 2 },
+      { label: "Withdrawals", href: "withdrawals.html", icon: "wallet2", key: "withdrawals" },
       { label: "Promotions", href: "promotions.html", icon: "zap", key: "promotions" }
     ]},
     { group: "Trust & safety", items: [
-      { label: "Disputes", href: "disputes.html", icon: "scale", key: "disputes", badge: 3 },
-      { label: "Reports", href: "reports.html", icon: "flag", key: "reports", badge: 5 },
+      { label: "Disputes", href: "disputes.html", icon: "scale", key: "disputes" },
+      { label: "Reports", href: "reports.html", icon: "flag", key: "reports" },
       { label: "Verification", href: "verification.html", icon: "shield", key: "verification" }
     ]},
     { group: "Platform", items: [
@@ -133,7 +135,8 @@
     ]},
     { group: "System", items: [
       { label: "Audit log", href: "audit-log.html", icon: "doc", key: "audit" },
-      { label: "Settings", href: "settings.html", icon: "gear", key: "settings" }
+      { label: "Settings", href: "settings.html", icon: "gear", key: "settings" },
+      { label: "Sign out", href: "/logout.html", icon: "logout", key: "logout" }
     ]}
   ];
 
@@ -214,6 +217,7 @@
         '<a class="icon-btn" href="notifications.html" aria-label="Notifications">' + I.bell + '<span class="dot"></span></a>' +
         '<a class="sb-user" href="account-settings.html"><span class="avatar sm ' + cfg.user.tone + '">' + cfg.user.init + "</span>" +
         '<span class="su-name">' + cfg.user.name.split(" ")[0] + "</span></a>" +
+        '<a class="btn btn-ghost btn-sm" href="/logout.html">Sign out</a>' +
         "</div>";
       $$("[data-toast]", sub).forEach((b) => b.addEventListener("click", () => toast(b.getAttribute("data-toast"))));
     }
@@ -284,6 +288,7 @@
   /* ---------------- Page inits ---------------- */
   function initByPage() {
     const page = document.body.getAttribute("data-page");
+    if (window.SkApi) return;
 
     /* Search: render + filter mock workers */
     if (page === "search" && window.MOCK) {
@@ -666,7 +671,9 @@
     if (document.body.hasAttribute("data-chrome")) renderPublicHeader(ACTIVE);
     const footer = $("#site-footer");
     if (footer && document.body.hasAttribute("data-chrome")) renderFooter();
-    if (document.body.hasAttribute("data-shell")) renderShell(document.body.getAttribute("data-shell"));
+    if (document.body.hasAttribute("data-shell") && document.getElementById("side") && !document.querySelector("aside.side .side-item")) {
+      renderShell(document.body.getAttribute("data-shell"));
+    }
 
     /* mobile nav: the checkbox hack (label[for=navCheck]) opens/closes it
        purely in CSS — JS only closes the menu after a link is tapped */

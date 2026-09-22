@@ -99,7 +99,11 @@
   }
 
   async function hydrateJobDetail() {
-    const id = params.get("id") || "j01";
+    const id = params.get("id") || "";
+    if (!id) {
+      toast("This job is not available.", "error");
+      return;
+    }
     const j = await api("/api/jobs/" + encodeURIComponent(id));
     const main = $("main.container");
     if (!main) return;
@@ -177,7 +181,11 @@
   }
 
   async function hydrateProfile() {
-    const id = params.get("id") || "w01";
+    const id = params.get("id") || "";
+    if (!id) {
+      toast("This profile is not available.", "error");
+      return;
+    }
     const w = await api("/api/workers/" + encodeURIComponent(id));
     const nameEl = $("main h1, .ph-title, .profile-hero h1");
     // hero name is often in a specific block
@@ -236,7 +244,11 @@
   }
 
   async function hydrateService() {
-    const id = params.get("id") || "s-w01";
+    const id = params.get("id") || "";
+    if (!id) {
+      toast("This service is not available.", "error");
+      return;
+    }
     const s = await api("/api/services/" + encodeURIComponent(id));
     const h1 = $("h1");
     if (h1) h1.textContent = s.title;
@@ -304,6 +316,9 @@
     const data = await api("/api/landing");
     const grid = $(".lp-opp-grid");
     if (grid && data.jobs) {
+      if (!data.jobs.length) {
+        grid.innerHTML = '<p class="tiny faint">No open jobs yet. Post one to get started.</p>';
+      } else
       grid.innerHTML = data.jobs.map((j, i) =>
         '<article class="lp-card' + (i === 1 ? " featured" : "") + '">' +
         '<div class="lp-meta"><span>' + esc(j.loc) + "</span><span>" + esc(j.time) + "</span></div>" +

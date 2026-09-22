@@ -303,6 +303,28 @@ final class OrderService
                 $spent += (int) $o['amount_naira'];
             }
         }
+        $payRows = Db::fetchAll(
+            "SELECT p.code, p.method, p.status, p.amount_kobo, p.created_at, o.code AS order_code, o.title
+             FROM payments p LEFT JOIN orders o ON o.id = p.order_id
+             WHERE p.user_id = ?
+             ORDER BY p.created_at DESC LIMIT 40",
+            [$userId]
+        );
+        $payments = array_map(static function ($p) {
+            $st = $p['status'] === 'succeeded' ? ['In escrow / paid', 'st-royal'] : [$p['status'], 'st-gray'];
+            if (($p['status'] ?? '') === 'refunded') {
+                $st = ['Refunded', 'st-gray'];
+            }
+            return [
+                'code'         => $p['code'],
+                'order'        => trim(($p['order_code'] ?? '') . ' · ' . ($p['title'] ?? ''), ' ·'),
+                'method'       => $p['method'] ?: '—',
+                'amount_label' => ngn_fmt((int) $p['amount_kobo']),
+                'date'         => date('M j, Y', strtotime($p['created_at']) ?: time()),
+                'stateLabel'   => $st[0],
+                'chip'         => $st[1],
+            ];
+        }, $payRows);
         return [
             'stats' => [
                 'active_orders' => count($active),
@@ -313,6 +335,7 @@ final class OrderService
             ],
             'orders' => $orders,
             'jobs' => $jobs,
+            'payments' => $payments,
             'recent' => array_slice($orders, 0, 5),
         ];
     }
