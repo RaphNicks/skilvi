@@ -18,6 +18,9 @@
     }
     const first = document.querySelector(".otp-box");
     if (first) first.focus();
+    if (data.dev_code) {
+      toast("Dev code " + data.dev_code + " — type it in the six boxes, then Verify.", "success");
+    }
   }
 
   function switchTab(mode) {

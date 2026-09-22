@@ -2,7 +2,14 @@
 declare(strict_types=1);
 
 error_reporting(E_ALL);
-ini_set('display_errors', (getenv('APP_ENV') ?: 'dev') === 'dev' ? '1' : '0');
+// Never print warnings into JSON/HTML — that breaks login cookies and OTP.
+ini_set('display_errors', '0');
+ini_set('log_errors', '1');
+$logDir = dirname(__DIR__) . '/storage/logs';
+if (!is_dir($logDir)) {
+    @mkdir($logDir, 0775, true);
+}
+ini_set('error_log', $logDir . '/php.ini-errors.log');
 
 spl_autoload_register(function (string $class): void {
     $prefix = 'App\\';

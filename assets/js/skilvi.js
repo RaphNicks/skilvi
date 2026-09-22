@@ -469,7 +469,11 @@
       });
     }
 
-    /* Login: tabs + OTP (login and register share the OTP step) */
+    /* Login: tabs + OTP (login and register share the OTP step).
+       When /js/api.js is present the PHP backend owns this page — do not fake-verify. */
+    if (page === "login" && window.SkApi) {
+      return;
+    }
     if (page === "login") {
       const main = $("#authStepMain"), otp = $("#authStepOtp");
       let regRole = "client";
