@@ -4,6 +4,48 @@ declare(strict_types=1);
 error_reporting(E_ALL);
 // Never print warnings into JSON/HTML — that breaks login cookies and OTP.
 ini_set('display_errors', '0');
+
+(function (): void {
+    $file = dirname(__DIR__) . '/.env';
+    if (!is_file($file) || !is_readable($file)) {
+        return;
+    }
+    $lines = file($file, FILE_IGNORE_NEW_LINES);
+    if ($lines === false) {
+        return;
+    }
+    foreach ($lines as $line) {
+        $line = trim($line);
+        if ($line === '' || str_starts_with($line, '#')) {
+            continue;
+        }
+        if (str_starts_with($line, 'export ')) {
+            $line = trim(substr($line, 7));
+        }
+        if (!str_contains($line, '=')) {
+            continue;
+        }
+        [$key, $value] = explode('=', $line, 2);
+        $key = trim($key);
+        if ($key === '' || !preg_match('/^[A-Z_][A-Z0-9_]*$/', $key)) {
+            continue;
+        }
+        $existing = getenv($key);
+        if ($existing !== false && $existing !== '') {
+            continue;
+        }
+        $value = trim($value);
+        if ($value !== '' && (str_starts_with($value, '"') || str_starts_with($value, "'"))) {
+            $quote = $value[0];
+            if (str_ends_with($value, $quote) && strlen($value) >= 2) {
+                $value = substr($value, 1, -1);
+            }
+        }
+        putenv($key . '=' . $value);
+        $_ENV[$key] = $value;
+        $_SERVER[$key] = $value;
+    }
+})();
 ini_set('log_errors', '1');
 $logDir = dirname(__DIR__) . '/storage/logs';
 if (!is_dir($logDir)) {

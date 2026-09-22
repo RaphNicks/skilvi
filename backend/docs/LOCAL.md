@@ -75,7 +75,7 @@ Password for all seeds: `password1`
 | Client + worker | `ifeanyi@okoro.ng` |
 | Admin | `admin@skilvi.ng` |
 
-Login is **email + password → 6-digit code to that email**. In local `console` mode the code is in the PHP terminal and `backend/storage/logs/last_otp.json`. See `docs/OTP.md` for real SMTP / Termii.
+Login is **email + password → 6-digit code to that email**. Copy `backend/.env.example` to `backend/.env` and fill the `MAIL_*` lines for real SMTP. Until then (`console`) the code is in the PHP terminal and `backend/storage/logs/last_otp.json`. See `docs/OTP.md`.
 
 ## 4. Optional: Apache in XAMPP
 

@@ -5,21 +5,24 @@ Skilvi signs in with **email + password**, then a 6-digit code.
 ## Where the code goes
 
 1. **Email (default, production-ready path)**  
-   Set SMTP and we send the code to the inbox.
-
-   Recommended starter for Nigeria: **[Brevo](https://www.brevo.com/)** (free tier) or Mailgun / Amazon SES / Google Workspace.
+   Copy `backend/.env.example` to `backend/.env` and fill in SMTP. Codes go to the inbox.
 
    ```
-   MAIL_DRIVER=smtp
+   MAIL_MAILER=smtp
+   MAIL_SCHEME=
+   MAIL_ENCRYPTION=tls
    MAIL_HOST=smtp-relay.brevo.com
    MAIL_PORT=587
-   MAIL_USER=your-brevo-login
-   MAIL_PASS=your-smtp-key
-   MAIL_FROM=Skilvi <noreply@yourdomain.ng>
-   APP_ENV=prod
+   MAIL_USERNAME=your-login
+   MAIL_PASSWORD=your-smtp-key
+   MAIL_FROM_ADDRESS=noreply@yourdomain.ng
+   MAIL_FROM_NAME=Skilvi
+   MAIL_EHLO_DOMAIN=yourdomain.ng
    ```
 
-   On Windows local, leave `MAIL_DRIVER` unset (`console`). The code is printed in the PHP terminal and saved to `backend/storage/logs/last_otp.json`.
+   Leave the values blank on a fresh Windows install to stay on `console` (code in the PHP terminal and `backend/storage/logs/last_otp.json`).
+
+   If `MAIL_HOST` is set and `MAIL_MAILER` is empty, SMTP is used automatically.
 
 2. **SMS (optional, when the account has a Nigerian mobile)**  
    **Termii** (`https://termii.com`) — Nigerian routes, Naira billing.
@@ -34,8 +37,4 @@ Skilvi signs in with **email + password**, then a 6-digit code.
 
 ## Data store
 
-All accounts, jobs, orders, escrow, messages live in **SQLite**:
-
-`backend/storage/skilvi.sqlite`
-
-That file is local to the machine running PHP. Production can switch to MySQL with `DB_DRIVER=mysql`.
+Live data is **MySQL** (`skilvi` in phpMyAdmin). Tests use a throwaway sqlite file.

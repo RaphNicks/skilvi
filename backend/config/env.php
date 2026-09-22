@@ -65,13 +65,18 @@ return [
     ],
 
     'mail' => [
-        // Login OTP goes here. console = log only (dev). smtp = real inbox.
-        'driver' => getenv('MAIL_DRIVER') ?: 'console',
-        'from'   => getenv('MAIL_FROM') ?: 'Skilvi <noreply@skilvi.ng>',
-        'host'   => getenv('MAIL_HOST') ?: '',
-        'port'   => (int) (getenv('MAIL_PORT') ?: 587),
-        'user'   => getenv('MAIL_USER') ?: '',
-        'pass'   => getenv('MAIL_PASS') ?: '',
+        // Fill backend/.env (copy .env.example). console = log only. smtp = real inbox.
+        'driver'       => getenv('MAIL_MAILER') ?: getenv('MAIL_DRIVER') ?: ((getenv('MAIL_HOST') ?: '') !== '' ? 'smtp' : 'console'),
+        'scheme'       => getenv('MAIL_SCHEME') ?: '',
+        'encryption'   => getenv('MAIL_ENCRYPTION') ?: '',
+        'host'         => getenv('MAIL_HOST') ?: '',
+        'port'         => (int) (getenv('MAIL_PORT') ?: 587),
+        'user'         => getenv('MAIL_USERNAME') ?: getenv('MAIL_USER') ?: '',
+        'pass'         => getenv('MAIL_PASSWORD') ?: getenv('MAIL_PASS') ?: '',
+        'from_name'    => getenv('MAIL_FROM_NAME') ?: 'Skilvi',
+        'from_address' => getenv('MAIL_FROM_ADDRESS') ?: '',
+        'from'         => getenv('MAIL_FROM') ?: '',
+        'ehlo'         => getenv('MAIL_EHLO_DOMAIN') ?: 'skilvi.ng',
     ],
 
     'files' => [

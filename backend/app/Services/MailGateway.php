@@ -33,12 +33,42 @@ final class MailGateway
             }
         }
         if ($driver === 'mail') {
-            @mail($to, $subject, $body, 'From: ' . (Config::get('mail.from') ?: 'Skilvi <noreply@skilvi.ng>'));
+            @mail($to, $subject, $body, 'From: ' . self::fromHeader());
             return;
         }
         if ($driver === 'smtp') {
             self::smtp($to, $subject, $body);
         }
+    }
+
+    private static function fromHeader(): string
+    {
+        [$name, $addr] = self::fromParts();
+        return $name !== '' ? sprintf('%s <%s>', $name, $addr) : $addr;
+    }
+
+    /** @return array{0:string,1:string} */
+    private static function fromParts(): array
+    {
+        $legacy = trim((string) Config::get('mail.from', ''));
+        $name = trim((string) Config::get('mail.from_name', 'Skilvi'));
+        $addr = trim((string) Config::get('mail.from_address', ''));
+        if ($legacy !== '') {
+            if (preg_match('/^\s*(.*?)\s*<([^>]+)>\s*$/', $legacy, $m)) {
+                if ($name === '' || $name === 'Skilvi') {
+                    $name = trim($m[1]);
+                }
+                if ($addr === '') {
+                    $addr = trim($m[2]);
+                }
+            } elseif ($addr === '' && str_contains($legacy, '@')) {
+                $addr = $legacy;
+            }
+        }
+        if ($addr === '') {
+            $addr = 'noreply@skilvi.ng';
+        }
+        return [$name, $addr];
     }
 
     private static function smtp(string $to, string $subject, string $body): void
@@ -47,12 +77,22 @@ final class MailGateway
         $port = (int) Config::get('mail.port', 587);
         $user = (string) Config::get('mail.user');
         $pass = (string) Config::get('mail.pass');
-        $from = (string) (Config::get('mail.from') ?: 'noreply@skilvi.ng');
+        $enc = strtolower(trim((string) Config::get('mail.encryption', '')));
+        $scheme = strtolower(trim((string) Config::get('mail.scheme', '')));
+        $ehlo = trim((string) Config::get('mail.ehlo', 'skilvi.ng')) ?: 'skilvi.ng';
+        [$fromName, $fromAddr] = self::fromParts();
+        $from = $fromName !== '' ? sprintf('%s <%s>', $fromName, $fromAddr) : $fromAddr;
         if ($host === '') {
             error_log('SKILVI MAIL smtp skipped — MAIL_HOST empty');
             return;
         }
-        $remote = (($port === 465) ? 'ssl://' : '') . $host . ':' . $port;
+        $useSsl = in_array($enc, ['ssl', 'smtps'], true)
+            || in_array($scheme, ['ssl', 'smtps'], true)
+            || $port === 465;
+        $useTls = in_array($enc, ['tls', 'starttls'], true)
+            || $scheme === 'smtp+tls'
+            || (!$useSsl && $port === 587);
+        $remote = ($useSsl ? 'ssl://' : '') . $host . ':' . $port;
         $fp = @stream_socket_client($remote, $errno, $errstr, 12);
         if (!$fp) {
             error_log("SKILVI MAIL smtp connect failed: $errstr");
@@ -77,22 +117,18 @@ final class MailGateway
             return $read();
         };
         $read();
-        $cmd('EHLO skilvi.ng');
-        if ($port === 587) {
+        $cmd('EHLO ' . $ehlo);
+        if ($useTls) {
             $cmd('STARTTLS');
             $ok = @stream_socket_enable_crypto($fp, true, STREAM_CRYPTO_METHOD_TLS_CLIENT);
             if ($ok) {
-                $cmd('EHLO skilvi.ng');
+                $cmd('EHLO ' . $ehlo);
             }
         }
         if ($user !== '') {
             $cmd('AUTH LOGIN');
             $cmd(base64_encode($user));
             $cmd(base64_encode($pass));
-        }
-        $fromAddr = $from;
-        if (preg_match('/<([^>]+)>/', $from, $m)) {
-            $fromAddr = $m[1];
         }
         $cmd('MAIL FROM:<' . $fromAddr . '>');
         $cmd('RCPT TO:<' . $to . '>');

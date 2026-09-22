@@ -9,4 +9,5 @@
 !/storage/logs/.gitkeep
 !/storage/backups/.gitkeep
 /config/env.local.php
+.env
 .DS_Store

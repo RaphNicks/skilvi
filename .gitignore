@@ -4,3 +4,4 @@ node_modules/
 *.sqlite
 backend/storage/*.sqlite
 backend/storage/.app_key
+backend/.env
