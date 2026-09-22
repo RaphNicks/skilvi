@@ -3,11 +3,24 @@ declare(strict_types=1);
 
 $env = getenv('APP_ENV') ?: 'dev';
 
+$parent = dirname(__DIR__); // backend/
+$repo   = dirname($parent);  // GitHub clone root, or /home/user in the sandbox
+$frontend = getenv('FRONTEND_ROOT');
+if (!$frontend) {
+    if (is_file($repo . DIRECTORY_SEPARATOR . 'index.html')) {
+        $frontend = $repo;
+    } elseif (is_file($repo . DIRECTORY_SEPARATOR . 'skilvi-frontend' . DIRECTORY_SEPARATOR . 'index.html')) {
+        $frontend = $repo . DIRECTORY_SEPARATOR . 'skilvi-frontend';
+    } else {
+        $frontend = $repo;
+    }
+}
+
 return [
     'app_env'  => $env,
     'app_name' => 'Skilvi',
     'app_key'  => getenv('APP_KEY') ?: '',
-    'frontend_root' => getenv('FRONTEND_ROOT') ?: '/home/user/skilvi-frontend',
+    'frontend_root' => $frontend,
 
     'db' => [
         'driver' => getenv('DB_DRIVER') ?: 'sqlite',          // production: mysql
