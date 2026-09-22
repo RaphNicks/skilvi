@@ -1,7 +1,7 @@
 <?php
 use App\Core\View;
 use App\Services\AuthService;
-View::partial('head', ['title' => 'Log in — Skilvi', 'description' => 'Log in or create a free Skilvi account with your phone number. No email needed.']);
+View::partial('head', ['title' => 'Log in — Skilvi', 'description' => 'Log in or create a free Skilvi account with your email.']);
 ?>
 <body data-chrome="public" data-page="login">
 <?php View::partial('header_public'); ?>
@@ -9,7 +9,7 @@ View::partial('head', ['title' => 'Log in — Skilvi', 'description' => 'Log in 
 <main class="container page-pad" style="max-width:480px">
   <div class="center" style="margin-bottom:18px">
     <a class="brand" href="/index.html" style="justify-content:center"><span class="brand-mark" id="lgMark"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 5 6v6c0 4.4 3 7.4 7 9 4-1.6 7-4.6 7-9V6l-7-3Z"/><path d="m9 12 2 2 4-4"/></svg></span>Skilvi</a>
-    <p class="small faint mt-1">Phone-first, Naira-ready, escrow-protected.</p>
+    <p class="small faint mt-1">Email login, Naira-ready, escrow-protected.</p>
   </div>
 
   <div class="card card-pad">
@@ -33,12 +33,12 @@ View::partial('head', ['title' => 'Log in — Skilvi', 'description' => 'Log in 
         </div>
         <div class="form-row-2 mb-2">
           <div class="field">
-            <label>Phone number <span style="color:var(--red)">*</span></label>
-            <input class="input" name="phone" type="tel" placeholder="+234 803 000 0000" required>
+            <label>Email <span style="color:var(--red)">*</span></label>
+            <input class="input" name="email" type="email" placeholder="you@example.com" required>
           </div>
           <div class="field">
-            <label>Email (optional)</label>
-            <input class="input" name="email" type="email" placeholder="you@example.com">
+            <label>Phone (optional)</label>
+            <input class="input" name="phone" type="tel" placeholder="+234 803 000 0000">
           </div>
         </div>
         <div class="field mb-2">
@@ -66,8 +66,8 @@ View::partial('head', ['title' => 'Log in — Skilvi', 'description' => 'Log in 
 
       <form id="loginForm" class="tab-panel active" data-panel="login" autocomplete="on">
         <div class="field mb-2">
-          <label>Phone number or email</label>
-          <input class="input" name="identifier" type="text" placeholder="+234 803 000 0000" required>
+          <label>Email</label>
+          <input class="input" name="identifier" type="email" placeholder="you@example.com" required>
         </div>
         <div class="field mb-3">
           <label>Password</label>
@@ -79,8 +79,8 @@ View::partial('head', ['title' => 'Log in — Skilvi', 'description' => 'Log in 
     </div>
 
     <div id="authStepOtp" style="display:none">
-      <h3 style="font-size:17px">Verify your phone</h3>
-      <p class="small muted mt-1">We sent a 6-digit code to <b class="mono" id="otpMask">your number</b>. It expires in 10 minutes.</p>
+      <h3 style="font-size:17px">Check your email</h3>
+      <p class="small muted mt-1">We sent a 6-digit code to <b class="mono" id="otpMask">your email</b>. It expires in 10 minutes.</p>
       <p class="small faint" id="devCode" style="display:none"></p>
       <form id="otpForm" class="mt-3">
         <input type="hidden" name="purpose" id="otpPurpose" value="login">
@@ -99,16 +99,16 @@ View::partial('head', ['title' => 'Log in — Skilvi', 'description' => 'Log in 
     </div>
   </div>
 
-  <div class="alert alert-info mt-3" id="lgTrust"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 5 6v6c0 4.4 3 7.4 7 9 4-1.6 7-4.6 7-9V6l-7-3Z"/><path d="m9 12 2 2 4-4"/></svg><span><b>Safe by design.</b> Accounts are phone-verified, and every order is paid into escrow — neither side can run.</span></div>
+  <div class="alert alert-info mt-3" id="lgTrust"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 5 6v6c0 4.4 3 7.4 7 9 4-1.6 7-4.6 7-9V6l-7-3Z"/><path d="m9 12 2 2 4-4"/></svg><span><b>Safe by design.</b> Accounts are email-verified, and every order is paid into escrow — neither side can run.</span></div>
 </main>
 
 <?php View::partial('footer_public'); ?>
-<script src="/js/auth.js?v=18"></script>
+<script src="/js/auth.js?v=19"></script>
 <script>
   document.addEventListener("DOMContentLoaded", () => {
     const I = SkIconSvg;
     document.querySelector("#lgMark").innerHTML = I.mark;
-    document.querySelector("#lgTrust").innerHTML = I.shield + "<span><b>Safe by design.</b> Accounts are phone-verified, and every order is paid into escrow — neither side can run.</span>";
+    document.querySelector("#lgTrust").innerHTML = I.shield + "<span><b>Safe by design.</b> Accounts are email-verified, and every order is paid into escrow — neither side can run.</span>";
   });
 </script>
 </body>

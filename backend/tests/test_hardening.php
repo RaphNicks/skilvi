@@ -10,7 +10,7 @@ putenv('APP_KEY=skilvi-test-key-phase8-hardening');
 require dirname(__DIR__) . '/app/bootstrap.php';
 
 App\Core\Schema::install();
-App\Core\Seed::run();
+App\Core\Seed::run(true);
 
 function assert_true($c, string $msg): void
 {

@@ -24,14 +24,15 @@ final class User
 
     public static function findByIdentifier(string $raw): ?array
     {
+        $raw = trim($raw);
+        if (str_contains($raw, '@')) {
+            return self::findByEmail($raw);
+        }
         $phone = normalize_phone($raw);
         if ($phone !== '') {
             return self::findByPhone($phone);
         }
-        if (str_contains($raw, '@')) {
-            return self::findByEmail(trim($raw));
-        }
-        return null;
+        return self::findByEmail($raw);
     }
 
     public static function create(array $row): int
@@ -41,7 +42,9 @@ final class User
             'INSERT INTO users (phone, email, password_hash, full_name, roles, status, phone_verified_at, created_at, updated_at)
              VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)',
             [
-                $row['phone'],
+                (($row['phone'] ?? '') !== '')
+                    ? $row['phone']
+                    : ('e:' . strtolower((string) ($row['email'] ?? ''))),
                 $row['email'] ?? null,
                 $row['password_hash'],
                 $row['full_name'],

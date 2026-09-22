@@ -9,11 +9,11 @@ View::partial('head', ['title' => 'Reset password — Skilvi', 'description' => 
   <div class="card card-pad mt-2">
     <div id="fpForm">
       <h1 style="font-size:22px">Reset your password</h1>
-      <p class="small muted mt-1">Enter the phone number or email on your account. We’ll send a 6-digit code — it expires in 10 minutes.</p>
+      <p class="small muted mt-1">Enter the email on your account. We’ll send a 6-digit code — it expires in 10 minutes.</p>
       <form id="fpSend" class="mt-3">
         <div class="field mb-2">
-          <label>Phone number or email</label>
-          <input class="input" name="identifier" type="text" placeholder="+234 803 000 0000 or you@example.com" required>
+          <label>Email</label>
+          <input class="input" name="identifier" type="email" placeholder="you@example.com" required>
         </div>
         <button class="btn btn-primary btn-block btn-lg" type="submit">Send code</button>
       </form>
@@ -23,8 +23,8 @@ View::partial('head', ['title' => 'Reset password — Skilvi', 'description' => 
       </div>
     </div>
     <div id="fpSent" style="display:none">
-      <h1 style="font-size:22px">Check your phone</h1>
-      <p class="small muted mt-1">If an account matches <b class="mono" id="fpEcho">the number you entered</b>, a code is on its way. It expires in 10 minutes.</p>
+      <h1 style="font-size:22px">Check your email</h1>
+      <p class="small muted mt-1">If an account matches <b class="mono" id="fpEcho">the address you entered</b>, a code is on its way. It expires in 10 minutes.</p>
       <p class="small faint" id="devCode" style="display:none"></p>
       <form id="fpReset" class="mt-3">
         <div class="field mb-2">

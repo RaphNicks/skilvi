@@ -13,9 +13,9 @@ final class OtpService
     public static function issue(string $phone, string $purpose, string $ip): array
     {
         $cfg = Config::get('otp');
-        $perPhone = RateLimit::hit('otp:phone:' . $phone, (int) $cfg['max_per_phone_15m'], 15 * 60);
+        $perPhone = RateLimit::hit('otp:dest:' . $phone, (int) $cfg['max_per_phone_15m'], 15 * 60);
         if (!$perPhone['ok']) {
-            throw new AppError('rate_limited', 'Too many codes sent to this number. Try again in ' . $perPhone['wait'] . 's.', 429);
+            throw new AppError('rate_limited', 'Too many codes sent. Try again in ' . $perPhone['wait'] . 's.', 429);
         }
         $perIp = RateLimit::hit('otp:ip:' . $ip, (int) $cfg['max_per_ip_hour'], 3600);
         if (!$perIp['ok']) {
@@ -45,10 +45,17 @@ final class OtpService
             [$phone, $purpose, $hash, (int) $cfg['attempts'], time() + $ttl, $ip, time()]
         );
 
-        SmsGateway::send($phone, "Skilvi code: $code. Expires in " . ($ttl / 60) . " min. Don't share it.", $code);
+        $msg = "Skilvi code: $code. Expires in " . ($ttl / 60) . " min. Don't share it.";
+        if (otp_channel($phone) === 'email') {
+            $to = str_starts_with($phone, 'e:') ? substr($phone, 2) : $phone;
+            MailGateway::send($to, 'Your Skilvi login code', $msg, $code);
+        } else {
+            SmsGateway::send($phone, $msg, $code);
+        }
 
         $out = [
-            'phone_mask' => mask_phone($phone),
+            'phone_mask' => mask_dest($phone),
+            'channel'    => otp_channel($phone),
             'expires_in' => $ttl,
             'purpose'    => $purpose,
         ];

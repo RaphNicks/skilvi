@@ -9,7 +9,7 @@ putenv('APP_ENV=dev');
 require dirname(__DIR__) . '/app/bootstrap.php';
 
 App\Core\Schema::install();
-App\Core\Seed::run();
+App\Core\Seed::run(true);
 App\Core\Session::start();
 
 function assert_true($c, string $msg): void

@@ -55,13 +55,13 @@ If `pdo_sqlite` is missing in XAMPP: `C:\xampp\php\php.ini` — uncomment `exten
 
 Password for all seeds: `password1`
 
-| Who | Phone |
+| Who | Email |
 |---|---|
-| Client + worker | `08031112233` or `2348031112233` |
-| Client | `08010001028` |
-| Admin | `08000000001` |
+| Client + worker | `chinedu@okafordev.ng` |
+| Client + worker | `ifeanyi@okoro.ng` |
+| Admin | `admin@skilvi.ng` |
 
-Login is **phone + password → OTP**. In dev the JSON includes `dev_code`, and the code is also in `backend/storage/logs/last_otp.json`.
+Login is **email + password → 6-digit code to that email**. In local `console` mode the code is in the PHP terminal and `backend/storage/logs/last_otp.json`. See `docs/OTP.md` for real SMTP / Termii.
 
 ## 4. Optional: Apache in XAMPP
 

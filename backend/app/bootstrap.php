@@ -45,11 +45,32 @@ function normalize_phone(string $raw): string
 
 function mask_phone(string $p): string
 {
+    if (str_contains($p, '@') || str_starts_with($p, 'e:')) {
+        return mask_dest($p);
+    }
     $p = preg_replace('/\D/', '', $p) ?? $p;
     if (strlen($p) < 13) {
         return $p === '' ? '' : '+' . $p;
     }
     return '+' . substr($p, 0, 3) . ' ' . substr($p, 3, 3) . ' ••• •' . substr($p, -3);
+}
+
+function mask_dest(string $d): string
+{
+    if (str_starts_with($d, 'e:')) {
+        $d = substr($d, 2);
+    }
+    if (str_contains($d, '@')) {
+        [$u, $h] = explode('@', $d, 2);
+        $keep = mb_substr($u, 0, 1);
+        return $keep . '•••@' . $h;
+    }
+    return mask_phone($d);
+}
+
+function otp_channel(string $dest): string
+{
+    return (str_contains($dest, '@') || str_starts_with($dest, 'e:')) ? 'email' : 'sms';
 }
 
 function format_phone(string $p): string

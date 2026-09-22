@@ -26,7 +26,7 @@ assert_true($u !== null, 'seed chinedu exists');
 assert_true(password_verify('password1', $u['password_hash']), 'seed password');
 
 $ip = '127.0.0.1';
-$login = App\Services\AuthService::loginStart('+234 803 111 2233', 'password1', $ip);
+$login = App\Services\AuthService::loginStart('chinedu@okafordev.ng', 'password1', $ip);
 assert_true(isset($login['dev_code']) && strlen($login['dev_code']) === 6, 'login sends otp');
 
 try {
@@ -54,7 +54,7 @@ assert_true(App\Core\Session::userId() === null, 'logout');
 App\Core\Session::start();
 
 try {
-    App\Services\AuthService::loginStart('+234 803 111 2233', 'wrong-pass', $ip);
+    App\Services\AuthService::loginStart('chinedu@okafordev.ng', 'wrong-pass', $ip);
     assert_true(false, 'bad password rejected');
 } catch (App\AppError $e) {
     assert_true($e->errorCode === 'credentials', 'bad password code');
@@ -62,7 +62,7 @@ try {
 
 $reg = App\Services\AuthService::registerStart(
     'Ngozi Bello',
-    '08035550101',
+    '',
     'ngozi@example.com',
     'password1',
     'both',
@@ -76,7 +76,7 @@ assert_true(in_array('client', $created['user']['roles'], true) && in_array('wor
 App\Services\AuthService::logout();
 App\Core\Session::start();
 
-$fp = App\Services\AuthService::forgot('08035550101', $ip);
+$fp = App\Services\AuthService::forgot('ngozi@example.com', $ip);
 assert_true(isset($fp['dev_code']), 'forgot otp');
 $reset = App\Services\AuthService::resetPassword($fp['dev_code'], 'newpass12', $ip);
 assert_true($reset['user']['full_name'] === 'Ngozi Bello', 'reset logs in');

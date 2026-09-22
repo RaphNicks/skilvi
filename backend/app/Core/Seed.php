@@ -7,7 +7,7 @@ use App\Models\User;
 
 final class Seed
 {
-    public static function run(): void
+    public static function run(bool $demo = false): void
     {
         self::users();
         self::categoriesOnly();
@@ -15,6 +15,13 @@ final class Seed
         Db::pdo()->prepare('INSERT OR REPLACE INTO settings (key, value) VALUES (?, ?)')->execute(['min_withdrawal_kobo', '500000']);
         Db::pdo()->prepare('INSERT OR REPLACE INTO settings (key, value) VALUES (?, ?)')->execute(['fee_percent', '10']);
         Db::pdo()->prepare('INSERT OR REPLACE INTO settings (key, value) VALUES (?, ?)')->execute(['currency', 'NGN']);
+        if ($demo) {
+            self::catalog();
+            self::demoOrders();
+            self::demoComms();
+            self::demoAdmin();
+            \App\Services\WalletService::syncFromOrders();
+        }
     }
 
     /** Keep staff/test logins; wipe seeded marketplace jobs, orders, extra fake workers. */

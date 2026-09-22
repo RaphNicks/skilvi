@@ -706,10 +706,12 @@
         $$(".radio-pill", g).forEach((x) => x.classList.remove("active"));
         p.classList.add("active");
       })));
-    /* generic: forms that only toast */
-    $$("form[data-toast]").forEach((f) =>
-      f.addEventListener("submit", (e) => { e.preventDefault(); toast(f.getAttribute("data-toast"), "success"); }));
-    $$("button[data-toast]").forEach((b) =>
-      b.addEventListener("click", () => toast(b.getAttribute("data-toast"))));
+    /* Prototype-only toasts. Live PHP pages must not fake success. */
+    if (!window.SkApi) {
+      $$("form[data-toast]").forEach((f) =>
+        f.addEventListener("submit", (e) => { e.preventDefault(); toast(f.getAttribute("data-toast"), "success"); }));
+      $$("button[data-toast]").forEach((b) =>
+        b.addEventListener("click", () => toast(b.getAttribute("data-toast"))));
+    }
   });
 })();

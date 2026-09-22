@@ -52,7 +52,7 @@
           body: { identifier: fd.get("identifier"), password: fd.get("password") },
         });
         showOtp(data, "login");
-        toast("Code sent to " + data.phone_mask, "success");
+        toast("Code sent to " + data.phone_mask + (data.channel === "email" ? " (email)" : ""), "success");
       } catch (err) {
         toast(err.message, "error");
       } finally {

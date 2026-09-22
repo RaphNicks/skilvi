@@ -19,13 +19,13 @@ final class AuthService
         if (mb_strlen($name) < 2) {
             $fields['full_name'] = 'Enter your full name.';
         }
-        $phone = normalize_phone($phoneRaw);
-        if ($phone === '') {
-            $fields['phone'] = 'Use a Nigerian mobile, e.g. 0803 000 0000.';
+        $phone = $phoneRaw !== '' ? normalize_phone($phoneRaw) : '';
+        if ($phoneRaw !== '' && $phone === '') {
+            $fields['phone'] = 'Use a Nigerian mobile, e.g. 0803 000 0000, or leave it blank.';
         }
-        $email = trim($email);
-        if ($email !== '' && !filter_var($email, FILTER_VALIDATE_EMAIL)) {
-            $fields['email'] = 'That email does not look right.';
+        $email = strtolower(trim($email));
+        if ($email === '' || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            $fields['email'] = 'Enter a working email — we send your login code there.';
         }
         if (strlen($password) < 8) {
             $fields['password'] = 'Use at least 8 characters.';
@@ -37,10 +37,10 @@ final class AuthService
         if ($fields) {
             throw new AppError('invalid', 'Please fix the highlighted fields.', 422, $fields);
         }
-        if (User::findByPhone($phone)) {
+        if ($phone !== '' && User::findByPhone($phone)) {
             throw new AppError('phone_taken', 'An account already uses this number. Log in instead.', 409);
         }
-        if ($email !== '' && User::findByEmail($email)) {
+        if (User::findByEmail($email)) {
             throw new AppError('email_taken', 'That email is already on an account. Log in instead.', 409);
         }
 
@@ -52,13 +52,13 @@ final class AuthService
         Session::set('pending_register', [
             'full_name'     => $name,
             'phone'         => $phone,
-            'email'         => $email !== '' ? $email : null,
+            'email'         => $email,
             'password_hash' => password_hash($password, PASSWORD_DEFAULT),
             'roles'         => $roles,
             'at'            => time(),
         ]);
-        Session::claim($phone, 'register');
-        return OtpService::issue($phone, 'register', $ip);
+        Session::claim($email, 'register');
+        return OtpService::issue($email, 'register', $ip);
     }
 
     public static function loginStart(string $identifier, string $password, string $ip): array
@@ -69,14 +69,21 @@ final class AuthService
         }
         $user = User::findByIdentifier($identifier);
         if ($user === null || !password_verify($password, $user['password_hash'])) {
-            throw new AppError('credentials', 'Phone/email or password is not right.', 401);
+            throw new AppError('credentials', 'Email or password is not right.', 401);
         }
         if ($user['status'] !== 'active') {
             throw new AppError('suspended', 'This account is not active. Contact support.', 403);
         }
+        $dest = (string) ($user['email'] ?: $user['phone']);
+        if ($dest === '' || str_starts_with($dest, 'e:')) {
+            $dest = (string) $user['email'];
+        }
+        if ($dest === '') {
+            throw new AppError('no_dest', 'This account has no email to send a code to.', 400);
+        }
         Session::set('pending_login_id', (int) $user['id']);
-        Session::claim($user['phone'], 'login');
-        return OtpService::issue($user['phone'], 'login', $ip) + ['phone' => $user['phone']];
+        Session::claim($dest, 'login');
+        return OtpService::issue($dest, 'login', $ip) + ['phone' => $dest];
     }
 
     public static function verify(string $code, string $purpose, string $ip): array
@@ -88,16 +95,16 @@ final class AuthService
         if (!is_array($claim) || ($claim['purpose'] ?? '') !== $purpose) {
             throw new AppError('otp_session', 'Start this step again — your session expired.', 401);
         }
-        $phone = (string) $claim['phone'];
-        OtpService::verify($phone, $purpose, $code);
+        $dest = (string) $claim['phone'];
+        OtpService::verify($dest, $purpose, $code);
 
         if ($purpose === 'register') {
             $pending = Session::get('pending_register');
-            if (!is_array($pending) || ($pending['phone'] ?? '') !== $phone) {
+            if (!is_array($pending) || strcasecmp((string) ($pending['email'] ?? ''), $dest) !== 0) {
                 throw new AppError('otp_session', 'Start registration again.', 401);
             }
-            if (User::findByPhone($phone)) {
-                throw new AppError('phone_taken', 'An account already uses this number. Log in instead.', 409);
+            if (User::findByEmail((string) $pending['email'])) {
+                throw new AppError('email_taken', 'That email is already on an account. Log in instead.', 409);
             }
             $id = User::create($pending);
             Session::remove('pending_register');
@@ -108,7 +115,11 @@ final class AuthService
         if ($purpose === 'login') {
             $id = (int) Session::get('pending_login_id');
             $user = User::find($id);
-            if ($user === null || $user['phone'] !== $phone) {
+            $match = $user && (
+                strcasecmp((string) $user['email'], $dest) === 0
+                || (string) $user['phone'] === $dest
+            );
+            if (!$match) {
                 throw new AppError('otp_session', 'Start login again.', 401);
             }
             Session::remove('pending_login_id');
@@ -117,9 +128,9 @@ final class AuthService
         }
 
         if ($purpose === 'reset') {
-            Session::set('reset_ok', ['phone' => $phone, 'at' => time()]);
+            Session::set('reset_ok', ['phone' => $dest, 'at' => time()]);
             Session::clearClaim();
-            return ['reset_ok' => true, 'phone_mask' => mask_phone($phone)];
+            return ['reset_ok' => true, 'phone_mask' => mask_dest($dest)];
         }
 
         throw new AppError('otp_purpose', 'Unknown verification step.', 400);
@@ -139,11 +150,11 @@ final class AuthService
         $user = User::findByIdentifier($identifier);
         // Always look like success — no account enumeration.
         $echo = trim($identifier);
-        $phone = $user['phone'] ?? normalize_phone($identifier);
-        $mask = $phone !== '' ? mask_phone($phone) : $echo;
-        if ($user !== null && $user['status'] === 'active') {
-            Session::claim($user['phone'], 'reset');
-            $otp = OtpService::issue($user['phone'], 'reset', $ip);
+        $dest = $user ? (string) ($user['email'] ?: $user['phone']) : $echo;
+        $mask = mask_dest($dest);
+        if ($user !== null && $user['status'] === 'active' && $dest !== '') {
+            Session::claim($dest, 'reset');
+            $otp = OtpService::issue($dest, 'reset', $ip);
             return $otp + ['echo' => $mask];
         }
         return [
@@ -166,12 +177,14 @@ final class AuthService
                 throw new AppError('otp_session', 'Start the reset again.', 401);
             }
             OtpService::verify((string) $claim['phone'], 'reset', $code);
-            $phone = (string) $claim['phone'];
+            $dest = (string) $claim['phone'];
             Session::clearClaim();
         } else {
-            $phone = (string) $reset['phone'];
+            $dest = (string) $reset['phone'];
         }
-        $user = User::findByPhone($phone);
+        $user = str_contains($dest, '@')
+            ? User::findByEmail($dest)
+            : User::findByPhone($dest);
         if ($user === null) {
             throw new AppError('not_found', 'Account not found.', 404);
         }

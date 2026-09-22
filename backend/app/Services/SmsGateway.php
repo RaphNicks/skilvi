@@ -37,8 +37,31 @@ final class SmsGateway
         $driver = Config::get('sms.driver', 'console');
         if ($driver === 'console') {
             error_log('SKILVI SMS ' . trim($line));
+            return;
         }
-        // africastalking / termii: set SMS_DRIVER + keys. Console is the sandbox default.
+        if ($driver === 'termii') {
+            $key = (string) Config::get('sms.termii.key');
+            $from = (string) Config::get('sms.termii.sender', 'Skilvi');
+            if ($key === '') {
+                error_log('SKILVI SMS termii skipped — TERMII_KEY empty');
+                return;
+            }
+            $payload = json_encode([
+                'api_key' => $key,
+                'to'      => $phone,
+                'from'    => $from,
+                'sms'     => $message,
+                'type'    => 'plain',
+                'channel' => 'generic',
+            ]);
+            $ctx = stream_context_create(['http' => [
+                'method'  => 'POST',
+                'header'  => "Content-Type: application/json\r\n",
+                'content' => $payload,
+                'timeout' => 12,
+            ]]);
+            @file_get_contents('https://api.ng.termii.com/api/sms/send', false, $ctx);
+        }
     }
 
     public static function remainingToday(): int

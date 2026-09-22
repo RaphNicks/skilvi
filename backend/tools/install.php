@@ -8,9 +8,9 @@ App\Core\Seed::run();
 
 echo "schema + seed ok\n";
 echo "sqlite: " . App\Core\Config::get('db.sqlite_path') . "\n";
-echo "seed logins (password: password1) — no demo jobs or orders\n";
-echo "  Chinedu Okafor  +234 803 111 2233  (client,worker)\n";
-echo "  Ifeanyi Okoro   +234 801 000 1028  (client,worker)\n";
-echo "  Adaeze Nwosu    +234 802 000 0008  (worker)\n";
-echo "  Skilvi Admin    +234 800 000 0001  (admin)\n";
+echo "seed logins (password: password1) — email + OTP\n";
+echo "  chinedu@okafordev.ng   (client,worker)\n";
+echo "  ifeanyi@okoro.ng       (client,worker)\n";
+echo "  ada@w08.ng             (worker)\n";
+echo "  admin@skilvi.ng        (admin)\n";
 echo "If an older install still shows fake jobs, run: php tools/purge-demo.php\n";

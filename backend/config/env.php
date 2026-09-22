@@ -50,13 +50,27 @@ return [
     ],
 
     'sms' => [
-        'driver' => getenv('SMS_DRIVER') ?: 'console',        // production: africastalking | termii
+        'driver' => getenv('SMS_DRIVER') ?: 'console',        // production: termii
         'daily_budget' => (int) (getenv('SMS_DAILY_BUDGET') ?: 200),
+        'termii' => [
+            'key'    => getenv('TERMII_KEY') ?: '',
+            'sender' => getenv('TERMII_SENDER') ?: 'Skilvi',
+        ],
         'africastalking' => [
             'key'    => getenv('AT_KEY') ?: '',
             'user'   => getenv('AT_USER') ?: '',
             'sender' => getenv('AT_SENDER') ?: 'Skilvi',
         ],
+    ],
+
+    'mail' => [
+        // Login OTP goes here. console = log only (dev). smtp = real inbox.
+        'driver' => getenv('MAIL_DRIVER') ?: 'console',
+        'from'   => getenv('MAIL_FROM') ?: 'Skilvi <noreply@skilvi.ng>',
+        'host'   => getenv('MAIL_HOST') ?: '',
+        'port'   => (int) (getenv('MAIL_PORT') ?: 587),
+        'user'   => getenv('MAIL_USER') ?: '',
+        'pass'   => getenv('MAIL_PASS') ?: '',
     ],
 
     'files' => [
