@@ -49,7 +49,6 @@
     wrench:  S('<path d="M14.7 6.3a4.5 4.5 0 0 0-6 5.6L3 17.6V21h3.4l5.7-5.7a4.5 4.5 0 0 0 5.6-6L14.5 12l-2.5-2.5 2.7-3.2Z"/>'),
     camera:  S('<rect x="3" y="7" width="18" height="13" rx="2"/><circle cx="12" cy="13" r="3.5"/><path d="M8.5 7 10 4h4l1.5 3"/>'),
     chart:   S('<path d="M4 20V10m5.5 10V4M15 20v-7m5.5 7V7"/>'),
-    doc:     I.file,
     flag:    S('<path d="M5 21V4"/><path d="M5 4h12l-2.5 4L17 12H5"/>'),
     logout:  S('<path d="M9 4H5a1 1 0 0 0-1 1v14a1 1 0 0 0 1 1h4"/><path d="m15 8 4 4-4 4m4-4H9"/>'),
     card:    S('<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 10h18"/>'),
@@ -61,9 +60,10 @@
     zap:     S('<path d="M13 2 4 14h6l-1 8 9-12h-6l1-8Z"/>'),
     truck:   S('<rect x="2" y="6" width="12" height="10" rx="1"/><path d="M14 10h4l3 3v3h-3"/><circle cx="7" cy="18.5" r="1.8"/><circle cx="17" cy="18.5" r="1.8"/>'),
     paint:   S('<path d="M12 3a9 9 0 1 0 0 18c1.4 0 2-1 2-2s-.7-1.6 0-2.4c.6-.7 1.5-.6 2.5-.6H19a3 3 0 0 0 3-3c0-5-4-10-10-10Z"/><circle cx="7.5" cy="10.5" r="1"/><circle cx="12" cy="7.5" r="1"/><circle cx="16.5" cy="10.5" r="1"/>'),
-    bolt:    I.zap,
+    bolt:    S('<path d="M13 2 4 14h6l-1 8 9-12h-6l1-8Z"/>'),
     book:    S('<path d="M4 5a2 2 0 0 1 2-2h14v18H6a2 2 0 0 1-2-2V5Z"/><path d="M20 17H6a2 2 0 0 0-2 2"/><path d="M9 7h7"/>'),
-    heart:   S('<path d="M12 20.5S4 15 4 9.5A4.5 4.5 0 0 1 12 7a4.5 4.5 0 0 1 8 2.5c0 5.5-8 11-8 11Z"/>')
+    heart:   S('<path d="M12 20.5S4 15 4 9.5A4.5 4.5 0 0 1 12 7a4.5 4.5 0 0 1 8 2.5c0 5.5-8 11-8 11Z"/>'),
+    doc:     S('<path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8l-5-5Z"/><path d="M14 3v5h5"/>')
   };
   window.SkIcon = (name, cls) => (I[name] || I.file).replace("<svg ", '<svg class="' + (cls || "ico") + '" ');
 

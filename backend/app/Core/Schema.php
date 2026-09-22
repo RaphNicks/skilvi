@@ -97,7 +97,7 @@ final class Schema
                 }
             }
         }
-        Db::exec(
+        self::execSql(
             'CREATE TABLE IF NOT EXISTS saved_workers (
                 user_id INTEGER NOT NULL REFERENCES users(id),
                 worker_id INTEGER NOT NULL REFERENCES users(id),
@@ -106,13 +106,13 @@ final class Schema
                 PRIMARY KEY (user_id, worker_id)
             )'
         );
-        Db::exec('CREATE UNIQUE INDEX IF NOT EXISTS idx_profiles_public ON profiles(public_code)');
-        Db::exec('CREATE UNIQUE INDEX IF NOT EXISTS idx_services_public ON services(public_code)');
-        Db::exec('CREATE INDEX IF NOT EXISTS idx_jobs_status ON jobs(status, created_at)');
-        Db::exec('CREATE INDEX IF NOT EXISTS idx_jobs_mode ON jobs(work_mode)');
-        Db::exec('CREATE UNIQUE INDEX IF NOT EXISTS idx_payments_provider_ref ON payments(provider_ref)');
-        Db::exec('CREATE INDEX IF NOT EXISTS idx_payments_user ON payments(user_id, created_at)');
-        Db::exec(
+        self::execSql('CREATE UNIQUE INDEX IF NOT EXISTS idx_profiles_public ON profiles(public_code)');
+        self::execSql('CREATE UNIQUE INDEX IF NOT EXISTS idx_services_public ON services(public_code)');
+        self::execSql('CREATE INDEX IF NOT EXISTS idx_jobs_status ON jobs(status, created_at)');
+        self::execSql('CREATE INDEX IF NOT EXISTS idx_jobs_mode ON jobs(work_mode)');
+        self::execSql('CREATE UNIQUE INDEX IF NOT EXISTS idx_payments_provider_ref ON payments(provider_ref)');
+        self::execSql('CREATE INDEX IF NOT EXISTS idx_payments_user ON payments(user_id, created_at)');
+        self::execSql(
             'CREATE TABLE IF NOT EXISTS conversation_reads (
                 conversation_id INTEGER NOT NULL REFERENCES conversations(id),
                 user_id INTEGER NOT NULL REFERENCES users(id),
@@ -120,7 +120,7 @@ final class Schema
                 PRIMARY KEY (conversation_id, user_id)
             )'
         );
-        Db::exec('CREATE UNIQUE INDEX IF NOT EXISTS idx_disputes_code ON disputes(public_code)');
+        self::execSql('CREATE UNIQUE INDEX IF NOT EXISTS idx_disputes_code ON disputes(public_code)');
         $more = [
             'support_tickets' => ['body TEXT', 'code TEXT', 'last_at TEXT'],
             'categories'      => ['active INTEGER NOT NULL DEFAULT 1'],
@@ -135,7 +135,7 @@ final class Schema
                 }
             }
         }
-        Db::exec(
+        self::execSql(
             'CREATE TABLE IF NOT EXISTS reports (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 public_code TEXT,
@@ -149,7 +149,7 @@ final class Schema
                 updated_at TEXT
             )'
         );
-        Db::exec(
+        self::execSql(
             'CREATE TABLE IF NOT EXISTS ticket_messages (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 ticket_id INTEGER NOT NULL REFERENCES support_tickets(id),
@@ -159,7 +159,7 @@ final class Schema
                 created_at TEXT NOT NULL
             )'
         );
-        Db::exec(
+        self::execSql(
             'CREATE TABLE IF NOT EXISTS idempotency_keys (
                 idem_key TEXT NOT NULL,
                 user_id INTEGER NOT NULL,
@@ -180,6 +180,14 @@ final class Schema
         if (!Db::fetch("SELECT key FROM settings WHERE key='maintenance'")) {
             Db::run("INSERT INTO settings (key, value) VALUES ('maintenance', '0')");
         }
+    }
+
+    private static function execSql(string $sql): void
+    {
+        if (Db::isMysql()) {
+            $sql = self::sqliteToMysql($sql);
+        }
+        Db::exec($sql);
     }
 
     private static function columnNames(string $table): array
@@ -204,7 +212,7 @@ final class Schema
         $def = preg_replace('/\bINTEGER\b/i', 'INT', $def) ?? $def;
         $def = preg_replace('/\bREAL\b/i', 'DOUBLE', $def) ?? $def;
         $def = preg_replace('/\b(public_code|code|idem_key)\s+TEXT\b/i', '$1 VARCHAR(64)', $def) ?? $def;
-        $def = preg_replace('/\b(body|href|note|skill|work_mode|reply|scope|title|reason_type|decision|resolution_note|packages_json|icon|blurb|mode_label|tags|tone)\s+TEXT\b/i', '$1 TEXT', $def) ?? $def;
+        $def = preg_replace('/\bTEXT\b/i', 'VARCHAR(191)', $def) ?? $def;
         return $def;
     }
 
@@ -470,6 +478,7 @@ final class Schema
         $sql = str_replace('key TEXT PRIMARY KEY', '`key` VARCHAR(64) NOT NULL PRIMARY KEY', $sql);
         $sql = str_replace('bucket TEXT PRIMARY KEY', 'bucket VARCHAR(191) NOT NULL PRIMARY KEY', $sql);
         $sql = str_replace('phone TEXT NOT NULL UNIQUE', 'phone VARCHAR(32) NOT NULL UNIQUE', $sql);
+        $sql = str_replace('phone TEXT NOT NULL', 'phone VARCHAR(32) NOT NULL', $sql);
         $sql = str_replace('email TEXT UNIQUE', 'email VARCHAR(191) UNIQUE', $sql);
         $sql = str_replace('slug TEXT NOT NULL UNIQUE', 'slug VARCHAR(191) NOT NULL UNIQUE', $sql);
         $sql = str_replace('code TEXT NOT NULL UNIQUE', 'code VARCHAR(32) NOT NULL UNIQUE', $sql);
@@ -477,6 +486,11 @@ final class Schema
         $sql = str_replace('full_name TEXT NOT NULL', 'full_name VARCHAR(191) NOT NULL', $sql);
         $sql = preg_replace('/\bINTEGER\b/', 'INT', $sql) ?? $sql;
         $sql = preg_replace('/\bREAL\b/', 'DOUBLE', $sql) ?? $sql;
+        // InnoDB cannot index unbounded TEXT — leftover TEXT becomes VARCHAR.
+        $sql = preg_replace('/\bTEXT\b/', 'VARCHAR(191)', $sql) ?? $sql;
+        foreach (['description', 'bio', 'body', 'comment', 'memo', 'notes', 'meta', 'cover_note', 'raw_json', 'headline', 'note'] as $col) {
+            $sql = str_ireplace($col . ' VARCHAR(191)', $col . ' TEXT', $sql);
+        }
         $trim = strtoupper(ltrim($sql));
         if (str_starts_with($trim, 'CREATE TABLE')) {
             $sql = rtrim($sql, "; \n") . ' ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci';

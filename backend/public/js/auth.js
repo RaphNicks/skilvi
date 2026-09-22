@@ -1,5 +1,9 @@
 (function () {
   "use strict";
+  if (!window.SkApi) {
+    console.error("Skilvi API helper missing — open http://127.0.0.1:8080/login.html (PHP server), not the HTML file.");
+    return;
+  }
   const { api, busy, toast, bindOtpBoxes } = window.SkApi;
 
   function showOtp(data, purpose) {

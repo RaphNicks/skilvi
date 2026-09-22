@@ -11,8 +11,13 @@ if ($driver === 'mysql') {
     echo "phpMyAdmin: http://localhost/phpmyadmin  (open database “{$m['database']}” after this script)\n";
 }
 
-App\Core\Schema::install();
-App\Core\Seed::run();
+try {
+    App\Core\Schema::install();
+    App\Core\Seed::run();
+} catch (Throwable $e) {
+    fwrite(STDERR, 'INSTALL FAILED: ' . $e->getMessage() . "\n");
+    exit(1);
+}
 
 echo "schema + seed ok\n";
 echo "seed logins (password: password1) — email + OTP\n";

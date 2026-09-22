@@ -52,79 +52,39 @@
         <a class="tab auth-tab" data-mode="register" href="#regForm">Create account</a>
       </div>
 
-      <!-- Register -->
-      <form id="regForm" class="tab-panel" data-panel="register">
+      <form id="regForm" class="tab-panel" data-panel="register" autocomplete="on">
         <div class="field mb-2">
           <label>Full name</label>
-          <input class="input" placeholder="e.g. Chinedu Okafor" required>
+          <input class="input" name="full_name" placeholder="e.g. Chinedu Okafor" required>
         </div>
         <div class="form-row-2 mb-2">
           <div class="field">
-            <label>Phone number <span style="color:var(--red)">*</span></label>
-            <input class="input" type="tel" placeholder="+234 803 000 0000" required>
+            <label>Email <span style="color:var(--red)">*</span></label>
+            <input class="input" name="email" type="email" placeholder="you@example.com" required>
           </div>
           <div class="field">
-            <label>Email (optional)</label>
-            <input class="input" type="email" placeholder="you@example.com">
+            <label>Phone (optional)</label>
+            <input class="input" name="phone" type="tel" placeholder="+234 803 000 0000">
           </div>
         </div>
         <div class="field mb-2">
           <label>Password</label>
-          <input class="input" type="password" placeholder="At least 8 characters" required>
+          <input class="input" name="password" type="password" placeholder="At least 8 characters" required minlength="8">
         </div>
         <div class="field mb-3">
           <label>I am joining as…</label>
           <div class="row" data-radio style="gap:8px">
-              <input type="radio" name="joinAs1" id="joinAs_1_0" class="pill-check">
-              <label class="radio-pill" for="joinAs_1_0" style="flex:1"><span class="rd"></span>Worker</label>
-              <input type="radio" name="joinAs1" id="joinAs_1_1" class="pill-check" checked>
-              <label class="radio-pill" for="joinAs_1_1" style="flex:1"><span class="rd"></span>Client</label>
-              <input type="radio" name="joinAs1" id="joinAs_1_2" class="pill-check">
-              <label class="radio-pill" for="joinAs_1_2" style="flex:1"><span class="rd"></span>Both</label>
-            </div>
+            <input type="radio" name="join_as" id="joinAs_w" class="pill-check" value="worker">
+            <label class="radio-pill" for="joinAs_w" style="flex:1"><span class="rd"></span>Worker</label>
+            <input type="radio" name="join_as" id="joinAs_c" class="pill-check" value="client" checked>
+            <label class="radio-pill" for="joinAs_c" style="flex:1"><span class="rd"></span>Client</label>
+            <input type="radio" name="join_as" id="joinAs_b" class="pill-check" value="both">
+            <label class="radio-pill" for="joinAs_b" style="flex:1"><span class="rd"></span>Both</label>
+          </div>
           <span class="hint">Joining as both is free — your dashboards stay separate.</span>
         </div>
         <label class="check-row" style="padding:0">
-          <input type="checkbox" required style="accent-color:var(--royal-600);width:15px;height:15px">
-          <span class="small" style="color:var(--ink-2)">I agree to the <a href="terms.html">Terms of Service</a> and <a href="privacy.html">Privacy Policy</a>.</span>
-        </label>
-        <button class="btn btn-primary btn-block btn-lg mt-3" type="submit">Create free account</button>
-      </form>
-
-      <!-- Register -->
-      <form id="regForm" class="tab-panel" data-panel="register">
-        <div class="field mb-2">
-          <label>Full name</label>
-          <input class="input" placeholder="e.g. Chinedu Okafor" required>
-        </div>
-        <div class="form-row-2 mb-2">
-          <div class="field">
-            <label>Phone number <span style="color:var(--red)">*</span></label>
-            <input class="input" type="tel" placeholder="+234 803 000 0000" required>
-          </div>
-          <div class="field">
-            <label>Email (optional)</label>
-            <input class="input" type="email" placeholder="you@example.com">
-          </div>
-        </div>
-        <div class="field mb-2">
-          <label>Password</label>
-          <input class="input" type="password" placeholder="At least 8 characters" required>
-        </div>
-        <div class="field mb-3">
-          <label>I am joining as…</label>
-          <div class="row" data-radio style="gap:8px">
-              <input type="radio" name="joinAs2" id="joinAs_2_0" class="pill-check">
-              <label class="radio-pill" for="joinAs_2_0" style="flex:1"><span class="rd"></span>Worker</label>
-              <input type="radio" name="joinAs2" id="joinAs_2_1" class="pill-check" checked>
-              <label class="radio-pill" for="joinAs_2_1" style="flex:1"><span class="rd"></span>Client</label>
-              <input type="radio" name="joinAs2" id="joinAs_2_2" class="pill-check">
-              <label class="radio-pill" for="joinAs_2_2" style="flex:1"><span class="rd"></span>Both</label>
-            </div>
-          <span class="hint">Joining as both is free — your dashboards stay separate.</span>
-        </div>
-        <label class="check-row" style="padding:0">
-          <input type="checkbox" required style="accent-color:var(--royal-600);width:15px;height:15px">
+          <input type="checkbox" name="terms" required style="accent-color:var(--royal-600);width:15px;height:15px">
           <span class="small" style="color:var(--ink-2)">I agree to the <a href="terms.html">Terms of Service</a> and <a href="privacy.html">Privacy Policy</a>.</span>
         </label>
         <button class="btn btn-primary btn-block btn-lg mt-3" type="submit">Create free account</button>
@@ -132,12 +92,12 @@
       <!-- Login -->
       <form id="loginForm" class="tab-panel active" data-panel="login">
         <div class="field mb-2">
-          <label>Phone number or email</label>
-          <input class="input" type="tel" placeholder="+234 803 000 0000" required>
+          <label>Email</label>
+          <input class="input" name="identifier" type="email" placeholder="you@example.com" required>
         </div>
         <div class="field mb-3">
           <label>Password</label>
-          <input class="input" type="password" placeholder="Your password">
+          <input class="input" name="password" type="password" placeholder="Your password" required>
           <span class="hint" style="text-align:right"><a class="link" href="forgot-password.html" style="font-size:12px">Forgot password?</a></span>
         </div>
         <button class="btn btn-primary btn-block btn-lg" type="submit">Continue</button>
@@ -180,7 +140,9 @@
     <div class="footer-bottom"><span>© 2026 Skilvi Technologies Ltd. All rights reserved.</span><span>Built in Nigeria · Payments held securely in escrow</span></div>
   </div>
 </footer>
-<script src="assets/js/skilvi.js?v=19"></script>
+<script src="assets/js/skilvi.js?v=20"></script>
+<script src="/js/api.js?v=20"></script>
+<script src="/js/auth.js?v=20"></script>
 <script>
   document.addEventListener("DOMContentLoaded", () => {
     const I = SkIconSvg;
