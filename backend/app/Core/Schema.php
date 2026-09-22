@@ -9,7 +9,7 @@ final class Schema
     {
         if (Db::isMysql()) {
             foreach (self::mysqlStatements() as $sql) {
-                Db::exec($sql);
+                self::tryExec($sql);
             }
             self::migrate();
             return;
@@ -187,7 +187,20 @@ final class Schema
         if (Db::isMysql()) {
             $sql = self::sqliteToMysql($sql);
         }
-        Db::exec($sql);
+        self::tryExec($sql);
+    }
+
+    private static function tryExec(string $sql): void
+    {
+        try {
+            Db::exec($sql);
+        } catch (\Throwable $e) {
+            $one = preg_replace('/\s+/', ' ', substr($sql, 0, 120)) ?? $sql;
+            error_log('SKILVI SCHEMA ' . $e->getMessage() . ' :: ' . $one);
+            if (PHP_SAPI === 'cli') {
+                echo 'schema warn: ' . $e->getMessage() . "\n";
+            }
+        }
     }
 
     private static function columnNames(string $table): array
@@ -486,11 +499,13 @@ final class Schema
         $sql = str_replace('full_name TEXT NOT NULL', 'full_name VARCHAR(191) NOT NULL', $sql);
         $sql = preg_replace('/\bINTEGER\b/', 'INT', $sql) ?? $sql;
         $sql = preg_replace('/\bREAL\b/', 'DOUBLE', $sql) ?? $sql;
-        // InnoDB cannot index unbounded TEXT — leftover TEXT becomes VARCHAR.
+        $sql = preg_replace('/\s+REFERENCES\s+\w+\s*\(\s*\w+\s*\)/i', '', $sql) ?? $sql;
         $sql = preg_replace('/\bTEXT\b/', 'VARCHAR(191)', $sql) ?? $sql;
         foreach (['description', 'bio', 'body', 'comment', 'memo', 'notes', 'meta', 'cover_note', 'raw_json', 'headline', 'note'] as $col) {
             $sql = str_ireplace($col . ' VARCHAR(191)', $col . ' TEXT', $sql);
         }
+        // MySQL 5.7 (common in XAMPP) does not allow IF NOT EXISTS on indexes.
+        $sql = preg_replace('/^(\s*CREATE\s+(UNIQUE\s+)?INDEX)\s+IF\s+NOT\s+EXISTS\s+/i', '$1 ', $sql) ?? $sql;
         $trim = strtoupper(ltrim($sql));
         if (str_starts_with($trim, 'CREATE TABLE')) {
             $sql = rtrim($sql, "; \n") . ' ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci';

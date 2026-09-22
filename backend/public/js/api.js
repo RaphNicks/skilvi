@@ -28,11 +28,16 @@
       init.body = opts.body instanceof FormData ? opts.body : JSON.stringify(opts.body);
     }
     const res = await fetch(path, init);
+    const raw = await res.text();
     let body = null;
     try {
-      body = await res.json();
+      body = raw ? JSON.parse(raw) : null;
     } catch (e) {
-      throw Object.assign(new Error("The server sent a bad response."), { status: res.status });
+      const hint = (raw || "").replace(/\s+/g, " ").slice(0, 160);
+      throw Object.assign(
+        new Error(hint ? "Server error: " + hint : "The server sent a bad response."),
+        { status: res.status }
+      );
     }
     if (!body || body.ok !== true) {
       const err = (body && body.error) || {};

@@ -94,6 +94,9 @@ final class Response
 
     private static function send(int $status, array $headers, string $body): never
     {
+        while (ob_get_level() > 0) {
+            ob_end_clean();
+        }
         if (!headers_sent()) {
             http_response_code($status);
             foreach (self::securityHeaders() + $headers as $k => $v) {

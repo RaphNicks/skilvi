@@ -9,7 +9,11 @@ final class RateLimit
     public static function hit(string $bucket, int $max, int $windowSec): array
     {
         $now = time();
-        $row = Db::fetch('SELECT hits, reset_at FROM rate_limits WHERE bucket = ?', [$bucket]);
+        try {
+            $row = Db::fetch('SELECT hits, reset_at FROM rate_limits WHERE bucket = ?', [$bucket]);
+        } catch (\Throwable $e) {
+            return ['ok' => true, 'wait' => 0];
+        }
 
         if ($row !== null && (int) $row['reset_at'] > $now) {
             $hits = (int) $row['hits'];

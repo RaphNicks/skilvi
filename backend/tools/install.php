@@ -19,6 +19,14 @@ try {
     exit(1);
 }
 
+if ($driver === 'mysql') {
+    $tables = App\Core\Db::fetchAll('SHOW TABLES');
+    echo 'mysql tables: ' . count($tables) . "\n";
+    foreach ($tables as $row) {
+        echo '  ' . (array_values($row)[0] ?? '?') . "\n";
+    }
+}
+
 echo "schema + seed ok\n";
 echo "seed logins (password: password1) — email + OTP\n";
 echo "  chinedu@okafordev.ng   (client,worker)\n";

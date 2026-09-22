@@ -61,8 +61,12 @@ final class Router
             Response::error('too_large', 'That request is too large.', 413);
         }
 
-        self::maintenance($req, $path);
-        self::throttle($req, $path);
+        try {
+            self::maintenance($req, $path);
+            self::throttle($req, $path);
+        } catch (\Throwable $e) {
+            self::logError($e);
+        }
 
         foreach (self::$routes as $route) {
             if ($route['method'] !== $req->method) {
