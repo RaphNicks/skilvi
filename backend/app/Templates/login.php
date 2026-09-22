@@ -1,5 +1,6 @@
 <?php
 use App\Core\View;
+use App\Services\AuthService;
 View::partial('head', ['title' => 'Log in — Skilvi', 'description' => 'Log in or create a free Skilvi account with your phone number. No email needed.']);
 ?>
 <body data-chrome="public" data-page="login">
@@ -12,6 +13,13 @@ View::partial('head', ['title' => 'Log in — Skilvi', 'description' => 'Log in 
   </div>
 
   <div class="card card-pad">
+    <?php if (!empty($me)): ?>
+      <div class="alert alert-info mb-3">
+        <span>You're signed in as <b><?= e((string) ($me['full_name'] ?? $me['name'] ?? 'you')) ?></b>.
+          <a href="<?= e(AuthService::homeFor($me)) ?>">Open dashboard</a>
+          · <a href="/logout.html">Sign out</a> to test login again.</span>
+      </div>
+    <?php endif; ?>
     <div id="authStepMain">
       <div class="tabs mb-3" id="authTabs">
         <a class="tab auth-tab active" data-mode="login" href="#loginForm">Log in</a>

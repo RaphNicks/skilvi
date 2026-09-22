@@ -11,6 +11,8 @@ use App\Controllers\PaymentController;
 
 Router::get('/login', [AuthController::class, 'loginPage']);
 Router::get('/login.html', [AuthController::class, 'loginPage']);
+Router::get('/logout', [AuthController::class, 'logoutPage']);
+Router::get('/logout.html', [AuthController::class, 'logoutPage']);
 Router::get('/forgot-password', [AuthController::class, 'forgotPage']);
 Router::get('/forgot-password.html', [AuthController::class, 'forgotPage']);
 

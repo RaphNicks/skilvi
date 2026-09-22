@@ -13,10 +13,22 @@ final class AuthController
 {
     public static function loginPage(Request $req, array $params = []): void
     {
+        $me = null;
         if (Session::userId()) {
-            Response::redirect(AuthService::homeFor(AuthService::me()));
+            try {
+                $me = AuthService::me();
+            } catch (\Throwable $e) {
+                AuthService::logout();
+                $me = null;
+            }
         }
-        Response::html(View::render('login'));
+        Response::html(View::render('login', ['me' => $me]));
+    }
+
+    public static function logoutPage(Request $req, array $params = []): void
+    {
+        AuthService::logout();
+        Response::redirect('/login.html');
     }
 
     public static function forgotPage(Request $req, array $params = []): void
