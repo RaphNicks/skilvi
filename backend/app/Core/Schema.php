@@ -7,10 +7,16 @@ final class Schema
 {
     public static function install(): void
     {
-        $pdo = Db::pdo();
-        $pdo->exec('PRAGMA foreign_keys=ON');
+        if (Db::isMysql()) {
+            foreach (self::mysqlStatements() as $sql) {
+                Db::exec($sql);
+            }
+            self::migrate();
+            return;
+        }
+        Db::exec('PRAGMA foreign_keys=ON');
         foreach (self::statements() as $sql) {
-            $pdo->exec($sql);
+            Db::exec($sql);
         }
         self::migrate();
     }
@@ -83,15 +89,15 @@ final class Schema
             ],
         ];
         foreach ($adds as $table => $cols) {
-            $existing = array_column(Db::fetchAll('PRAGMA table_info(' . $table . ')'), 'name');
+            $existing = self::columnNames($table);
             foreach ($cols as $def) {
                 $name = explode(' ', $def, 2)[0];
                 if (!in_array($name, $existing, true)) {
-                    Db::pdo()->exec("ALTER TABLE $table ADD COLUMN $def");
+                    Db::exec('ALTER TABLE ' . $table . ' ADD COLUMN ' . self::mysqlType($def));
                 }
             }
         }
-        Db::pdo()->exec(
+        Db::exec(
             'CREATE TABLE IF NOT EXISTS saved_workers (
                 user_id INTEGER NOT NULL REFERENCES users(id),
                 worker_id INTEGER NOT NULL REFERENCES users(id),
@@ -100,13 +106,13 @@ final class Schema
                 PRIMARY KEY (user_id, worker_id)
             )'
         );
-        Db::pdo()->exec('CREATE UNIQUE INDEX IF NOT EXISTS idx_profiles_public ON profiles(public_code)');
-        Db::pdo()->exec('CREATE UNIQUE INDEX IF NOT EXISTS idx_services_public ON services(public_code)');
-        Db::pdo()->exec('CREATE INDEX IF NOT EXISTS idx_jobs_status ON jobs(status, created_at)');
-        Db::pdo()->exec('CREATE INDEX IF NOT EXISTS idx_jobs_mode ON jobs(work_mode)');
-        Db::pdo()->exec('CREATE UNIQUE INDEX IF NOT EXISTS idx_payments_provider_ref ON payments(provider_ref)');
-        Db::pdo()->exec('CREATE INDEX IF NOT EXISTS idx_payments_user ON payments(user_id, created_at)');
-        Db::pdo()->exec(
+        Db::exec('CREATE UNIQUE INDEX IF NOT EXISTS idx_profiles_public ON profiles(public_code)');
+        Db::exec('CREATE UNIQUE INDEX IF NOT EXISTS idx_services_public ON services(public_code)');
+        Db::exec('CREATE INDEX IF NOT EXISTS idx_jobs_status ON jobs(status, created_at)');
+        Db::exec('CREATE INDEX IF NOT EXISTS idx_jobs_mode ON jobs(work_mode)');
+        Db::exec('CREATE UNIQUE INDEX IF NOT EXISTS idx_payments_provider_ref ON payments(provider_ref)');
+        Db::exec('CREATE INDEX IF NOT EXISTS idx_payments_user ON payments(user_id, created_at)');
+        Db::exec(
             'CREATE TABLE IF NOT EXISTS conversation_reads (
                 conversation_id INTEGER NOT NULL REFERENCES conversations(id),
                 user_id INTEGER NOT NULL REFERENCES users(id),
@@ -114,22 +120,22 @@ final class Schema
                 PRIMARY KEY (conversation_id, user_id)
             )'
         );
-        Db::pdo()->exec('CREATE UNIQUE INDEX IF NOT EXISTS idx_disputes_code ON disputes(public_code)');
+        Db::exec('CREATE UNIQUE INDEX IF NOT EXISTS idx_disputes_code ON disputes(public_code)');
         $more = [
             'support_tickets' => ['body TEXT', 'code TEXT', 'last_at TEXT'],
             'categories'      => ['active INTEGER NOT NULL DEFAULT 1'],
             'admin_audit'     => ['ip TEXT'],
         ];
         foreach ($more as $table => $cols) {
-            $existing = array_column(Db::fetchAll('PRAGMA table_info(' . $table . ')'), 'name');
+            $existing = self::columnNames($table);
             foreach ($cols as $def) {
                 $name = explode(' ', $def, 2)[0];
                 if (!in_array($name, $existing, true)) {
-                    Db::pdo()->exec("ALTER TABLE $table ADD COLUMN $def");
+                    Db::exec('ALTER TABLE ' . $table . ' ADD COLUMN ' . self::mysqlType($def));
                 }
             }
         }
-        Db::pdo()->exec(
+        Db::exec(
             'CREATE TABLE IF NOT EXISTS reports (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 public_code TEXT,
@@ -143,7 +149,7 @@ final class Schema
                 updated_at TEXT
             )'
         );
-        Db::pdo()->exec(
+        Db::exec(
             'CREATE TABLE IF NOT EXISTS ticket_messages (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 ticket_id INTEGER NOT NULL REFERENCES support_tickets(id),
@@ -153,7 +159,7 @@ final class Schema
                 created_at TEXT NOT NULL
             )'
         );
-        Db::pdo()->exec(
+        Db::exec(
             'CREATE TABLE IF NOT EXISTS idempotency_keys (
                 idem_key TEXT NOT NULL,
                 user_id INTEGER NOT NULL,
@@ -162,18 +168,44 @@ final class Schema
                 PRIMARY KEY (user_id, idem_key)
             )'
         );
-        Db::pdo()->exec('CREATE INDEX IF NOT EXISTS idx_orders_status ON orders(status, created_at)');
-        Db::pdo()->exec('CREATE INDEX IF NOT EXISTS idx_orders_client ON orders(client_id, status)');
-        Db::pdo()->exec('CREATE INDEX IF NOT EXISTS idx_orders_worker ON orders(worker_id, status)');
-        Db::pdo()->exec('CREATE INDEX IF NOT EXISTS idx_ledger_order ON ledger(order_id)');
-        Db::pdo()->exec('CREATE INDEX IF NOT EXISTS idx_ledger_user ON ledger(user_id, id)');
-        Db::pdo()->exec('CREATE INDEX IF NOT EXISTS idx_messages_conv ON messages(conversation_id, id)');
-        Db::pdo()->exec('CREATE INDEX IF NOT EXISTS idx_notif_user ON notifications(user_id, read_at)');
-        Db::pdo()->exec('CREATE INDEX IF NOT EXISTS idx_wd_status ON withdrawals(status, created_at)');
-        Db::pdo()->exec('CREATE INDEX IF NOT EXISTS idx_jobs_client ON jobs(client_id, status)');
+        Db::exec('CREATE INDEX IF NOT EXISTS idx_orders_status ON orders(status, created_at)');
+        Db::exec('CREATE INDEX IF NOT EXISTS idx_orders_client ON orders(client_id, status)');
+        Db::exec('CREATE INDEX IF NOT EXISTS idx_orders_worker ON orders(worker_id, status)');
+        Db::exec('CREATE INDEX IF NOT EXISTS idx_ledger_order ON ledger(order_id)');
+        Db::exec('CREATE INDEX IF NOT EXISTS idx_ledger_user ON ledger(user_id, id)');
+        Db::exec('CREATE INDEX IF NOT EXISTS idx_messages_conv ON messages(conversation_id, id)');
+        Db::exec('CREATE INDEX IF NOT EXISTS idx_notif_user ON notifications(user_id, read_at)');
+        Db::exec('CREATE INDEX IF NOT EXISTS idx_wd_status ON withdrawals(status, created_at)');
+        Db::exec('CREATE INDEX IF NOT EXISTS idx_jobs_client ON jobs(client_id, status)');
         if (!Db::fetch("SELECT key FROM settings WHERE key='maintenance'")) {
             Db::run("INSERT INTO settings (key, value) VALUES ('maintenance', '0')");
         }
+    }
+
+    private static function columnNames(string $table): array
+    {
+        if (Db::isMysql()) {
+            $rows = Db::fetchAll(
+                'SELECT COLUMN_NAME AS name FROM information_schema.COLUMNS
+                 WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = ?',
+                [$table]
+            );
+            return array_column($rows, 'name');
+        }
+        return array_column(Db::fetchAll('PRAGMA table_info(' . $table . ')'), 'name');
+    }
+
+    private static function mysqlType(string $def): string
+    {
+        if (!Db::isMysql()) {
+            return $def;
+        }
+        $def = preg_replace('/\bINTEGER PRIMARY KEY AUTOINCREMENT\b/i', 'INT NOT NULL AUTO_INCREMENT PRIMARY KEY', $def) ?? $def;
+        $def = preg_replace('/\bINTEGER\b/i', 'INT', $def) ?? $def;
+        $def = preg_replace('/\bREAL\b/i', 'DOUBLE', $def) ?? $def;
+        $def = preg_replace('/\b(public_code|code|idem_key)\s+TEXT\b/i', '$1 VARCHAR(64)', $def) ?? $def;
+        $def = preg_replace('/\b(body|href|note|skill|work_mode|reply|scope|title|reason_type|decision|resolution_note|packages_json|icon|blurb|mode_label|tags|tone)\s+TEXT\b/i', '$1 TEXT', $def) ?? $def;
+        return $def;
     }
 
     /** @return list<string> */
@@ -419,5 +451,36 @@ final class Schema
                 reset_at INTEGER NOT NULL
             )',
         ];
+    }
+
+    /** @return list<string> */
+    public static function mysqlStatements(): array
+    {
+        $out = [];
+        foreach (self::statements() as $sql) {
+            $out[] = self::sqliteToMysql($sql);
+        }
+        return $out;
+    }
+
+    private static function sqliteToMysql(string $sql): string
+    {
+        $sql = str_replace('INTEGER PRIMARY KEY AUTOINCREMENT', 'INT NOT NULL AUTO_INCREMENT PRIMARY KEY', $sql);
+        $sql = str_replace('user_id INTEGER PRIMARY KEY REFERENCES users(id)', 'user_id INT NOT NULL PRIMARY KEY', $sql);
+        $sql = str_replace('key TEXT PRIMARY KEY', '`key` VARCHAR(64) NOT NULL PRIMARY KEY', $sql);
+        $sql = str_replace('bucket TEXT PRIMARY KEY', 'bucket VARCHAR(191) NOT NULL PRIMARY KEY', $sql);
+        $sql = str_replace('phone TEXT NOT NULL UNIQUE', 'phone VARCHAR(32) NOT NULL UNIQUE', $sql);
+        $sql = str_replace('email TEXT UNIQUE', 'email VARCHAR(191) UNIQUE', $sql);
+        $sql = str_replace('slug TEXT NOT NULL UNIQUE', 'slug VARCHAR(191) NOT NULL UNIQUE', $sql);
+        $sql = str_replace('code TEXT NOT NULL UNIQUE', 'code VARCHAR(32) NOT NULL UNIQUE', $sql);
+        $sql = str_replace('password_hash TEXT NOT NULL', 'password_hash VARCHAR(255) NOT NULL', $sql);
+        $sql = str_replace('full_name TEXT NOT NULL', 'full_name VARCHAR(191) NOT NULL', $sql);
+        $sql = preg_replace('/\bINTEGER\b/', 'INT', $sql) ?? $sql;
+        $sql = preg_replace('/\bREAL\b/', 'DOUBLE', $sql) ?? $sql;
+        $trim = strtoupper(ltrim($sql));
+        if (str_starts_with($trim, 'CREATE TABLE')) {
+            $sql = rtrim($sql, "; \n") . ' ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci';
+        }
+        return $sql;
     }
 }

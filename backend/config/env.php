@@ -23,13 +23,14 @@ return [
     'frontend_root' => $frontend,
 
     'db' => [
-        'driver' => getenv('DB_DRIVER') ?: 'sqlite',          // production: mysql
+        // Live app: MySQL (XAMPP phpMyAdmin). Tests set SQLITE_PATH and stay on sqlite.
+        'driver' => getenv('DB_DRIVER') ?: (getenv('SQLITE_PATH') ? 'sqlite' : 'mysql'),
         'sqlite_path' => getenv('SQLITE_PATH') ?: dirname(__DIR__) . '/storage/skilvi.sqlite',
         'mysql' => [
             'host'     => getenv('DB_HOST') ?: '127.0.0.1',
             'port'     => (int) (getenv('DB_PORT') ?: 3306),
             'database' => getenv('DB_NAME') ?: 'skilvi',
-            'user'     => getenv('DB_USER') ?: 'skilvi',
+            'user'     => getenv('DB_USER') ?: 'root',
             'pass'     => getenv('DB_PASS') ?: '',
         ],
     ],

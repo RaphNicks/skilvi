@@ -1,6 +1,6 @@
 # Run Skilvi on your computer (VS Code + PHP / XAMPP)
 
-You need **PHP 8.2+** with `pdo_sqlite`, `openssl`, `mbstring`, `fileinfo`. XAMPP’s PHP is enough — you do **not** need MySQL for local (SQLite is the default).
+You need **PHP 8.2+** with `pdo_mysql`, `openssl`, `mbstring`, `fileinfo`, and **XAMPP MySQL** running. Live data is stored in MySQL — you inspect it in **phpMyAdmin**, not in a file inside the project.
 
 ## 1. Download
 
@@ -27,14 +27,30 @@ skilvi/                 ← pages (index.html, admin/, assets/)
 
 Use XAMPP only as the PHP binary if you already have it.
 
-**Windows (PowerShell)** — XAMPP PHP:
+**Windows (PowerShell)** — XAMPP PHP + MySQL:
+
+1. Open **XAMPP Control Panel** → Start **Apache** and **MySQL**.
+2. Optional: open **http://localhost/phpmyadmin** → New → database name `skilvi`, collation `utf8mb4_unicode_ci` → Create. (`install.php` will create it if you skip this.)
+3. In `C:\xampp\php\php.ini` make sure these are **uncommented** (no `;` in front):
+
+```ini
+extension=pdo_mysql
+extension=mysqli
+extension=openssl
+extension=mbstring
+extension=fileinfo
+```
+
+4. Then:
 
 ```powershell
-cd C:\path\to\skilvi\backend
-C:\xampp\php\php.exe -m | findstr /i "pdo_sqlite openssl mbstring fileinfo"
+cd C:\Users\Admin\skilvi\backend
+C:\xampp\php\php.exe -m | findstr /i "pdo_mysql openssl mbstring fileinfo"
 C:\xampp\php\php.exe tools\install.php
 C:\xampp\php\php.exe -S 127.0.0.1:8080 tools\dev-router.php
 ```
+
+Default MySQL login is XAMPP’s `root` with an **empty password**, database `skilvi`. After install, refresh phpMyAdmin — you should see tables `users`, `jobs`, `orders`, …
 
 **macOS / Linux:**
 
@@ -47,9 +63,7 @@ php -S 127.0.0.1:8080 tools/dev-router.php
 
 Open **http://127.0.0.1:8080**
 
-`install.php` creates `backend/storage/skilvi.sqlite` and seed accounts. Safe to re-run (idempotent). Do not commit the sqlite file.
-
-If `pdo_sqlite` is missing in XAMPP: `C:\xampp\php\php.ini` — uncomment `extension=pdo_sqlite` and `extension=sqlite3`, restart the server command.
+`install.php` creates the MySQL database/tables and seed accounts. Safe to re-run. **Data is not stored in the project folder.**
 
 ## 3. Log in (dev)
 
@@ -113,7 +127,7 @@ C:\xampp\php\php.exe tests\test_admin.php
 C:\xampp\php\php.exe tests\test_hardening.php
 ```
 
-Each test uses a **temp sqlite file**, not your live `storage/skilvi.sqlite`.
+Each test uses a **temp sqlite file**, not your MySQL `skilvi` database.
 
 Browser smoke:
 
@@ -136,4 +150,4 @@ Health: http://127.0.0.1:8080/api/health → `"status":"ok"`.
 
 - Don’t point Apache at the repo root without a front controller — `/api/*` will 404.
 - Don’t set `APP_ENV=prod` locally (OTP `dev_code` disappears; HTTPS cookies).
-- Don’t commit `backend/storage/skilvi.sqlite` or `storage/.app_key`.
+- Don’t commit `storage/.app_key` or any database dump with live passwords.

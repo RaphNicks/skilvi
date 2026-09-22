@@ -1,6 +1,11 @@
 <?php
 declare(strict_types=1);
 
+$tmp = sys_get_temp_dir() . '/skilvi-test-' . getmypid() . '.sqlite';
+@unlink($tmp);
+putenv('SQLITE_PATH=' . $tmp);
+putenv('APP_ENV=dev');
+
 require dirname(__DIR__) . '/app/bootstrap.php';
 App\Core\Schema::install();
 App\Core\Seed::run(true);

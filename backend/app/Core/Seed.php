@@ -12,9 +12,9 @@ final class Seed
         self::users();
         self::categoriesOnly();
         self::fixTree();
-        Db::pdo()->prepare('INSERT OR REPLACE INTO settings (key, value) VALUES (?, ?)')->execute(['min_withdrawal_kobo', '500000']);
-        Db::pdo()->prepare('INSERT OR REPLACE INTO settings (key, value) VALUES (?, ?)')->execute(['fee_percent', '10']);
-        Db::pdo()->prepare('INSERT OR REPLACE INTO settings (key, value) VALUES (?, ?)')->execute(['currency', 'NGN']);
+        Db::run('INSERT OR REPLACE INTO settings (key, value) VALUES (?, ?)', ['min_withdrawal_kobo', '500000']);
+        Db::run('INSERT OR REPLACE INTO settings (key, value) VALUES (?, ?)', ['fee_percent', '10']);
+        Db::run('INSERT OR REPLACE INTO settings (key, value) VALUES (?, ?)', ['currency', 'NGN']);
         if ($demo) {
             self::catalog();
             self::demoOrders();
@@ -29,7 +29,10 @@ final class Seed
     {
         $keep = ['2348031112233', '2348010001028', '2348020000008', '2348000000001'];
         $pdo = Db::pdo();
-        $pdo->exec('PRAGMA foreign_keys=OFF');
+        Db::exec('PRAGMA foreign_keys=OFF');
+        if (Db::isMysql()) {
+            $pdo->exec('SET FOREIGN_KEY_CHECKS=0');
+        }
         foreach ([
             'messages', 'conversation_reads', 'ticket_messages', 'support_tickets',
             'notifications', 'reviews', 'disputes', 'ledger', 'payments', 'withdrawals',
@@ -43,12 +46,15 @@ final class Seed
             }
         }
         $ph = implode(',', array_fill(0, count($keep), '?'));
-        $pdo->prepare("DELETE FROM wallets WHERE user_id NOT IN (SELECT id FROM users WHERE phone IN ($ph))")->execute($keep);
-        $pdo->prepare("DELETE FROM profiles WHERE user_id NOT IN (SELECT id FROM users WHERE phone IN ($ph))")->execute($keep);
-        $pdo->prepare("DELETE FROM users WHERE phone NOT IN ($ph)")->execute($keep);
+        Db::prepare("DELETE FROM wallets WHERE user_id NOT IN (SELECT id FROM users WHERE phone IN ($ph))")->execute($keep);
+        Db::prepare("DELETE FROM profiles WHERE user_id NOT IN (SELECT id FROM users WHERE phone IN ($ph))")->execute($keep);
+        Db::prepare("DELETE FROM users WHERE phone NOT IN ($ph)")->execute($keep);
         $pdo->exec('UPDATE profiles SET rating_avg=0, review_count=0, orders_completed=0, verified=0, promo=0');
         $pdo->exec('UPDATE wallets SET available_kobo=0, pending_kobo=0');
-        $pdo->exec('PRAGMA foreign_keys=ON');
+        Db::exec('PRAGMA foreign_keys=ON');
+        if (Db::isMysql()) {
+            $pdo->exec('SET FOREIGN_KEY_CHECKS=1');
+        }
         self::categoriesOnly();
     }
 
@@ -62,7 +68,7 @@ final class Seed
             ['business', 'Business & Professional', 'digital', 'briefcase', 'Remote', 'Accounts, VA, consulting and marketing for small Nigerian businesses.', 4],
             ['education', 'Education & Personal', 'both', 'heart', 'Both', 'Tutoring, tailoring, hair, beauty and wellness.', 5],
         ];
-        $insP = $pdo->prepare('INSERT OR IGNORE INTO categories (slug, name, kind, sort, icon, mode_label, blurb) VALUES (?,?,?,?,?,?,?)');
+        $insP = Db::prepare('INSERT OR IGNORE INTO categories (slug, name, kind, sort, icon, mode_label, blurb) VALUES (?,?,?,?,?,?,?)');
         foreach ($parents as $c) {
             $insP->execute([$c[0], $c[1], $c[2], $c[6], $c[3], $c[4], $c[5]]);
         }
@@ -84,7 +90,7 @@ final class Seed
             ['accounting', 'Accounting & Bookkeeping', 'business'],
             ['fashion', 'Fashion & Tailoring', 'education'],
         ];
-        $insS = $pdo->prepare('INSERT OR IGNORE INTO categories (slug, name, kind, sort, parent_id) VALUES (?,?,?,?,?)');
+        $insS = Db::prepare('INSERT OR IGNORE INTO categories (slug, name, kind, sort, parent_id) VALUES (?,?,?,?,?)');
         $i = 10;
         foreach ($skills as $s) {
             $insS->execute([$s[0], $s[1], 'skill', $i++, $parentId[$s[2]] ?? null]);
@@ -142,11 +148,11 @@ final class Seed
                 'city' => $p[7],
             ]);
         }
-        Db::pdo()->prepare('INSERT OR REPLACE INTO settings (key, value) VALUES (?, ?)')->execute(['fee_percent', '10']);
-        Db::pdo()->prepare('INSERT OR REPLACE INTO settings (key, value) VALUES (?, ?)')->execute(['currency', 'NGN']);
-        Db::pdo()->prepare('INSERT OR REPLACE INTO settings (key, value) VALUES (?, ?)')->execute(['stats_professionals', '12000']);
-        Db::pdo()->prepare('INSERT OR REPLACE INTO settings (key, value) VALUES (?, ?)')->execute(['stats_gmv_naira', '4200000000']);
-        Db::pdo()->prepare('INSERT OR REPLACE INTO settings (key, value) VALUES (?, ?)')->execute(['stats_jobs_done', '8500']);
+        Db::prepare('INSERT OR REPLACE INTO settings (key, value) VALUES (?, ?)')->execute(['fee_percent', '10']);
+        Db::prepare('INSERT OR REPLACE INTO settings (key, value) VALUES (?, ?)')->execute(['currency', 'NGN']);
+        Db::prepare('INSERT OR REPLACE INTO settings (key, value) VALUES (?, ?)')->execute(['stats_professionals', '12000']);
+        Db::prepare('INSERT OR REPLACE INTO settings (key, value) VALUES (?, ?)')->execute(['stats_gmv_naira', '4200000000']);
+        Db::prepare('INSERT OR REPLACE INTO settings (key, value) VALUES (?, ?)')->execute(['stats_jobs_done', '8500']);
     }
 
     private static function catalog(): void
@@ -164,7 +170,7 @@ final class Seed
             ['business', 'Business & Professional', 'digital', 'briefcase', 'Remote', 'Accounts, VA, consulting and marketing for small Nigerian businesses.', 4],
             ['education', 'Education & Personal', 'both', 'heart', 'Both', 'Tutoring, tailoring, hair, beauty and wellness.', 5],
         ];
-        $insP = $pdo->prepare('INSERT OR IGNORE INTO categories (slug, name, kind, sort, icon, mode_label, blurb) VALUES (?,?,?,?,?,?,?)');
+        $insP = Db::prepare('INSERT OR IGNORE INTO categories (slug, name, kind, sort, icon, mode_label, blurb) VALUES (?,?,?,?,?,?,?)');
         foreach ($parents as $c) {
             $insP->execute([$c[0], $c[1], $c[2], $c[6], $c[3], $c[4], $c[5]]);
         }
@@ -187,7 +193,7 @@ final class Seed
             ['accounting', 'Accounting & Bookkeeping', 'business'],
             ['fashion', 'Fashion & Tailoring', 'education'],
         ];
-        $insS = $pdo->prepare('INSERT OR IGNORE INTO categories (slug, name, kind, sort, parent_id) VALUES (?,?,?,?,?)');
+        $insS = Db::prepare('INSERT OR IGNORE INTO categories (slug, name, kind, sort, parent_id) VALUES (?,?,?,?,?)');
         $i = 10;
         foreach ($skills as $s) {
             $insS->execute([$s[0], $s[1], 'skill', $i++, $parentId[$s[2]] ?? null]);

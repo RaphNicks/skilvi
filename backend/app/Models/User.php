@@ -19,7 +19,7 @@ final class User
 
     public static function findByEmail(string $email): ?array
     {
-        return Db::fetch('SELECT * FROM users WHERE email = ? COLLATE NOCASE', [$email]);
+        return Db::fetch('SELECT * FROM users WHERE LOWER(email) = LOWER(?)', [$email]);
     }
 
     public static function findByIdentifier(string $raw): ?array
