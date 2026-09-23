@@ -64,10 +64,10 @@ final class PagesController
             'worker-wallet.html'     => '/js/worker.js?v=32',
             'worker-services.html'   => '/js/worker.js?v=32',
             'worker-service-form.html' => '/js/worker.js?v=32',
-            'checkout.html'          => '/js/pay.js?v=31',
-            'payment-success.html'   => '/js/pay.js?v=31',
-            'verification.html'      => '/js/pay.js?v=31',
-            'promotion.html'         => '/js/pay.js?v=31',
+            'checkout.html'          => '/js/pay.js?v=32',
+            'payment-success.html'   => '/js/pay.js?v=32',
+            'verification.html'      => '/js/pay.js?v=32',
+            'promotion.html'         => '/js/pay.js?v=32',
             'disputes.html'          => '/js/comms.js?v=31',
             'dispute-detail.html'    => '/js/comms.js?v=31',
             'messages.html'          => '/js/comms.js?v=31',
@@ -79,6 +79,12 @@ final class PagesController
             'worker-dashboard.html', 'worker-wallet.html', 'worker-services.html', 'worker-service-form.html',
             'checkout.html', 'payment-success.html',
             'disputes.html', 'dispute-detail.html', 'messages.html', 'notifications.html',
+            'verification.html', 'promotion.html',
+        ];
+        $workerOnly = [
+            'worker-dashboard.html', 'worker-orders.html', 'worker-services.html',
+            'worker-service-form.html', 'worker-jobs.html', 'worker-wallet.html',
+            'verification.html', 'promotion.html',
         ];
         if (str_starts_with($rel, 'admin/')) {
             if (!Session::userId()) {
@@ -92,6 +98,13 @@ final class PagesController
         }
         if (in_array($rel, $gated, true) && !Session::userId()) {
             Response::redirect('/login.html?next=/' . $rel);
+        }
+        if (in_array($rel, $workerOnly, true) && Session::userId()) {
+            $u = User::find((int) Session::userId());
+            $roles = (string) ($u['roles'] ?? '');
+            if ($u === null || !str_contains($roles, 'worker')) {
+                Response::redirect('/client-dashboard.html');
+            }
         }
         if (isset($pageScripts[$rel])) {
             $extra .= '<script src="' . $pageScripts[$rel] . '"></script>';

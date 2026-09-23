@@ -148,22 +148,35 @@
   }
 
   async function verifyPage() {
-    let st = null;
+    let me = null;
+    try { me = await api("/api/me"); } catch (err) {
+      if (gate(err)) return;
+      throw err;
+    }
+    const nameInp = document.querySelector("#vrForm [name=full_name]");
+    if (nameInp && me && me.full_name && !nameInp.value) nameInp.value = me.full_name;
+
+    let st = { status: "none" };
     try { st = await api("/api/verification/status"); } catch (err) {
-      if (err.status === 401) return;
+      if (gate(err)) return;
       throw err;
     }
     const form = $("#vrForm");
     if (!form) return;
-    const inputs = form.querySelectorAll("input:not([type=checkbox]):not([type=radio]), select");
-    if (inputs[0] && !inputs[0].name) inputs[0].name = "full_name";
-    if (inputs[1] && !inputs[1].name) inputs[1].name = "id_type";
-    if (inputs[2] && !inputs[2].name) inputs[2].name = "id_number";
+    const statusEl = $("#vrStatus");
     if (st.status === "approved") {
-      toast("This account is already verified.", "success");
+      if (statusEl) {
+        statusEl.style.display = "";
+        statusEl.textContent = "This worker profile is already verified. Identity only — not a skill certificate.";
+      }
+      form.querySelectorAll("input, select, button").forEach((el) => { el.disabled = true; });
+      return;
     }
     if (st.status === "pending") {
-      toast("Your identity check is with the review team — usually within 2 business days.", "success");
+      if (statusEl) {
+        statusEl.style.display = "";
+        statusEl.textContent = "Your identity check is with the review team — usually within 2 business days.";
+      }
     }
     form.addEventListener("submit", async (e) => {
       e.preventDefault();
@@ -179,14 +192,17 @@
           }
         }
         const body = {
-          full_name: (form.querySelector("[name=full_name]") || inputs[0]).value,
-          id_type: (form.querySelector("[name=id_type]") || inputs[1]).value,
-          id_number: (form.querySelector("[name=id_number]") || inputs[2]).value,
+          full_name: (form.querySelector("[name=full_name]") || {}).value,
+          id_type: (form.querySelector("[name=id_type]") || {}).value,
+          id_number: (form.querySelector("[name=id_number]") || {}).value,
         };
         await api("/api/verification/submit", { body });
-        toast("Application in. Identity only — this never certifies skill. Decision by SMS within 2 business days.", "success");
+        toast("Application in. Identity only — this never certifies skill. Decision within 2 business days.", "success");
       } catch (err) {
-        if (!gate(err)) toast(err.message, "error");
+        if (!gate(err)) {
+          if (window.SkApi && window.SkApi.showFieldErrors) window.SkApi.showFieldErrors(err, form);
+          toast(err.message, "error");
+        }
       } finally {
         busy(btn, false);
       }
