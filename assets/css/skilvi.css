@@ -390,6 +390,11 @@ table.table { width: 100%; border-collapse: collapse; font-size: 13.5px; min-wid
 .sb-user { display: flex; align-items: center; gap: 9px; padding: 4px 6px 4px 4px; border-radius: var(--r-full); }
 .sb-user:hover { background: var(--bg); }
 .side-toggle { display: none; }
+.side-check {
+  position: absolute; opacity: 0; pointer-events: none;
+  width: 0; height: 0; clip: rect(0, 0, 0, 0); appearance: none;
+}
+.side-backdrop { display: none; }
 .sb-user .su-name { font-size: 13px; font-weight: 600; }
 .content { padding: 28px; flex: 1; }
 
