@@ -33,23 +33,23 @@
     <a class="side-item" href="disputes.html"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v16m-7 0h14"/><path d="m5 7-3 6a3.5 3.5 0 0 0 6 0L5 7Zm14 0-3 6a3.5 3.5 0 0 0 6 0l-3-6Z"/><path d="M5 7h14"/></svg><span>Disputes</span></a>
     <a class="side-item active" href="account-settings.html"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19 12a7 7 0 0 0-.1-1.2l2-1.6-2-3.4-2.4 1a7 7 0 0 0-2-1.2L14 3h-4l-.5 2.6a7 7 0 0 0-2 1.2l-2.4-1-2 3.4 2 1.6a7 7 0 0 0 0 2.4l-2 1.6 2 3.4 2.4-1a7 7 0 0 0 2 1.2L10 21h4l.5-2.6a7 7 0 0 0 2-1.2l2.4 1 2-3.4-2-1.6c.06-.4.1-.8.1-1.2Z"/></svg><span>Settings</span></a>
     <a class="side-item" href="/logout.html"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 4H5a1 1 0 0 0-1 1v14a1 1 0 0 0 1 1h4"/><path d="m15 8 4 4-4 4m4-4H9"/></svg><span>Sign out</span></a>
-  <div class="side-foot"><div class="side-user"><span class="avatar sm a1">CO</span><div><div class="su-name">Chinedu Okafor</div><div class="su-role">Worker · Verified</div></div></div></div>
+  <div class="side-foot"><div class="side-user"><span class="avatar sm a1">?</span><div><div class="su-name">You</div><div class="su-role">Account</div></div></div></div>
 </aside>
   <div class="shell-main">
     <header class="subbar">
     <label class="icon-btn side-toggle" for="sideCheck" aria-label="Menu"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg></label>
   <div class="sb-actions">
     <a class="link-muted" href="index.html">View marketplace</a>
-    <a class="icon-btn" href="notifications.html" aria-label="Notifications"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9a6 6 0 1 1 12 0c0 5 2 6 2 6H4s2-1 2-6"/><path d="M10 19a2 2 0 0 0 4 0"/></svg><span class="dot"></span></button>
+    <a class="icon-btn" href="notifications.html" aria-label="Notifications"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9a6 6 0 1 1 12 0c0 5 2 6 2 6H4s2-1 2-6"/><path d="M10 19a2 2 0 0 0 4 0"/></svg><span class="dot"></span></a>
     <a class="btn btn-ghost btn-sm" href="/logout.html">Sign out</a>
-    <a class="sb-user" href="account-settings.html"><span class="avatar sm a1">CO</span><span class="su-name">Chinedu</span></a>
+    <a class="sb-user" href="account-settings.html"><span class="avatar sm a1">?</span><span class="su-name">You</span></a>
   </div>
 </header>
     <main class="content">
       <div class="page-head">
         <div>
           <h1 class="ph-title">Account settings</h1>
-          <p class="ph-sub">Profile, security, notifications and your data. Phone changes require a fresh OTP.</p>
+          <p class="ph-sub">Profile, login email, notifications and your data.</p>
         </div>
       </div>
 
@@ -59,42 +59,57 @@
           <div class="card card-pad">
             <h3 style="font-size:15px">Profile</h3>
             <div class="row mt-2 mb-2" style="gap:14px">
-              <span class="avatar lg a1">CO</span>
+              <span class="avatar lg a1" id="meAvatar">?</span>
               <div>
-                <button class="btn btn-secondary btn-sm" data-toast="Upload: JPG/PNG, at least 400×400, face clearly visible" type="button">Change photo</button>
-                <p class="tiny faint mt-1">Photos with a clear face get 3× more trust on profiles.</p>
+                <input type="file" id="avatarFile" accept="image/jpeg,image/png,image/webp" hidden>
+                <button class="btn btn-secondary btn-sm" id="avatarBtn" type="button">Change photo</button>
+                <p class="tiny faint mt-1">JPG, PNG or WebP. A clear face photo helps clients trust you.</p>
               </div>
             </div>
             <div class="form-row-2">
-              <div class="field"><label>Full name</label><input class="input" value="Chinedu Okafor"></div>
-              <div class="field"><label>Headline</label><input class="input" value="Frontend developer & WordPress specialist"></div>
+              <div class="field"><label>Full name</label><input class="input" name="full_name" id="meName" value="" autocomplete="name"></div>
+              <div class="field"><label>Headline</label><input class="input" name="headline" id="meHeadline" value="" placeholder="e.g. Plumber in Port Harcourt"></div>
             </div>
             <div class="field mt-2">
               <label>Bio</label>
-              <textarea class="textarea">I've been building websites for 6 years — first for a software house in Port Harcourt, then for restaurants, pharmacies and real-estate agencies. I work fully remotely and stay available after launch.</textarea>
+              <textarea class="textarea" name="bio" id="meBio" placeholder="A short intro. What you do, where you work."></textarea>
             </div>
             <div class="form-row-2 mt-2">
-              <div class="field"><label>State</label><select class="select"><option>Rivers</option><option>Lagos</option><option>FCT</option></select></div>
-              <div class="field"><label>City</label><input class="input" value="Port Harcourt"></div>
+              <div class="field"><label>State</label>
+                <select class="select" name="state" id="meState">
+                  <option value="">Select state</option>
+                  <option>Abia</option><option>Adamawa</option><option>Akwa Ibom</option><option>Anambra</option>
+                  <option>Bauchi</option><option>Bayelsa</option><option>Benue</option><option>Borno</option>
+                  <option>Cross River</option><option>Delta</option><option>Ebonyi</option><option>Edo</option>
+                  <option>Ekiti</option><option>Enugu</option><option>FCT</option><option>Gombe</option>
+                  <option>Imo</option><option>Jigawa</option><option>Kaduna</option><option>Kano</option>
+                  <option>Katsina</option><option>Kebbi</option><option>Kogi</option><option>Kwara</option>
+                  <option>Lagos</option><option>Nasarawa</option><option>Niger</option><option>Ogun</option>
+                  <option>Ondo</option><option>Osun</option><option>Oyo</option><option>Plateau</option>
+                  <option>Rivers</option><option>Sokoto</option><option>Taraba</option><option>Yobe</option>
+                  <option>Zamfara</option>
+                </select>
+              </div>
+              <div class="field"><label>City</label><input class="input" name="city" id="meCity" value=""></div>
             </div>
-            <div class="row mt-3" style="justify-content:flex-end"><button class="btn btn-primary" data-save type="button">Save profile</button></div>
+            <div class="row mt-3" style="justify-content:flex-end"><button class="btn btn-primary" id="saveProfile" type="button">Save profile</button></div>
           </div>
 
           <!-- Security -->
           <div class="card card-pad">
             <h3 style="font-size:15px">Security &amp; login</h3>
             <div class="field mt-2 mb-2">
-              <label>Phone number (primary login)</label>
-              <div class="row" style="gap:8px"><input class="input" value="+234 803 111 2233" style="max-width:220px"><button class="btn btn-secondary btn-sm" data-toast="OTP sent to the new number — confirm to finish" type="button">Change</button></div>
-              <span class="hint">Changing your phone sends an OTP to the new number and invalidates old sessions.</span>
+              <label>Email (you log in with this)</label>
+              <div class="row" style="gap:8px"><input class="input" id="meEmail" type="email" value="" style="max-width:280px" autocomplete="email"><button class="btn btn-secondary btn-sm" id="saveEmail" type="button">Update email</button></div>
             </div>
             <div class="field mb-2">
-              <label>Email</label>
-              <div class="row" style="gap:8px"><input class="input" value="chinedu@okafordev.ng" style="max-width:280px"><button class="btn btn-secondary btn-sm" data-toast="Confirmation email sent" type="button">Change</button></div>
+              <label>Phone (optional)</label>
+              <input class="input" id="mePhone" value="" style="max-width:220px" disabled>
+              <span class="hint">Phone is optional. Login uses your email.</span>
             </div>
             <div class="field">
-              <label>Password</label>
-              <div class="row" style="gap:8px"><input class="input" type="password" placeholder="New password" style="max-width:280px"><button class="btn btn-secondary btn-sm" data-toast="Password updated — other devices signed out" type="button">Update</button></div>
+              <label>New password</label>
+              <div class="row" style="gap:8px"><input class="input" id="mePassword" type="password" placeholder="At least 8 characters" style="max-width:280px" autocomplete="new-password"><button class="btn btn-secondary btn-sm" id="savePassword" type="button">Update password</button></div>
             </div>
           </div>
 
@@ -107,17 +122,17 @@
             </div>
             <div class="switch-row">
               <div><div class="sw-title">Money alerts (SMS)</div><div class="sw-sub">Payment received, withdrawal paid/failed, auto-release countdown</div></div>
-              <label class="switch"><input type="checkbox" checked><span class="track"></span></label>
+              <label class="switch"><input type="checkbox" id="prefSms"><span class="track"></span></label>
             </div>
             <div class="switch-row">
               <div><div class="sw-title">New job alerts (email)</div><div class="sw-sub">Jobs matching your categories, twice daily</div></div>
-              <label class="switch"><input type="checkbox" checked><span class="track"></span></label>
+              <label class="switch"><input type="checkbox" id="prefJobs"><span class="track"></span></label>
             </div>
             <div class="switch-row">
               <div><div class="sw-title">Marketing &amp; tips (email)</div><div class="sw-sub">Occasional product news. Never your data, sold or shared.</div></div>
-              <label class="switch"><input type="checkbox"><span class="track"></span></label>
+              <label class="switch"><input type="checkbox" id="prefMkt"><span class="track"></span></label>
             </div>
-            <div class="row mt-3" style="justify-content:flex-end"><button class="btn btn-primary" data-save type="button">Save preferences</button></div>
+            <div class="row mt-3" style="justify-content:flex-end"><button class="btn btn-primary" id="savePrefs" type="button">Save preferences</button></div>
           </div>
 
           <!-- Privacy & data -->
@@ -144,11 +159,10 @@
         <!-- Sidebar -->
         <aside class="summary-card">
           <h3 style="font-size:14px">Account status</h3>
-          <div class="kv mt-1"><span class="k">Role</span><span class="v">Worker + Client</span></div>
-          <div class="kv"><span class="k">State</span><span class="v"><span class="st st-green">Active</span></span></div>
-          <div class="kv"><span class="k">Verified</span><span class="v">Identity · expires Sep 2028</span></div>
-          <div class="kv"><span class="k">Trust score</span><span class="v">96 / 100</span></div>
-          <div class="kv"><span class="k">Member since</span><span class="v">Jan 2026</span></div>
+          <div class="kv mt-1"><span class="k">Role</span><span class="v" id="stRole">—</span></div>
+          <div class="kv"><span class="k">State</span><span class="v" id="stStatus">—</span></div>
+          <div class="kv"><span class="k">Verified</span><span class="v" id="stVerified">—</span></div>
+          <div class="kv"><span class="k">Member since</span><span class="v" id="stSince">—</span></div>
           <div class="escrow-note mt-3" id="stNote"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 5 6v6c0 4.4 3 7.4 7 9 4-1.6 7-4.6 7-9V6l-7-3Z"/><path d="m9 12 2 2 4-4"/></svg><span><b>Why the trust score?</b> It combines on-time delivery, dispute history and payment reliability. It's visible to Skilvi support (not to other users) and affects how quickly your withdrawals are auto-approved.</span></div>
         </aside>
       </div>
@@ -156,11 +170,5 @@
   </div>
 </div>
 <script src="assets/js/skilvi.js?v=19"></script>
-<script>
-  document.addEventListener("DOMContentLoaded", () => {
-    const I = SkIconSvg;
-    $("#stNote").innerHTML = I.shield + "<span><b>Why the trust score?</b> It combines on-time delivery, dispute history and payment reliability. It's visible to Skilvi support (not to other users) and affects how quickly your withdrawals are auto-approved.</span>";
-  });
-</script>
 </body>
 </html>

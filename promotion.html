@@ -131,50 +131,5 @@
   </div>
 </footer>
 <script src="assets/js/skilvi.js?v=19"></script>
-<script>
-  document.addEventListener("DOMContentLoaded", () => {
-    const I = SkIconSvg;
-    $("#prEyebrow").innerHTML = I.zap + " Optional · starts instantly · always labelled";
-
-    $("#prProducts").innerHTML = [
-      [I.search, "Search boost", "₦2,500", "7 days", "Your service appears in the top “Promoted” position of search results when clients search your categories.", ["Up to 3 categories you choose", "Labeled “Promoted” on the card", "Never above more than 2 promoted items per page", "Works alongside your organic ranking"]],
-      [I.layers, "Category spotlight", "₦5,000", "7 days", "Featured placement on your category page plus a tile on the home browse grid — maximum visibility for launches and busy seasons.", ["One top-level category", "Home page tile for 7 days", "Ideal for new services or peak seasons", "Labeled “Promoted” everywhere"]]
-    ].map(([i, t, p, d, desc, pts]) =>
-      '<div class="card card-pad"><div class="row spread"><span class="stat-icon">' + i + '</span><span class="tag tag-promoted">Promoted</span></div>' +
-      "<h3 style=\"font-size:16px;margin-top:12px;font-family:var(--font-body)\">" + t + "</h3>" +
-      '<div class="row mt-1" style="align-items:baseline;gap:8px"><span class="amount" style="font-size:24px">' + p + "</span><span class=\"tiny faint\">/ " + d + "</span></div>" +
-      '<p class="small muted mt-1">' + desc + "</p>" +
-      '<ul class="mt-2" style="display:flex;flex-direction:column;gap:7px">' +
-      pts.map((x) => '<li class="small" style="color:var(--ink-2);display:flex;gap:7px;align-items:flex-start">' + I.check + "<span>" + x + "</span></li>").join("") +
-      "</ul></div>").join("");
-
-    $("#prRules").innerHTML = [
-      [I.tag, "Always labelled", "Every promoted item carries a “Promoted” tag. Clients always know it's an ad."],
-      [I.layers, "Capped density", "Max 3 promoted items per results page. No page is ever flooded with ads."],
-      [I.star, "Never a ranking", "Promotion occupies fixed slots. It never changes organic order or implies Skilvi-endorsed quality."],
-      [I.clock, "Transparent timers", "Promotions start instantly, run for the exact period, and expire automatically."]
-    ].map(([i, t, d]) => '<div class="step"><span class="step-num" style="width:34px;height:34px">' + i + "</span><h3>" + t + "</h3><p>" + d + "</p></div>").join("");
-
-    $("#prTips").innerHTML = [
-      ["Promote when your profile is ready", "A boosted profile with no portfolio still converts badly. Finish your profile first."],
-      ["Pair with verification", "Promotion brings eyes; the verified badge converts them. Unverified boosts waste budget in trades."],
-      ["Test 7 days, then measure", "Check profile views and order starts in your dashboard. Re-promote what works."]
-    ].map(([t, d]) => '<div class="row" style="gap:10px;align-items:flex-start"><span class="stat-icon" style="width:30px;height:30px;flex:none">' + I.zap + "</span>" +
-      "<div><div class=\"bold small\">" + t + '</div><div class="tiny faint">' + d + "</div></div></div>").join("");
-
-    $$("#prForm [data-radio] .radio-pill").forEach((p) => p.addEventListener("click", () => {
-      $$("#prForm [data-radio] .radio-pill").forEach((x) => x.classList.remove("active"));
-      p.classList.add("active");
-      const price = p.textContent.includes("₦5,000") ? "₦5,000" : "₦2,500";
-      $("#prForm .amount").textContent = price;
-    }));
-    $$("#prForm .chip").forEach((c) => c.addEventListener("click", () => c.classList.toggle("active")));
-    $("#prForm").addEventListener("submit", (e) => {
-      e.preventDefault();
-      Sk.toast("Promotion activated — your service is now showing in promoted slots for 7 days.", "success");
-      setTimeout(() => location.href = "worker-dashboard.html", 1200);
-    });
-  });
-</script>
 </body>
 </html>

@@ -138,6 +138,11 @@
         '</td><td><span class="st ' + esc(p.chip) + '">' + esc(p.stateLabel) + "</span></td></tr>"
       ).join("") || '<tr><td colspan="6" class="muted">No payments yet.</td></tr>';
     }
+    const tab = params.get("tab");
+    if (tab) {
+      const btn = document.querySelector('[data-tab="' + tab + '"]');
+      if (btn) btn.click();
+    }
   }
 
   function setStateBlocks(ui) {

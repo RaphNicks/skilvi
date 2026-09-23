@@ -7,7 +7,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
   <link rel="icon" href="assets/img/skilvi-logo-word.png">
-  <title>Order OR-1042 — Skilvi</title>
+  <title>Order — Skilvi</title>
   <meta name="description" content="Order detail on Skilvi: escrow status, milestones, messages, delivery, and dispute protection.">
   <link rel="stylesheet" href="assets/css/skilvi.css?v=16">
 </head>
@@ -40,15 +40,15 @@
 </header>
 
 <main class="container page-pad">
-  <p class="small muted"><a href="client-dashboard.html">My orders</a> / OR-1042</p>
+      <p class="small muted"><a href="client-dashboard.html">My orders</a> / Order</p>
 
   <div class="page-head">
     <div>
       <div class="row" style="gap:12px;flex-wrap:wrap">
-        <h1 class="ph-title" style="font-size:21px">Landing page — Naija Foods</h1>
+        <h1 class="ph-title" style="font-size:21px">Order</h1>
         <span class="st st-teal" id="orderStateChip">Delivered · awaiting your approval</span>
       </div>
-      <p class="ph-sub">Order OR-1042 · Standard package · Remote · Started Sep 14, 2026</p>
+      <p class="ph-sub">Open an order from your dashboard to see its details.</p>
     </div>
     <div class="ph-actions">
       <a class="btn btn-secondary" href="messages.html"><span id="msgIco"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H8l-4 4V6a1 1 0 0 1 1-1Z"/></svg></span> Open messages</a>
@@ -63,12 +63,12 @@
       <div class="card card-pad">
         <h3 style="font-size:14px">Order timeline</h3>
         <div class="timeline mt-2">
-          <div class="tl-item done"><span class="tl-dot"></span><div class="tl-t">Order created</div><div class="tl-s">Sep 14, 2026 · 10:22 WAT — Standard package selected (₦85,000)</div></div>
-          <div class="tl-item done"><span class="tl-dot"></span><div class="tl-t">Payment verified — held in escrow</div><div class="tl-s">Sep 14, 2026 · 10:31 WAT — Bank transfer · PAY-5521 · ₦85,000</div></div>
-          <div class="tl-item done"><span class="tl-dot"></span><div class="tl-t">Work started</div><div class="tl-s">Sep 14, 2026 · 3:05 WAT — Chinedu shared a file list and design direction</div></div>
-          <div class="tl-item done"><span class="tl-dot"></span><div class="tl-t">Delivered for approval</div><div class="tl-s">Sep 16, 2026 · 11:40 WAT — 5 pages delivered on the staging link. 2 revision rounds available.</div></div>
-          <div class="tl-item current"><span class="tl-dot"></span><div class="tl-t">Awaiting client approval</div><div class="tl-s">Payment releases 5 business days after delivery if no response (Oct 1, 2026).</div></div>
-          <div class="tl-item"><span class="tl-dot"></span><div class="tl-t">Completed &amp; settled</div><div class="tl-s">₦76,500 to Chinedu (after 10% commission) · ₦8,500 to Skilvi</div></div>
+          <div class="tl-item done"><span class="tl-dot"></span><div class="tl-t">Order created</div><div class="tl-s">Created when you pay.</div></div>
+          <div class="tl-item done"><span class="tl-dot"></span><div class="tl-t">Payment verified — held in escrow</div><div class="tl-s">Held by Skilvi until you approve.</div></div>
+          <div class="tl-item done"><span class="tl-dot"></span><div class="tl-t">Work started</div><div class="tl-s">The worker marks the order as started.</div></div>
+          <div class="tl-item done"><span class="tl-dot"></span><div class="tl-t">Delivered for approval</div><div class="tl-s">The worker submits work for your approval.</div></div>
+          <div class="tl-item current"><span class="tl-dot"></span><div class="tl-t">Awaiting client approval</div><div class="tl-s">Payment releases 5 business days after delivery if you do not respond.</div></div>
+          <div class="tl-item"><span class="tl-dot"></span><div class="tl-t">Completed &amp; settled</div><div class="tl-s">Worker share after 10% commission · Skilvi fee</div></div>
         </div>
       </div>
 
@@ -80,13 +80,13 @@
         </div>
         <div class="deliverable">
           <span class="dl-ico" id="dIco1"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m8 8-4 4 4 4m8-8 4 4-4 4m-3-10-2 12"/></svg></span>
-          <div class="grow"><div class="dl-name">Landing page — live on staging link</div><div class="dl-sub">https://naja-foods.skilvi.staging · 5 pages · mobile-first · ~1.2s load</div></div>
+          <div class="grow"><div class="dl-name">Deliverable</div><div class="dl-sub">Files and links the worker submitted.</div></div>
           <button class="btn btn-secondary btn-sm" data-toast="Opening live preview in a new tab" type="button">Preview</button>
         </div>
         <div class="deliverable">
           <span class="dl-ico" id="dIco2"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8l-5-5Z"/><path d="M14 3v5h5"/></svg></span>
-          <div class="grow"><div class="dl-name">handover-guide.pdf</div><div class="dl-sub">How to update text, images and menu items — 4 pages · 1.1 MB</div></div>
-          <button class="btn btn-secondary btn-sm" data-toast="Download started — handover-guide.pdf (1.1 MB)" type="button">Download</button>
+          <div class="grow"><div class="dl-name">File</div><div class="dl-sub"></div></div>
+          <button class="btn btn-secondary btn-sm" data-toast="Download started — File (1.1 MB)" type="button">Download</button>
         </div>
         <p class="tiny faint mt-2">Deliverables and all order messages are attached as evidence if a dispute is opened.</p>
       </div>
@@ -95,17 +95,17 @@
       <div class="card card-pad order-state-block" data-state="delivered">
         <div class="action-panel" style="border:0;margin:0;padding:0">
           <div class="ap-title">Your decision</div>
-          <p class="small muted mb-2">Approve to release ₦85,000 from escrow, or request one of your 2 included revisions.</p>
+          <p class="small muted mb-2">Approve to release escrow, or request a revision.</p>
           <div class="row" style="gap:8px" id="orderActions">
-            <button class="btn btn-primary" data-msg="Payment released! ₦76,500 is on its way to Chinedu's wallet." type="button">Approve &amp; release payment</button>
-            <button class="btn btn-secondary" data-msg="Revision requested — Chinedu has been notified. 1 revision round remaining." type="button">Request revision</button>
+            <button class="btn btn-primary"  type="button">Approve &amp; release payment</button>
+            <button class="btn btn-secondary"  type="button">Request revision</button>
           </div>
         </div>
       </div>
       <div class="card card-pad order-state-block" data-state="paid" style="display:none">
         <div class="action-panel" style="border:0;margin:0;padding:0">
           <div class="ap-title">Worker to start</div>
-          <p class="small muted mb-2">Your ₦85,000 is safely in escrow. Chinedu will mark the order as started when work begins — you'll get a notification.</p>
+          <p class="small muted mb-2">Your payment is in escrow. The worker will mark the order as started when work begins.</p>
           <div class="row" style="gap:8px" id="orderActions">
             <a class="btn btn-primary" href="messages.html">Message the worker</a>
             <button class="btn btn-danger" data-msg="Cancellation requested — full refund issued to your original payment method." type="button">Cancel order (full refund)</button>
@@ -115,7 +115,7 @@
       <div class="card card-pad order-state-block" data-state="in_progress" style="display:none">
         <div class="action-panel" style="border:0;margin:0;padding:0">
           <div class="ap-title">Work in progress</div>
-          <p class="small muted mb-2">Chinedu is working. Escrow holds ₦85,000 until delivery. You can request revisions only after delivery.</p>
+          <p class="small muted mb-2">The worker is on it. Escrow holds payment until delivery. You can request revisions after delivery.</p>
           <div class="row" style="gap:8px" id="orderActions"><a class="btn btn-primary" href="messages.html">Message the worker</a></div>
         </div>
       </div>
@@ -127,13 +127,13 @@
             <select class="select" style="width:auto"><option>Choose tags (optional)…</option><option>Delivered on time</option><option>Great communication</option><option>Quality work</option></select>
             <textarea class="textarea" style="min-height:44px;flex:1" placeholder="Tell other clients about your experience…"></textarea>
           </div>
-          <button class="btn btn-primary mt-2" data-msg="Review submitted — thank you. It's now public on Chinedu's profile." type="button">Submit review</button>
+          <button class="btn btn-primary mt-2"  type="button">Submit review</button>
         </div>
       </div>
       <div class="card card-pad order-state-block" data-state="disputed" style="display:none">
-        <div class="alert alert-danger mb-2" id="dispNote"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 21V4"/><path d="M5 4h12l-2.5 4L17 12H5"/></svg><span><b>Dispute DSP-2031 is under review.</b> Escrow of ₦85,000 is frozen. Skilvi support has acknowledged it — resolution target within 5 business days. Message the worker if you can resolve it yourselves.</span></div>
+        <div class="alert alert-danger mb-2" id="dispNote"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 21V4"/><path d="M5 4h12l-2.5 4L17 12H5"/></svg><span><b>This order is in dispute.</b> Escrow is frozen. Skilvi support reviews the case — target within 5 business days. Message the other side if you can resolve it yourselves.</span></div>
         <div class="row" style="gap:8px" id="orderActions">
-          <a class="btn btn-secondary" href="dispute-detail.html">View dispute DSP-2031</a>
+          <a class="btn btn-secondary" href="disputes.html">View dispute</a>
           <a class="btn btn-ghost" href="disputes.html">Dispute center</a>
         </div>
       </div>
@@ -143,14 +143,14 @@
     <aside class="stack" style="gap:16px">
       <div class="summary-card">
         <div class="small muted">Order total</div>
-        <div class="sc-price">₦85,000</div>
-        <div class="sc-meta">Paid Sep 14, 2026 · Bank transfer</div>
+        <div class="sc-price">₦0</div>
+        <div class="sc-meta">—</div>
         <hr class="divider mt-2 mb-2">
-        <div class="kv"><span class="k">Worker</span><span class="v">Chinedu Okafor · 4.9★</span></div>
-        <div class="kv"><span class="k">Client</span><span class="v">Adaeze Boutique · 4.8★</span></div>
+        <div class="kv"><span class="k">Worker</span><span class="v">—</span></div>
+        <div class="kv"><span class="k">Client</span><span class="v">—</span></div>
         <div class="kv"><span class="k">Escrow</span><span class="v"><span class="st st-teal" style="padding:1px 8px">Held</span></span></div>
-        <div class="kv"><span class="k">On release</span><span class="v">₦76,500 worker · ₦8,500 Skilvi</span></div>
-        <div class="escrow-note mt-2" id="odEscrow"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 5 6v6c0 4.4 3 7.4 7 9 4-1.6 7-4.6 7-9V6l-7-3Z"/><path d="m9 12 2 2 4-4"/></svg><span><b>Escrow status:</b> ₦85,000 held by Skilvi. Released on approval, auto-released 5 business days after delivery, or resolved via dispute if you disagree.</span></div>
+        <div class="kv"><span class="k">On release</span><span class="v">—</span></div>
+        <div class="escrow-note mt-2" id="odEscrow"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 5 6v6c0 4.4 3 7.4 7 9 4-1.6 7-4.6 7-9V6l-7-3Z"/><path d="m9 12 2 2 4-4"/></svg><span><b>Escrow status:</b> Held by Skilvi until you approve, auto-released 5 business days after delivery, or resolved via dispute.</span></div>
       </div>
 
       <!-- Prototype demo control -->
@@ -184,17 +184,5 @@
   </div>
 </footer>
 <script src="assets/js/skilvi.js?v=19"></script>
-<script>
-  document.addEventListener("DOMContentLoaded", () => {
-    const I = SkIconSvg;
-    $("#msgIco").innerHTML = I.msg;
-    $("#dIco1").innerHTML = I.code;
-    $("#dIco2").innerHTML = I.file;
-    $("#odEscrow").innerHTML = I.shield + "<span><b>Escrow status:</b> ₦85,000 held by Skilvi. Released on approval, auto-released 5 business days after delivery, or resolved via dispute if you disagree.</span>";
-    $("#dispNote").innerHTML = I.flag + "<span><b>Dispute DSP-2031 is under review.</b> Escrow of ₦85,000 is frozen. Skilvi support has acknowledged it — resolution target within 5 business days. Message the worker if you can resolve it yourselves.</span>";
-    $("#rateRow").innerHTML = [1,2,3,4,5].map((n) =>
-      '<button type="button" class="icon-btn" style="width:44px;height:44px;border-radius:50%;color:' + (n <= 5 ? "#F59E0B" : "var(--line-2)") + '" data-toast="Rated ' + n + ' / 5">' + I.star.replace("width=\"24\"", "width=\"20\"") + "</button>").join("");
-  });
-</script>
 </body>
 </html>

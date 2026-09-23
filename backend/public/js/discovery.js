@@ -288,6 +288,7 @@
         if ($("#svEmpty")) $("#svEmpty").style.display = "";
         return;
       }
+      if ($("#svEmpty")) $("#svEmpty").style.display = "none";
       list.innerHTML = rows.map((w) =>
         '<div class="card card-pad" data-saved="' + esc(w.id) + '">' +
         '<div class="row spread" style="align-items:center;gap:12px;flex-wrap:wrap">' +

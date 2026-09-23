@@ -33,16 +33,16 @@
     <a class="side-item" href="disputes.html"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v16m-7 0h14"/><path d="m5 7-3 6a3.5 3.5 0 0 0 6 0L5 7Zm14 0-3 6a3.5 3.5 0 0 0 6 0l-3-6Z"/><path d="M5 7h14"/></svg><span>Disputes</span></a>
     <a class="side-item" href="account-settings.html"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19 12a7 7 0 0 0-.1-1.2l2-1.6-2-3.4-2.4 1a7 7 0 0 0-2-1.2L14 3h-4l-.5 2.6a7 7 0 0 0-2 1.2l-2.4-1-2 3.4 2 1.6a7 7 0 0 0 0 2.4l-2 1.6 2 3.4 2.4-1a7 7 0 0 0 2 1.2L10 21h4l.5-2.6a7 7 0 0 0 2-1.2l2.4 1 2-3.4-2-1.6c.06-.4.1-.8.1-1.2Z"/></svg><span>Settings</span></a>
     <a class="side-item" href="/logout.html"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 4H5a1 1 0 0 0-1 1v14a1 1 0 0 0 1 1h4"/><path d="m15 8 4 4-4 4m4-4H9"/></svg><span>Sign out</span></a>
-  <div class="side-foot"><div class="side-user"><span class="avatar sm a1">CO</span><div><div class="su-name">Chinedu Okafor</div><div class="su-role">Worker · Verified</div></div></div></div>
+  <div class="side-foot"><div class="side-user"><span class="avatar sm a1">?</span><div><div class="su-name">You</div><div class="su-role">Account</div></div></div></div>
 </aside>
   <div class="shell-main">
     <header class="subbar">
     <label class="icon-btn side-toggle" for="sideCheck" aria-label="Menu"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg></label>
   <div class="sb-actions">
     <a class="link-muted" href="index.html">View marketplace</a>
-    <button class="icon-btn" data-toast="3 new notifications" aria-label="Notifications"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9a6 6 0 1 1 12 0c0 5 2 6 2 6H4s2-1 2-6"/><path d="M10 19a2 2 0 0 0 4 0"/></svg><span class="dot"></span></button>
+    <a class="icon-btn" href="notifications.html" aria-label="Notifications"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9a6 6 0 1 1 12 0c0 5 2 6 2 6H4s2-1 2-6"/><path d="M10 19a2 2 0 0 0 4 0"/></svg><span class="dot"></span></a>
     <a class="btn btn-ghost btn-sm" href="/logout.html">Sign out</a>
-    <a class="sb-user" href="account-settings.html"><span class="avatar sm a1">CO</span><span class="su-name">Chinedu</span></a>
+    <a class="sb-user" href="account-settings.html"><span class="avatar sm a1">?</span><span class="su-name">You</span></a>
   </div>
 </header>
     <main class="content">
@@ -73,35 +73,5 @@
   </div>
 </div>
 <script src="assets/js/skilvi.js?v=19"></script>
-<script>
-  document.addEventListener("DOMContentLoaded", () => {
-    const I = SkIconSvg;
-    const items = [
-      { cat: "money", ico: I.wallet2, tone: "var(--green)", t: "₦76,500 settled to your wallet", s: "OR-1031 · WordPress site — Naija Foods · commission ₦8,500 deducted", time: "1 hour ago", unread: true, href: "worker-wallet.html" },
-      { cat: "orders", ico: I.briefcase, tone: "var(--teal)", t: "OR-1042 delivered — client approval pending", s: "Landing page — Naija Foods · auto-releases in 5 business days if no response", time: "2 hours ago", unread: true, href: "order-detail.html" },
-      { cat: "msgs", ico: I.msg, tone: "var(--royal-600)", t: "New message from Adaeze Boutique", s: "“Looks great! Can we swap the hero image…”", time: "3 hours ago", unread: true, href: "messages.html" },
-      { cat: "orders", ico: I.jobs, tone: "var(--royal-600)", t: "3 new proposals on a job you're competing for", s: "Bathroom tiling — Lekki Phase 1 · 2 competitors below your price", time: "Yesterday", unread: true, href: "job-detail.html" },
-      { cat: "money", ico: I.bank, tone: "var(--green)", t: "Withdrawal paid — ₦150,000", s: "WD-2214 · GTBank ····0234 · arrive within 1 business day", time: "Sep 12", unread: false, href: "worker-wallet.html" },
-      { cat: "orders", ico: I.star, tone: "var(--amber)", t: "New 5★ review from M. Okonkwo", s: "“Very organised. Shared a file list of everything…” — read the reply prompt", time: "Sep 11", unread: true, href: "worker-profile.html" },
-      { cat: "msgs", ico: I.checkc, tone: "var(--royal-600)", t: "Custom quote request", s: "Naija Foods blog · budget ₦40,000–60,000 · reply within 24 hrs", time: "Sep 10", unread: false, href: "worker-dashboard.html" },
-      { cat: "money", ico: I.shield, tone: "var(--royal-600)", t: "Verification approved", s: "Your identity is verified — badge live until Sep 2028", time: "Jan 2026", unread: false, href: "account-settings.html" }
-    ];
-    const row = (n) =>
-      '<a class="queue-row" style="text-decoration:none;color:inherit" href="' + n.href + '">' +
-      '<span class="stat-icon" style="width:34px;height:34px;background:var(--bg);color:' + n.tone + '">' + n.ico + "</span>" +
-      '<div class="qr-main"><div class="qr-t' + (n.unread ? "" : " faint") + '">' + n.t + '</div><div class="qr-s">' + n.s + "</div></div>" +
-      '<div class="right nowrap" style="display:flex;align-items:center;gap:10px"><span class="tiny faint">' + n.time + "</span>" +
-      (n.unread ? '<span class="ti-unread" style="display:block"></span>' : "") + "</div></a>";
-    const list = (f) => items.filter((x) => !f || x.cat === f).map(row).join("");
-    $("#ntListAll").innerHTML = list();
-    $("#ntListMoney").innerHTML = list("money");
-    $("#ntListOrders").innerHTML = list("orders");
-    $("#ntListMsgs").innerHTML = list("msgs");
-    $("#markRead").addEventListener("click", () => {
-      $$(".ti-unread").forEach((d) => d.remove());
-      Sk.toast("All notifications marked as read.", "success");
-    });
-  });
-</script>
 </body>
 </html>

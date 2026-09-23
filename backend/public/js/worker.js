@@ -26,14 +26,18 @@
 
   function paintMe(me) {
     if (!me) return;
-    document.querySelectorAll(".su-name").forEach((el, i) => {
-      el.textContent = i === 0 ? me.full_name : me.full_name.split(" ")[0];
+    document.querySelectorAll(".side-user .su-name").forEach((el) => {
+      el.textContent = me.full_name || "You";
     });
-    document.querySelectorAll(".avatar.sm, .side-user .avatar").forEach((el) => {
-      el.textContent = me.initials;
+    document.querySelectorAll(".sb-user .su-name").forEach((el) => {
+      el.textContent = (me.full_name || "").split(" ")[0] || "You";
     });
-    const role = document.querySelector(".su-role");
-    if (role) role.textContent = me.verified ? "Worker · Verified" : "Worker";
+    document.querySelectorAll(".side-user .avatar, .sb-user .avatar").forEach((el) => {
+      el.textContent = me.initials || "?";
+    });
+    document.querySelectorAll(".side-user .su-role").forEach((el) => {
+      el.textContent = me.verified ? "Worker · Verified" : "Worker";
+    });
   }
 
   async function dash() {
@@ -98,6 +102,10 @@
   async function wallet() {
     const me = await api("/api/me");
     paintMe(me);
+    if (params.get("tab") === "withdrawals") {
+      const form = $("#withdrawForm");
+      if (form) form.scrollIntoView({ block: "start" });
+    }
     const d = await api("/api/wallet");
     const w = d.wallet || {};
     const cards = $$(".wallet-card .value");

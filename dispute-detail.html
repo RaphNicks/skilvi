@@ -7,7 +7,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
   <link rel="icon" href="assets/img/skilvi-logo-word.png">
-  <title>Dispute DSP-2031 — Skilvi</title>
+  <title>Dispute — Skilvi</title>
   <meta name="description" content="Dispute detail on Skilvi: evidence, timeline, and how Skilvi mediates with funds frozen in escrow.">
   <link rel="stylesheet" href="assets/css/skilvi.css?v=16">
 </head>
@@ -40,16 +40,16 @@
 </header>
 
 <main class="container page-pad">
-  <p class="small muted"><a href="disputes.html">Disputes</a> / DSP-2031</p>
+      <p class="small muted"><a href="disputes.html">Disputes</a> / Case</p>
 
   <div class="page-head">
     <div>
       <div class="row" style="gap:12px;flex-wrap:wrap">
-        <h1 class="ph-title" style="font-size:21px">DSP-2031 · OR-1003</h1>
+        <h1 class="ph-title" style="font-size:21px">Dispute</h1>
         <span class="st st-amber">Under review</span>
         <span class="sla warn">SLA: 2 days left</span>
       </div>
-      <p class="ph-sub">Wiring estimate follow-up — GRA · ₦450,000 frozen in escrow · opened Sep 13, 2026 by worker</p>
+      <p class="ph-sub">Open a case from Disputes to see its details.</p>
     </div>
     <div class="ph-actions">
       <a class="btn btn-secondary" href="order-detail.html">View order</a>
@@ -57,7 +57,7 @@
     </div>
   </div>
 
-  <div class="alert alert-danger mb-3" id="caseNote"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 21V4"/><path d="M5 4h12l-2.5 4L17 12H5"/></svg><span><b>Escrow frozen:</b> ₦450,000 cannot be released, withdrawn or refunded while this case is open. The order stays paused — no new deliverables, no revision requests.</span></div>
+  <div class="alert alert-danger mb-3" id="caseNote"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 21V4"/><path d="M5 4h12l-2.5 4L17 12H5"/></svg><span><b>Escrow frozen:</b> Funds cannot be released, withdrawn or refunded while this case is open. The order stays paused.</span></div>
 
   <div class="order-grid">
     <!-- Case timeline + evidence -->
@@ -65,20 +65,20 @@
       <div class="card card-pad">
         <h3 style="font-size:14px">Case timeline</h3>
         <div class="timeline mt-2">
-          <div class="tl-item done"><span class="tl-dot"></span><div class="tl-t">Dispute opened</div><div class="tl-s">Sep 13, 2026 · by worker · reason: client unresponsive (10 days) · escrow frozen (₦450,000)</div></div>
-          <div class="tl-item done"><span class="tl-dot"></span><div class="tl-t">Acknowledged by Skilvi support</div><div class="tl-s">Sep 13, 2026 · 4.5 hrs after opening · both parties notified</div></div>
-          <div class="tl-item done"><span class="tl-dot"></span><div class="tl-t">Evidence gathered</div><div class="tl-s">Sep 14, 2026 · 3 files from worker · 0 from client · 14 message threads attached automatically</div></div>
-          <div class="tl-item current"><span class="tl-dot"></span><div class="tl-t">Under review</div><div class="tl-s">Assigned to B. Eze (support) · resolution target by Sep 18, 2026</div></div>
+          <div class="tl-item done"><span class="tl-dot"></span><div class="tl-t">Dispute opened</div><div class="tl-s">Opened when a party files a dispute.</div></div>
+          <div class="tl-item done"><span class="tl-dot"></span><div class="tl-t">Acknowledged by Skilvi support</div><div class="tl-s">Both parties are notified.</div></div>
+          <div class="tl-item done"><span class="tl-dot"></span><div class="tl-t">Evidence gathered</div><div class="tl-s">Message history is attached automatically.</div></div>
+          <div class="tl-item current"><span class="tl-dot"></span><div class="tl-t">Under review</div><div class="tl-s">Skilvi support reviews the evidence.</div></div>
           <div class="tl-item"><span class="tl-dot"></span><div class="tl-t">Resolution &amp; notification</div><div class="tl-s">Outcome + reasoning shared with both parties · escrow released or refunded accordingly</div></div>
         </div>
       </div>
 
       <div class="card card-pad">
         <div class="row spread mb-2"><h3 style="font-size:14px">Evidence</h3><span class="tiny faint">Submitted by either side, timestamped</span></div>
-        <div class="deliverable"><span class="dl-ico" id="ev1"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"/><circle cx="9.5" cy="9.5" r="1.5"/><path d="m5 18 5-5 4 4 2-2 3 3"/></svg></span><div class="grow"><div class="dl-name">site-photos-day1.jpg</div><div class="dl-sub">Worker · Sep 14, 2026 · 3.2 MB — panel &amp; conduit installed, day 1</div></div><button class="btn btn-secondary btn-sm" data-toast="Opening evidence — served from the encrypted media store in production" type="button">View</button></div>
-        <div class="deliverable"><span class="dl-ico" id="ev2"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"/><circle cx="9.5" cy="9.5" r="1.5"/><path d="m5 18 5-5 4 4 2-2 3 3"/></svg></span><div class="grow"><div class="dl-name">site-photos-day3.jpg</div><div class="dl-sub">Worker · Sep 14, 2026 · 2.8 MB — wiring 60% complete</div></div><button class="btn btn-secondary btn-sm" data-toast="Opening evidence — served from the encrypted media store in production" type="button">View</button></div>
-        <div class="deliverable"><span class="dl-ico" id="ev3"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8l-5-5Z"/><path d="M14 3v5h5"/></svg></span><div class="grow"><div class="dl-name">invoice-scope.pdf</div><div class="dl-sub">Worker · Sep 13, 2026 · 410 KB — original scope &amp; price agreement</div></div><button class="btn btn-secondary btn-sm" data-toast="Opening evidence — served from the encrypted media store in production" type="button">View</button></div>
-        <div class="deliverable"><span class="dl-ico" id="ev4"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H8l-4 4V6a1 1 0 0 1 1-1Z"/></svg></span><div class="grow"><div class="dl-name">Message transcript</div><div class="dl-sub">Auto-attached · 14 messages Sep 2–13 · last client message Sep 3 (“will check and get back to you”)</div></div><button class="btn btn-secondary btn-sm" data-toast="Opening evidence — served from the encrypted media store in production" type="button">View</button></div>
+        <div class="deliverable"><span class="dl-ico" id="ev1"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"/><circle cx="9.5" cy="9.5" r="1.5"/><path d="m5 18 5-5 4 4 2-2 3 3"/></svg></span><div class="grow"><div class="dl-name">Evidence</div><div class="dl-sub">Submitted by a party.</div></div><button class="btn btn-secondary btn-sm" data-toast="Opening evidence — served from the encrypted media store in production" type="button">View</button></div>
+        <div class="deliverable"><span class="dl-ico" id="ev2"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"/><circle cx="9.5" cy="9.5" r="1.5"/><path d="m5 18 5-5 4 4 2-2 3 3"/></svg></span><div class="grow"><div class="dl-name">Evidence</div><div class="dl-sub">Submitted by a party.</div></div><button class="btn btn-secondary btn-sm" data-toast="Opening evidence — served from the encrypted media store in production" type="button">View</button></div>
+        <div class="deliverable"><span class="dl-ico" id="ev3"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8l-5-5Z"/><path d="M14 3v5h5"/></svg></span><div class="grow"><div class="dl-name">Evidence</div><div class="dl-sub">Submitted by a party.</div></div><button class="btn btn-secondary btn-sm" data-toast="Opening evidence — served from the encrypted media store in production" type="button">View</button></div>
+        <div class="deliverable"><span class="dl-ico" id="ev4"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H8l-4 4V6a1 1 0 0 1 1-1Z"/></svg></span><div class="grow"><div class="dl-name">Message transcript</div><div class="dl-sub">Order messages are attached automatically.</div></div><button class="btn btn-secondary btn-sm" data-toast="Opening evidence — served from the encrypted media store in production" type="button">View</button></div>
       </div>
     </div>
 
@@ -87,12 +87,12 @@
       <div class="card card-pad">
         <h3 style="font-size:14px">Parties</h3>
         <div class="row mt-2" style="gap:11px">
-          <span class="avatar a1">CO</span>
-          <div><div class="bold" style="font-size:13.5px">Chinedu Okafor <span class="tiny faint">(worker)</span></div><div class="tiny faint">Trust score 96 · 187 orders · 0 prior disputes</div></div>
+          <span class="avatar a1">?</span>
+          <div><div class="bold" style="font-size:13.5px">Worker</div><div class="tiny faint"></div></div>
         </div>
         <div class="row mt-2" style="gap:11px">
-          <span class="avatar a3">MO</span>
-          <div><div class="bold" style="font-size:13.5px">M. Okonkwo <span class="tiny faint">(client)</span></div><div class="tiny faint">Trust score 88 · 3 orders · 1 prior dispute</div></div>
+          <span class="avatar a3">?</span>
+          <div><div class="bold" style="font-size:13.5px">Client</div><div class="tiny faint"></div></div>
         </div>
       </div>
 
@@ -136,16 +136,5 @@
   </div>
 </footer>
 <script src="assets/js/skilvi.js?v=19"></script>
-<script>
-  document.addEventListener("DOMContentLoaded", () => {
-    const I = SkIconSvg;
-    $("#caseNote").innerHTML = I.flag + "<span><b>Escrow frozen:</b> ₦450,000 cannot be released, withdrawn or refunded while this case is open. The order stays paused — no new deliverables, no revision requests.</span>";
-    $("#ev1").innerHTML = I.image;
-    $("#ev2").innerHTML = I.image;
-    $("#ev3").innerHTML = I.file;
-    $("#ev4").innerHTML = I.msg;
-    $("#caseEscrow").innerHTML = I.shield + "<span><b>Policy note:</b> where the client is unresponsive past 5 business days and the worker has timestamped evidence of partial completion, Skilvi applies a partial split in line with the scope agreed in the order.</span>";
-  });
-</script>
 </body>
 </html>
