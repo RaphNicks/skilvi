@@ -117,7 +117,7 @@ function publicHeader(active) {
   const nav = [
     ["Find Work", "jobs.html", "jobs"],
     ["Find Talent", "search.html", "search"],
-    ["Learn", "index.html#learn", "learn"],
+    // ["Learn", "index.html#learn", "learn"],
     ["Categories", "category.html", "category"]
   ];
   const links = nav.map((n) => '<a href="' + n[1] + '"' + (n[2] === active ? ' class="active"' : "") + ">" + n[0] + "</a>").join("\n      ");

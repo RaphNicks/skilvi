@@ -74,7 +74,7 @@
   const PUBLIC_NAV = [
     { label: "Find Work", href: "jobs.html", key: "jobs" },
     { label: "Find Talent", href: "search.html", key: "search" },
-    { label: "Learn", href: "index.html#learn", key: "learn" },
+    // { label: "Learn", href: "index.html#learn", key: "learn" },
     { label: "Categories", href: "category.html", key: "category" }
   ];
 
