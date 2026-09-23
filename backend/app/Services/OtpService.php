@@ -45,10 +45,12 @@ final class OtpService
             [$phone, $purpose, $hash, (int) $cfg['attempts'], time() + $ttl, $ip, time()]
         );
 
-        $msg = "Skilvi code: $code. Expires in " . ($ttl / 60) . " min. Don't share it.";
+        $msg = "Your Skilvi login code is $code.\n\nIt expires in " . ($ttl / 60) . " minutes. Do not share it with anyone.\n\nIf you did not try to sign in, ignore this email.";
+        $mail = ['ok' => false, 'driver' => 'none', 'error' => null];
         if (otp_channel($phone) === 'email') {
             $to = str_starts_with($phone, 'e:') ? substr($phone, 2) : $phone;
             MailGateway::send($to, 'Your Skilvi login code', $msg, $code);
+            $mail = MailGateway::$last;
         } else {
             SmsGateway::send($phone, $msg, $code);
         }
@@ -58,6 +60,7 @@ final class OtpService
             'channel'    => otp_channel($phone),
             'expires_in' => $ttl,
             'purpose'    => $purpose,
+            'mail'       => $mail,
         ];
         if (Config::isDev()) {
             $out['dev_code'] = $code;

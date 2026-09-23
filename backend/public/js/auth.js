@@ -25,6 +25,11 @@
     if (data.dev_code) {
       toast("Dev code " + data.dev_code + " — type it in the six boxes, then Verify.", "success");
     }
+    if (data.mail && data.mail.ok === false) {
+      toast("Email did not send: " + (data.mail.error || data.mail.driver), "error");
+    } else if (data.channel === "email" && data.mail && data.mail.ok) {
+      toast("Code emailed to " + (data.phone_mask || "you"), "success");
+    }
   }
 
   function switchTab(mode) {
