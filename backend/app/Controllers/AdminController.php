@@ -36,6 +36,36 @@ final class AdminController
         Response::json(AdminService::userGet($params['id'] ?? ''));
     }
 
+    public static function userUpdate(Request $req, array $params = []): void
+    {
+        Response::json(AdminService::userUpdate(
+            self::admin(),
+            $params['id'] ?? '',
+            $req->input,
+            $req->ip()
+        ));
+    }
+
+    public static function jobAction(Request $req, array $params = []): void
+    {
+        Response::json(AdminService::jobAction(
+            self::admin(),
+            $params['id'] ?? '',
+            $req->str('action'),
+            $req->ip()
+        ));
+    }
+
+    public static function serviceAction(Request $req, array $params = []): void
+    {
+        Response::json(AdminService::serviceAction(
+            self::admin(),
+            $params['id'] ?? '',
+            $req->str('action'),
+            $req->ip()
+        ));
+    }
+
     public static function userAction(Request $req, array $params = []): void
     {
         Response::json(AdminService::userAction(

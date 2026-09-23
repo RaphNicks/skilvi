@@ -84,9 +84,12 @@ Router::post('/api/admin/verifications/{id}/action', [\App\Controllers\CommsCont
 Router::get('/api/admin/dashboard', [\App\Controllers\AdminController::class, 'dashboard']);
 Router::get('/api/admin/users', [\App\Controllers\AdminController::class, 'users']);
 Router::get('/api/admin/users/{id}', [\App\Controllers\AdminController::class, 'userGet']);
+Router::post('/api/admin/users/{id}/update', [\App\Controllers\AdminController::class, 'userUpdate']);
 Router::patch('/api/admin/users/{id}', [\App\Controllers\AdminController::class, 'userAction']);
 Router::post('/api/admin/users/{id}', [\App\Controllers\AdminController::class, 'userAction']);
 Router::post('/api/admin/users/{id}/action', [\App\Controllers\AdminController::class, 'userAction']);
+Router::post('/api/admin/jobs/{id}/action', [\App\Controllers\AdminController::class, 'jobAction']);
+Router::post('/api/admin/services/{id}/action', [\App\Controllers\AdminController::class, 'serviceAction']);
 Router::get('/api/admin/orders', [\App\Controllers\AdminController::class, 'orders']);
 Router::post('/api/admin/orders/{id}/action', [\App\Controllers\AdminController::class, 'orderAction']);
 Router::get('/api/admin/payments', [\App\Controllers\AdminController::class, 'payments']);

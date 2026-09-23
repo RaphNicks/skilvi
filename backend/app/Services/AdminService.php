@@ -205,6 +205,44 @@ final class AdminService
         foreach ($sections as $title => $rows) {
             $details[] = ['section' => $title, 'rows' => array_map(static fn ($r) => ['label' => $r[0], 'value' => $r[1]], $rows)];
         }
+        $join = (in_array('worker', $roles, true) && in_array('client', $roles, true))
+            ? 'both'
+            : (in_array('worker', $roles, true) ? 'worker' : 'client');
+        $jobs = array_map(static fn ($j) => [
+            'id'           => (int) $j['id'],
+            'code'         => $j['code'],
+            'title'        => $j['title'],
+            'status'       => $j['status'],
+            'budget_label' => $j['budget_kobo'] ? ngn_fmt((int) $j['budget_kobo']) : '—',
+            'date'         => date('j M Y', strtotime($j['created_at']) ?: time()),
+            'can_close'    => $j['status'] === 'open',
+            'can_reopen'   => $j['status'] === 'closed',
+        ], Db::fetchAll('SELECT id, code, title, status, budget_kobo, created_at FROM jobs WHERE client_id=? ORDER BY id DESC LIMIT 50', [$id]));
+        $services = array_map(static fn ($s) => [
+            'id'          => (int) $s['id'],
+            'code'        => $s['public_code'] ?: ('s-' . $s['id']),
+            'title'       => $s['title'],
+            'status'      => $s['status'],
+            'price_label' => $s['price_kobo'] ? ngn_fmt((int) $s['price_kobo']) : '—',
+            'can_pause'   => $s['status'] === 'live',
+            'can_live'    => $s['status'] !== 'live',
+        ], Db::fetchAll('SELECT id, public_code, title, status, price_kobo FROM services WHERE worker_id=? ORDER BY id DESC LIMIT 50', [$id]));
+        $orders = array_map(function ($o) use ($id) {
+            return [
+                'id'           => $o['code'],
+                'title'        => $o['title'] ?: $o['code'],
+                'status'       => $o['status'],
+                'amount_label' => ngn_fmt((int) $o['amount_kobo']),
+                'date'         => date('j M Y', strtotime($o['created_at']) ?: time()),
+                'side'         => (int) $o['client_id'] === $id ? 'Client' : 'Worker',
+            ];
+        }, Db::fetchAll(
+            'SELECT code, title, status, amount_kobo, created_at, client_id, worker_id FROM orders WHERE client_id=? OR worker_id=? ORDER BY id DESC LIMIT 50',
+            [$id, $id]
+        ));
+        $skillOpts = array_column(Db::fetchAll(
+            "SELECT name FROM categories WHERE (parent_id IS NOT NULL OR kind='skill') ORDER BY name"
+        ), 'name');
         return [
             'id'         => $id,
             'name'       => $u['full_name'],
@@ -213,11 +251,196 @@ final class AdminService
             'initials'   => initials((string) $u['full_name']),
             'tone'       => ($p['tone'] ?? '') !== '' ? $p['tone'] : 'a1',
             'role'       => $roleLabel,
+            'is_admin'   => in_array('admin', $roles, true),
             'status'     => $u['status'],
             'stateLabel' => ucfirst((string) $u['status']),
             'chip'       => $u['status'] === 'active' ? 'st-green' : ($u['status'] === 'banned' ? 'st-red' : 'st-amber'),
             'details'    => $details,
+            'form'       => [
+                'full_name' => (string) $u['full_name'],
+                'email'     => (string) ($u['email'] ?? ''),
+                'phone'     => $phone,
+                'join_as'   => $join,
+                'status'    => (string) $u['status'],
+                'headline'  => (string) ($p['headline'] ?? ''),
+                'bio'       => (string) ($p['bio'] ?? ''),
+                'state'     => (string) ($p['state'] ?? ''),
+                'city'      => (string) ($p['city'] ?? ''),
+                'skill'     => (string) ($p['skill'] ?? ''),
+                'work_mode' => (string) ($p['work_mode'] ?? ''),
+                'verified'  => !empty($p['verified']),
+                'promo'     => !empty($p['promo']),
+            ],
+            'wallet'     => [
+                'available' => $ngn((int) ($w['available_kobo'] ?? 0)),
+                'pending'   => $ngn((int) ($w['pending_kobo'] ?? 0)),
+            ],
+            'jobs'       => $jobs,
+            'services'   => $services,
+            'orders'     => $orders,
+            'skill_opts' => $skillOpts,
         ];
+    }
+
+    public static function userUpdate(int $adminId, string $key, array $in, string $ip): array
+    {
+        $u = Db::fetch('SELECT * FROM users WHERE id = ?', [$key]);
+        if ($u === null) {
+            throw new AppError('not_found', 'User not found.', 404);
+        }
+        $id = (int) $u['id'];
+        $now = now_iso();
+        $changed = [];
+
+        $name = trim((string) ($in['full_name'] ?? ''));
+        if ($name !== '' && $name !== (string) $u['full_name']) {
+            if (mb_strlen($name) < 2) {
+                throw new AppError('invalid', 'Enter a full name.', 422, ['full_name' => 'Enter a full name.']);
+            }
+            User::updateName($id, $name);
+            $changed[] = 'name';
+        }
+        if (array_key_exists('email', $in)) {
+            AuthService::updateEmail($id, (string) $in['email']);
+            $changed[] = 'email';
+        }
+        if (array_key_exists('phone', $in)) {
+            AuthService::updatePhone($id, (string) $in['phone']);
+            $changed[] = 'phone';
+        }
+        $join = (string) ($in['join_as'] ?? '');
+        if ($join !== '') {
+            $base = match ($join) {
+                'worker' => 'worker',
+                'client' => 'client',
+                'both'   => 'client,worker',
+                default  => '',
+            };
+            if ($base === '') {
+                throw new AppError('invalid', 'Role must be worker, client, or both.', 422, ['join_as' => 'Pick worker, client, or both.']);
+            }
+            if (str_contains((string) $u['roles'], 'admin')) {
+                $base .= ',admin';
+            }
+            Db::run('UPDATE users SET roles=?, updated_at=? WHERE id=?', [$base, $now, $id]);
+            $changed[] = 'roles';
+        }
+        $st = strtolower((string) ($in['status'] ?? ''));
+        if ($st !== '' && $st !== (string) $u['status']) {
+            if ($id === $adminId) {
+                throw new AppError('forbidden', 'You cannot change your own status from here.', 403);
+            }
+            if (!in_array($st, ['active', 'suspended', 'banned'], true)) {
+                throw new AppError('invalid', 'Unknown status.', 422);
+            }
+            if ($st !== 'active' && mb_strlen(trim((string) ($in['reason'] ?? ''))) < 8) {
+                throw new AppError('invalid', 'Write a reason the user will see.', 422, ['reason' => 'Write a reason.']);
+            }
+            User::setStatus($id, $st);
+            $changed[] = 'status';
+        }
+        $prof = [];
+        foreach (['headline', 'bio', 'state', 'city', 'skill', 'work_mode'] as $k) {
+            if (array_key_exists($k, $in)) {
+                $val = trim((string) $in[$k]);
+                $prof[$k] = $val === '' ? null : $val;
+            }
+        }
+        if ($prof) {
+            Profile::update($id, $prof);
+            $changed[] = 'profile';
+        }
+        if (array_key_exists('verified', $in)) {
+            $want = !empty($in['verified']);
+            Db::run('UPDATE profiles SET verified=?, updated_at=? WHERE user_id=?', [$want ? 1 : 0, $now, $id]);
+            $row = Db::fetch('SELECT id FROM verifications WHERE user_id=? ORDER BY id DESC LIMIT 1', [$id]);
+            if ($want) {
+                $exp = gmdate('Y-m-d H:i:s', time() + 2 * 365 * 86400);
+                if ($row) {
+                    Db::run(
+                        "UPDATE verifications SET status='approved', reviewed_by=?, expires_at=?, updated_at=? WHERE id=?",
+                        [$adminId, $exp, $now, $row['id']]
+                    );
+                } else {
+                    Db::run(
+                        "INSERT INTO verifications (user_id, status, amount_kobo, reviewed_by, notes, expires_at, created_at, updated_at)
+                         VALUES (?, 'approved', 0, ?, 'Staff identity grant — not a skill certificate', ?, ?, ?)",
+                        [$id, $adminId, $exp, $now, $now]
+                    );
+                }
+            } elseif ($row) {
+                Db::run(
+                    "UPDATE verifications SET status='rejected', reviewed_by=?, notes=?, updated_at=? WHERE id=?",
+                    [$adminId, 'Staff removed identity badge', $now, $row['id']]
+                );
+            }
+            $changed[] = 'verified';
+        }
+        if (array_key_exists('promo', $in)) {
+            $want = !empty($in['promo']);
+            if ($want) {
+                Db::run('UPDATE profiles SET promo=1, updated_at=? WHERE user_id=?', [$now, $id]);
+                $active = Db::fetch(
+                    "SELECT id FROM promotions WHERE user_id=? AND status='active' AND (ends_at IS NULL OR ends_at > ?) LIMIT 1",
+                    [$id, $now]
+                );
+                if (!$active) {
+                    $end = gmdate('Y-m-d H:i:s', time() + 365 * 86400);
+                    Db::run(
+                        "INSERT INTO promotions (user_id, plan, amount_kobo, status, starts_at, ends_at, created_at)
+                         VALUES (?, 'staff', 0, 'active', ?, ?, ?)",
+                        [$id, $now, $end, $now]
+                    );
+                }
+            } else {
+                Db::run("UPDATE promotions SET status='paused' WHERE user_id=? AND status='active'", [$id]);
+                Db::run('UPDATE profiles SET promo=0, updated_at=? WHERE user_id=?', [$now, $id]);
+            }
+            $changed[] = 'promo';
+        }
+        self::audit($adminId, 'user.update', 'user:' . $id, [
+            'changed' => $changed,
+            'reason'  => (string) ($in['reason'] ?? ''),
+        ], $ip);
+        return self::userGet((string) $id);
+    }
+
+    public static function jobAction(int $adminId, string $key, string $action, string $ip): array
+    {
+        $row = Db::fetch('SELECT * FROM jobs WHERE code = ? OR id = ?', [$key, $key]);
+        if ($row === null) {
+            throw new AppError('not_found', 'Job not found.', 404);
+        }
+        $action = strtolower($action);
+        $now = now_iso();
+        if ($action === 'close') {
+            Db::run("UPDATE jobs SET status='closed', updated_at=? WHERE id=?", [$now, $row['id']]);
+        } elseif ($action === 'reopen') {
+            Db::run("UPDATE jobs SET status='open', updated_at=? WHERE id=?", [$now, $row['id']]);
+        } else {
+            throw new AppError('invalid', 'Close or reopen.', 422);
+        }
+        self::audit($adminId, 'job.' . $action, 'job:' . $row['code'], ['client_id' => $row['client_id']], $ip);
+        return self::userGet((string) $row['client_id']);
+    }
+
+    public static function serviceAction(int $adminId, string $key, string $action, string $ip): array
+    {
+        $row = Db::fetch('SELECT * FROM services WHERE id = ? OR public_code = ?', [$key, $key]);
+        if ($row === null) {
+            throw new AppError('not_found', 'Service not found.', 404);
+        }
+        $action = strtolower($action);
+        $now = now_iso();
+        if ($action === 'pause') {
+            Db::run("UPDATE services SET status='paused', updated_at=? WHERE id=?", [$now, $row['id']]);
+        } elseif ($action === 'live') {
+            Db::run("UPDATE services SET status='live', updated_at=? WHERE id=?", [$now, $row['id']]);
+        } else {
+            throw new AppError('invalid', 'Pause or live.', 422);
+        }
+        self::audit($adminId, 'service.' . $action, 'service:' . $row['id'], ['worker_id' => $row['worker_id']], $ip);
+        return self::userGet((string) $row['worker_id']);
     }
 
     public static function userAction(int $adminId, string $key, string $action, string $reason, string $ip): array

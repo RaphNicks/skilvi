@@ -94,7 +94,7 @@ final class PagesController
             if ($u === null || !str_contains((string) $u['roles'], 'admin')) {
                 Response::redirect('/client-dashboard.html');
             }
-            $extra .= '<script src="/js/admin.js?v=34"></script>';
+            $extra .= '<script src="/js/admin.js?v=35"></script>';
         }
         if (in_array($rel, $gated, true) && !Session::userId()) {
             Response::redirect('/login.html?next=/' . $rel);

@@ -104,7 +104,7 @@
           '<td class="cell-sub">' + esc(u.skill || "—") + "</td><td>" + esc(u.joined) + "</td>" +
           '<td><span class="st ' + esc(u.chip) + '">' + esc(u.stateLabel) + "</span></td>" +
           '<td class="right nowrap">' +
-          '<button class="btn btn-secondary btn-sm u-view" data-id="' + u.id + '" type="button">View</button> ' +
+          '<a class="btn btn-secondary btn-sm" href="user.html?id=' + u.id + '">Edit</a> ' +
           (u.status === "active"
             ? '<button class="btn btn-danger btn-sm u-act" data-id="' + u.id + '" data-act="suspend" type="button">Suspend</button>'
             : '<button class="btn btn-primary btn-sm u-act" data-id="' + u.id + '" data-act="activate" type="button">Activate</button>') +
@@ -115,7 +115,6 @@
           if (b.dataset.act === "suspend" && reason.trim().length < 8) { toast("Need a short reason.", "error"); return; }
           act("/api/admin/users/" + b.dataset.id + "/action", { action: b.dataset.act, reason }, "Updated.");
         }));
-        $$(".u-view").forEach((b) => b.addEventListener("click", () => openUser(b.dataset.id)));
       }
     };
     ["#uSearch", "#uRole", "#uState", "#uFlags"].forEach((s) => { const el = $(s); if (el) el.addEventListener("input", load); if (el) el.addEventListener("change", load); });
@@ -147,6 +146,112 @@
         body.innerHTML = '<p class="small" style="color:var(--red)">' + esc(err.message || "Could not load this user.") + "</p>";
       }
     }
+  }
+
+  async function userEditor() {
+    const id = new URLSearchParams(location.search).get("id");
+    if (!id) {
+      location.href = "users.html";
+      return;
+    }
+    const set = (sel, val) => { const el = $(sel); if (el) el.value = val == null ? "" : String(val); };
+    const paint = async () => {
+      const u = await api("/api/admin/users/" + encodeURIComponent(id));
+      const f = u.form || {};
+      if ($("#ueTitle")) $("#ueTitle").textContent = u.name || "User";
+      if ($("#ueChip")) { $("#ueChip").className = "st " + esc(u.chip || "st-gray"); $("#ueChip").textContent = u.stateLabel || ""; }
+      set("#ueName", f.full_name);
+      set("#ueEmail", f.email);
+      set("#uePhone", f.phone);
+      set("#ueJoin", f.join_as || "client");
+      set("#ueStatus", f.status || "active");
+      set("#ueHeadline", f.headline);
+      set("#ueBio", f.bio);
+      set("#ueState", f.state);
+      set("#ueCity", f.city);
+      set("#ueSkill", f.skill);
+      set("#ueMode", f.work_mode);
+      if ($("#ueVerified")) $("#ueVerified").checked = !!f.verified;
+      if ($("#uePromo")) $("#uePromo").checked = !!f.promo;
+      if ($("#ueWalAv")) $("#ueWalAv").textContent = (u.wallet && u.wallet.available) || "—";
+      if ($("#ueWalPe")) $("#ueWalPe").textContent = (u.wallet && u.wallet.pending) || "—";
+      const dl = $("#ueSkillList");
+      if (dl) dl.innerHTML = (u.skill_opts || []).map((s) => "<option value=\"" + esc(s) + "\">").join("");
+      if ($("#ueJobs")) {
+        $("#ueJobs").innerHTML = (u.jobs || []).map((j) =>
+          "<tr><td><span class=\"cell-main\">" + esc(j.title) + '</span><div class="cell-sub">' + esc(j.code) + "</div></td>" +
+          "<td>" + esc(j.budget_label) + "</td><td>" + esc(j.date) + "</td><td>" + esc(j.status) + "</td>" +
+          '<td class="right nowrap"><a class="btn btn-ghost btn-sm" href="../job-detail.html?id=' + encodeURIComponent(j.code) + '">Open</a> ' +
+          (j.can_close ? '<button class="btn btn-danger btn-sm j-act" data-id="' + esc(j.code) + '" data-act="close" type="button">Close</button>' : "") +
+          (j.can_reopen ? '<button class="btn btn-secondary btn-sm j-act" data-id="' + esc(j.code) + '" data-act="reopen" type="button">Reopen</button>' : "") +
+          "</td></tr>"
+        ).join("") || emptyRow(5, "No jobs posted.");
+        $$(".j-act").forEach((b) => b.addEventListener("click", async () => {
+          try {
+            await api("/api/admin/jobs/" + encodeURIComponent(b.dataset.id) + "/action", { body: { action: b.dataset.act } });
+            toast("Job updated.", "success");
+            await paint();
+          } catch (err) { if (!gate(err)) toast(err.message, "error"); }
+        }));
+      }
+      if ($("#ueSvcs")) {
+        $("#ueSvcs").innerHTML = (u.services || []).map((s) =>
+          "<tr><td><span class=\"cell-main\">" + esc(s.title) + "</span></td><td>" + esc(s.price_label) + "</td><td>" + esc(s.status) + "</td>" +
+          '<td class="right nowrap">' +
+          (s.can_pause ? '<button class="btn btn-danger btn-sm s-act" data-id="' + s.id + '" data-act="pause" type="button">Pause</button>' : "") +
+          (s.can_live ? '<button class="btn btn-secondary btn-sm s-act" data-id="' + s.id + '" data-act="live" type="button">Make live</button>' : "") +
+          "</td></tr>"
+        ).join("") || emptyRow(4, "No services.");
+        $$(".s-act").forEach((b) => b.addEventListener("click", async () => {
+          try {
+            await api("/api/admin/services/" + encodeURIComponent(b.dataset.id) + "/action", { body: { action: b.dataset.act } });
+            toast("Service updated.", "success");
+            await paint();
+          } catch (err) { if (!gate(err)) toast(err.message, "error"); }
+        }));
+      }
+      if ($("#ueOrders")) {
+        $("#ueOrders").innerHTML = (u.orders || []).map((o) =>
+          "<tr><td><a href=\"../order-detail.html?id=" + encodeURIComponent(o.id) + "\">" + esc(o.title) + "</a></td>" +
+          "<td>" + esc(o.side) + "</td><td>" + esc(o.amount_label) + "</td><td>" + esc(o.date) + "</td><td>" + esc(o.status) + "</td></tr>"
+        ).join("") || emptyRow(5, "No orders.");
+      }
+    };
+    const form = $("#ueForm");
+    if (form) {
+      form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const btn = $("#ueSave");
+        try {
+          if (btn) btn.disabled = true;
+          await api("/api/admin/users/" + encodeURIComponent(id) + "/update", {
+            body: {
+              full_name: ($("#ueName") && $("#ueName").value) || "",
+              email: ($("#ueEmail") && $("#ueEmail").value) || "",
+              phone: ($("#uePhone") && $("#uePhone").value) || "",
+              join_as: ($("#ueJoin") && $("#ueJoin").value) || "client",
+              status: ($("#ueStatus") && $("#ueStatus").value) || "active",
+              reason: ($("#ueReason") && $("#ueReason").value) || "",
+              headline: ($("#ueHeadline") && $("#ueHeadline").value) || "",
+              bio: ($("#ueBio") && $("#ueBio").value) || "",
+              state: ($("#ueState") && $("#ueState").value) || "",
+              city: ($("#ueCity") && $("#ueCity").value) || "",
+              skill: ($("#ueSkill") && $("#ueSkill").value) || "",
+              work_mode: ($("#ueMode") && $("#ueMode").value) || "",
+              verified: !!($("#ueVerified") && $("#ueVerified").checked),
+              promo: !!($("#uePromo") && $("#uePromo").checked),
+            },
+          });
+          toast("Account saved.", "success");
+          await paint();
+        } catch (err) {
+          if (!gate(err)) toast(err.message, "error");
+        } finally {
+          if (btn) btn.disabled = false;
+        }
+      });
+    }
+    await paint();
   }
 
   async function orders() {
