@@ -777,8 +777,24 @@ details.acc .acc-body { padding: 0 16px 14px; font-size: 13.5px; color: var(--in
   .svc-layout, .order-grid { grid-template-columns: 1fr; }
   .summary-card { position: static; }
   .shell { grid-template-columns: 1fr; }
-  .side { display: none; }
   .kpi-grid { grid-template-columns: repeat(2, 1fr); }
+  .side-toggle { display: inline-flex; }
+  .side-check {
+    position: absolute; opacity: 0; pointer-events: none; width: 0; height: 0;
+  }
+  .side-backdrop { display: none; }
+  .side {
+    display: flex;
+    position: fixed; top: 0; left: 0; bottom: 0; width: 272px; z-index: 80;
+    transform: translateX(-105%); transition: transform .18s ease;
+    box-shadow: 0 12px 40px rgba(11,14,26,.18);
+    height: 100vh;
+  }
+  .side-check:checked ~ .side { transform: translateX(0); }
+  .side-check:checked ~ .side-backdrop {
+    display: block; position: fixed; inset: 0; z-index: 75;
+    background: rgba(11,14,26,.45);
+  }
 }
 @media (max-width: 720px) {
   .container { padding: 0 16px; }
