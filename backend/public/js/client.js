@@ -58,7 +58,10 @@
         toast("Job " + job.id + " is live.", "success");
         location.href = "job-detail.html?id=" + encodeURIComponent(job.id);
       } catch (err) {
-        if (!gate(err)) toast(err.message, "error");
+        if (!gate(err)) {
+          if (window.SkApi && window.SkApi.showFieldErrors) window.SkApi.showFieldErrors(err, form);
+          toast(err.message, "error");
+        }
       } finally {
         busy(btn, false);
       }

@@ -203,9 +203,9 @@
     if (apply && viewer.is_worker && !viewer.proposed && !viewer.is_client) {
       apply.innerHTML =
         '<div class="card card-pad mt-3"><h3 style="font-size:15px">Send a proposal</h3>' +
-        '<div class="form-row-2 mt-2"><div class="field"><label>Your bid (\u20a6)</label><input class="input" id="bidNaira" inputmode="numeric" placeholder="Amount in naira"></div>' +
-        '<div class="field"><label>Days</label><input class="input" id="bidDays" inputmode="numeric" placeholder="e.g. 10"></div></div>' +
-        '<div class="field mt-2"><label>Cover note</label><textarea class="textarea" id="coverNote" rows="4" placeholder="How you\'ll do the work, when you can start."></textarea></div>' +
+        '<div class="form-row-2 mt-2"><div class="field"><label>Your bid (\u20a6)</label><input class="input" id="bidNaira" name="bid" inputmode="numeric" placeholder="Amount in naira"></div>' +
+        '<div class="field"><label>Days</label><input class="input" id="bidDays" name="days" inputmode="numeric" placeholder="e.g. 10"></div></div>' +
+        '<div class="field mt-2"><label>Cover note</label><textarea class="textarea" id="coverNote" name="cover_note" rows="4" placeholder="How you\'ll do the work, when you can start."></textarea></div>' +
         '<button class="btn btn-primary mt-2" type="button" id="sendProp">Send proposal</button></div>';
       $("#sendProp") && $("#sendProp").addEventListener("click", async () => {
         try {

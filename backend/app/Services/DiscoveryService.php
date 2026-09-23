@@ -221,10 +221,10 @@ final class DiscoveryService
             throw new AppError('forbidden', 'You cannot apply to your own job.', 403);
         }
         if (mb_strlen($cover) < 20) {
-            throw new AppError('invalid', 'Tell the client a bit more — 20 characters at least.', 422, ['cover_note' => 'Too short.']);
+            throw new AppError('invalid', 'Tell the client a bit more — 20 characters at least.', 422, ['cover_note' => 'Tell the client a bit more — 20 characters at least.']);
         }
         if ($bidNaira < 1000) {
-            throw new AppError('invalid', 'Enter a bid in naira.', 422, ['bid' => 'Enter a bid.']);
+            throw new AppError('invalid', 'Enter a bid in naira.', 422, ['bid' => 'Enter a bid of at least ₦1,000.']);
         }
         try {
             Db::run(

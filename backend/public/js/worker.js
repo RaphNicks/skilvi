@@ -332,7 +332,10 @@
         location.href = "worker-services.html";
         return saved;
       } catch (err) {
-        if (!gate(err)) toast(err.message, "error");
+        if (!gate(err)) {
+          if (window.SkApi && window.SkApi.showFieldErrors) window.SkApi.showFieldErrors(err, form);
+          toast(err.message, "error");
+        }
       } finally {
         busy(btn, false);
       }
@@ -342,14 +345,78 @@
       e.preventDefault();
       save(false);
     });
-    const draftBtn = form.querySelector(".btn-secondary");
-    if (draftBtn && /draft/i.test(draftBtn.textContent)) {
+    const draftBtn = form.querySelector("#saveDraft") || Array.from(form.querySelectorAll(".btn-secondary")).find((b) => /draft/i.test(b.textContent || ""));
+    if (draftBtn) {
       draftBtn.removeAttribute("data-toast");
       draftBtn.addEventListener("click", (e) => {
         e.preventDefault();
         save(true);
       });
     }
+
+    const addPkg = $("#addPkg");
+    const addQ = $("#addQ");
+    function wireRm() {
+      $$(".rm-pkg").forEach((b) => { b.onclick = () => { const row = b.closest(".pkg-row"); if (row) row.remove(); }; });
+      $$(".rm-q").forEach((b) => { b.onclick = () => { const row = b.closest(".row"); if (row) row.remove(); }; });
+    }
+    if (addPkg) {
+      addPkg.addEventListener("click", () => {
+        const wrap = $("#pkgRows");
+        if (!wrap) return;
+        if (wrap.querySelectorAll(".pkg-row").length >= 3) { toast("Maximum 3 packages per service.", "error"); return; }
+        const n = wrap.querySelectorAll(".pkg-row").length + 1;
+        wrap.insertAdjacentHTML("beforeend",
+          '<div class="pkg-row card card-pad mb-2"><div class="row spread mb-1"><span class="bold small" style="color:var(--ink-3)">PACKAGE ' + n +
+          '</span><button type="button" class="link-muted rm-pkg">Remove</button></div><div class="form-row-2">' +
+          '<div class="field"><label>Package name</label><input class="input" placeholder="e.g. Standard"></div>' +
+          '<div class="field"><label>Price (₦)</label><input class="input money-input" placeholder="85,000"></div></div>' +
+          '<div class="form-row-2 mt-2"><div class="field"><label>Delivery (days)</label><input class="input" type="number" min="1" placeholder="10"></div>' +
+          '<div class="field"><label>Revisions included</label><input class="input" type="number" min="0" max="10" placeholder="2"></div></div></div>');
+        wrap.querySelectorAll(".money-input").forEach((inp) => {
+          if (inp.dataset.wired) return;
+          inp.dataset.wired = "1";
+          inp.addEventListener("input", () => {
+            const v = inp.value.replace(/[^0-9]/g, "");
+            inp.value = v ? Number(v).toLocaleString("en-NG") : "";
+          });
+        });
+        wireRm();
+      });
+    }
+    if (addQ) {
+      addQ.addEventListener("click", () => {
+        const wrap = $("#qRows");
+        if (!wrap) return;
+        if (wrap.children.length >= 6) { toast("Maximum 6 questions.", "error"); return; }
+        wrap.insertAdjacentHTML("beforeend",
+          '<div class="row mb-1" style="gap:8px"><input class="input" placeholder="Question for the client (e.g. How many pages?)">' +
+          '<button type="button" class="icon-btn rm-q" style="flex:none">×</button></div>');
+        wireRm();
+      });
+    }
+    wireRm();
+    $$("#areaChips .chip").forEach((c) => c.addEventListener("click", () => c.classList.toggle("active")));
+    const quoteBtn = $("#customQuote") || form.querySelector(".btn-ghost");
+    if (quoteBtn && /custom quote/i.test(quoteBtn.textContent || "")) {
+      quoteBtn.removeAttribute("data-toast");
+      quoteBtn.addEventListener("click", () => {
+        const on = quoteBtn.getAttribute("data-on") === "1";
+        quoteBtn.setAttribute("data-on", on ? "0" : "1");
+        quoteBtn.textContent = on ? "Enable “custom quote” option" : "Custom quote on — clients can request a price";
+        toast(on ? "Custom quote turned off." : "Custom quote on — clients can request a price outside your packages.", "success");
+      });
+    }
+    const travel = $("#travelField");
+    const travelNote = $("#travelNoteField");
+    const syncTravel = () => {
+      const v = (document.querySelector('input[name="work_mode"]:checked') || {}).value;
+      const on = v === "on-site" || v === "hybrid";
+      if (travel) travel.style.display = on ? "" : "none";
+      if (travelNote) travelNote.style.display = on ? "" : "none";
+    };
+    $$('input[name="work_mode"]').forEach((m) => m.addEventListener("change", syncTravel));
+    syncTravel();
   }
 
   document.addEventListener("DOMContentLoaded", () => {

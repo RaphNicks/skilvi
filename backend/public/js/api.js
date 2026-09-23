@@ -45,6 +45,9 @@
       ex.code = err.code;
       ex.status = res.status;
       ex.fields = err.fields || null;
+      if (ex.fields || ex.code === "credentials" || ex.code === "email_taken" || ex.code === "phone_taken") {
+        showFieldErrors(ex);
+      }
       throw ex;
     }
     return body.data;
@@ -119,5 +122,116 @@
   }
   setInterval(refreshBadges, 30000);
 
-  window.SkApi = { api, csrf, busy, toast, bindOtpBoxes, refreshBadges };
+  const FIELD_ALIAS = {
+    budget: ["budget", "budget_naira"],
+    work_mode: ["work_mode", "pj2"],
+    identifier: ["identifier", "email"],
+    email: ["email", "identifier", "meEmail"],
+    phone: ["phone", "mePhone"],
+    password: ["password", "mePassword"],
+    full_name: ["full_name", "meName"],
+    bid: ["bid", "propBid", "bidNaira"],
+    cover_note: ["cover_note", "coverNote"],
+    packages: ["packages"],
+    body: ["body", "msgInput", "chatInput"],
+    join_as: ["join_as"],
+    headline: ["headline", "meHeadline"],
+    bio: ["bio", "meBio"],
+    state: ["state", "meState"],
+    city: ["city", "meCity"],
+  };
+
+  function clearFieldErrors(root) {
+    root = root || document;
+    root.querySelectorAll(".field.invalid").forEach((f) => f.classList.remove("invalid"));
+    root.querySelectorAll(".pkg-row.invalid").forEach((f) => f.classList.remove("invalid"));
+    root.querySelectorAll(".form-error[data-sk-err]").forEach((el) => el.remove());
+  }
+
+  function markField(el, message) {
+    if (!el) return;
+    const field = el.closest(".field") || el.closest(".pkg-row") || el.parentElement;
+    if (!field) return;
+    field.classList.add("invalid");
+    let msg = field.querySelector(".form-error");
+    if (!msg) {
+      msg = document.createElement("span");
+      msg.className = "form-error";
+      msg.setAttribute("data-sk-err", "1");
+      field.appendChild(msg);
+    }
+    msg.textContent = message;
+    msg.style.display = "block";
+    const clear = () => {
+      field.classList.remove("invalid");
+      if (msg && msg.getAttribute("data-sk-err")) msg.remove();
+    };
+    el.addEventListener("input", clear, { once: true });
+    el.addEventListener("change", clear, { once: true });
+  }
+
+  function findControl(root, key) {
+    const names = FIELD_ALIAS[key] || [key];
+    for (let i = 0; i < names.length; i++) {
+      const n = names[i];
+      const el =
+        root.querySelector('[name="' + n + '"]') ||
+        root.querySelector('[data-field="' + n + '"]') ||
+        (/^[A-Za-z_][\w-]*$/.test(n) ? root.querySelector("#" + n) : null);
+      if (el) return el;
+    }
+    if (key === "packages") {
+      return root.querySelector("#pkgRows .pkg-row input") || root.querySelector(".pkg-row input");
+    }
+    return null;
+  }
+
+  function showFieldErrors(err, root, opts) {
+    root = root || document;
+    opts = opts || {};
+    if (!opts.keep) clearFieldErrors(root);
+    let fields = Object.assign({}, (err && err.fields) || {});
+    if (err && err.code === "credentials") {
+      fields.identifier = fields.identifier || err.message;
+      fields.password = fields.password || err.message;
+    }
+    if (err && err.code === "email_taken") fields.email = fields.email || err.message;
+    if (err && err.code === "phone_taken") fields.phone = fields.phone || err.message;
+    const keys = Object.keys(fields);
+    if (!keys.length) return false;
+    let first = null;
+    keys.forEach((key) => {
+      const el = findControl(root, key);
+      if (!el) return;
+      markField(el, fields[key]);
+      if (!first) first = el;
+    });
+    if (first) {
+      try { first.focus({ preventScroll: true }); } catch (e) { try { first.focus(); } catch (e2) {} }
+      try { first.scrollIntoView({ behavior: "smooth", block: "center" }); } catch (e) {}
+    }
+    return !!first;
+  }
+
+  document.addEventListener("invalid", (e) => {
+    const el = e.target;
+    if (!el || el.tagName === "FORM") return;
+    let message = "This field is required.";
+    if (el.validity) {
+      if (el.validity.typeMismatch && el.type === "email") message = "Enter a working email.";
+      else if (el.validity.tooShort) message = "Use at least " + el.minLength + " characters.";
+      else if (el.validity.valueMissing) {
+        const lab = el.closest(".field") && el.closest(".field").querySelector("label");
+        const name = lab ? lab.textContent.replace(/\*/g, "").replace(/\s+/g, " ").trim() : "";
+        message = name ? name + " is required." : "This field is required.";
+      } else if (el.validationMessage) message = el.validationMessage;
+    }
+    markField(el, message);
+  }, true);
+
+  document.addEventListener("submit", (e) => {
+    if (e.target && e.target.tagName === "FORM") clearFieldErrors(e.target);
+  }, true);
+
+  window.SkApi = { api, csrf, busy, toast, bindOtpBoxes, refreshBadges, showFieldErrors, clearFieldErrors };
 })();

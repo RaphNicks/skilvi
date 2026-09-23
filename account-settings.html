@@ -9,7 +9,7 @@
   <link rel="icon" href="assets/img/skilvi-logo-word.png">
   <title>Settings — Skilvi</title>
   <meta name="description" content="Skilvi account settings: profile, phone, payout details, and security.">
-  <link rel="stylesheet" href="assets/css/skilvi.css?v=16">
+  <link rel="stylesheet" href="assets/css/skilvi.css?v=17">
 </head>
 <body data-shell="worker" data-active="settings" data-page="settings">
 
@@ -100,7 +100,7 @@
             <h3 style="font-size:15px">Security &amp; login</h3>
             <div class="field mt-2 mb-2">
               <label>Email (you log in with this)</label>
-              <div class="row" style="gap:8px"><input class="input" id="meEmail" type="email" value="" style="max-width:280px" autocomplete="email"><button class="btn btn-secondary btn-sm" id="saveEmail" type="button">Update email</button></div>
+              <div class="row" style="gap:8px"><div class="field" style="flex:1;max-width:280px;margin:0"><input class="input" id="meEmail" name="email" type="email" value="" autocomplete="email"></div><button class="btn btn-secondary btn-sm" id="saveEmail" type="button">Update email</button></div>
             </div>
             <div class="field mb-2">
               <label>Phone (optional)</label>
@@ -112,7 +112,7 @@
             </div>
             <div class="field">
               <label>New password</label>
-              <div class="row" style="gap:8px"><input class="input" id="mePassword" type="password" placeholder="At least 8 characters" style="max-width:280px" autocomplete="new-password"><button class="btn btn-secondary btn-sm" id="savePassword" type="button">Update password</button></div>
+              <div class="row" style="gap:8px"><div class="field" style="flex:1;max-width:280px;margin:0"><input class="input" id="mePassword" name="password" type="password" placeholder="At least 8 characters" autocomplete="new-password"></div><button class="btn btn-secondary btn-sm" id="savePassword" type="button">Update password</button></div>
             </div>
           </div>
 

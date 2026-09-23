@@ -63,6 +63,7 @@
         showOtp(data, "login");
         toast("Code sent to " + data.phone_mask + (data.channel === "email" ? " (email)" : ""), "success");
       } catch (err) {
+        if (window.SkApi && window.SkApi.showFieldErrors) window.SkApi.showFieldErrors(err, loginForm);
         toast(err.message, "error");
       } finally {
         busy(btn, false);

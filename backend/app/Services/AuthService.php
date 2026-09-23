@@ -69,7 +69,10 @@ final class AuthService
         }
         $user = User::findByIdentifier($identifier);
         if ($user === null || !password_verify($password, $user['password_hash'])) {
-            throw new AppError('credentials', 'Email or password is not right.', 401);
+            throw new AppError('credentials', 'Email or password is not right.', 401, [
+                'identifier' => 'Check this email.',
+                'password'   => 'Check this password.',
+            ]);
         }
         if ($user['status'] !== 'active') {
             throw new AppError('suspended', 'This account is not active. Contact support.', 403);
