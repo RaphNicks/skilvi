@@ -138,8 +138,12 @@ final class MailGateway
         $useSsl = in_array($enc, ['ssl', 'smtps'], true)
             || in_array($scheme, ['ssl', 'smtps'], true)
             || $port === 465;
-        $useTls = in_array($enc, ['tls', 'starttls'], true)
-            || (!$useSsl && ($port === 587 || $enc === ''));
+        // STARTTLS only on a plain TCP connection. ssl:// (port 465) is already encrypted.
+        $wantTls = !$useSsl && (
+            in_array($enc, ['tls', 'starttls'], true)
+            || $port === 587
+            || $enc === ''
+        );
         $remote = ($useSsl ? 'ssl://' : 'tcp://') . $host . ':' . $port;
         $ssl = [
             'verify_peer'      => false,
