@@ -241,9 +241,17 @@ final class DiscoveryService
         $where = ["u.status = 'active'", "u.roles LIKE '%worker%'"];
         $bind = [];
         if (!empty($f['q'])) {
-            $where[] = '(u.full_name LIKE ? OR p.headline LIKE ? OR p.skill LIKE ? OR p.city LIKE ? OR p.state LIKE ?)';
-            $q = '%' . $f['q'] . '%';
-            array_push($bind, $q, $q, $q, $q, $q);
+            $ors = [];
+            foreach (self::expandSearch((string) $f['q']) as $term) {
+                $like = '%' . $term . '%';
+                $ors[] = '(u.full_name LIKE ? OR p.headline LIKE ? OR p.skill LIKE ? OR p.city LIKE ? OR p.state LIKE ?
+                    OR c.name LIKE ? OR EXISTS (
+                        SELECT 1 FROM services s
+                        WHERE s.worker_id = u.id AND (s.title LIKE ? OR s.description LIKE ?)
+                    ))';
+                array_push($bind, $like, $like, $like, $like, $like, $like, $like, $like);
+            }
+            $where[] = '(' . implode(' OR ', $ors) . ')';
         }
         if (!empty($f['state'])) {
             $where[] = 'p.state = ?';
@@ -494,6 +502,38 @@ final class DiscoveryService
             'packages'    => $packages,
             'mode'        => $s['work_mode'] ?? null,
         ];
+    }
+
+    /** Map everyday search words to skill names workers actually list. */
+    private static function expandSearch(string $q): array
+    {
+        $q = trim($q);
+        if ($q === '') {
+            return [];
+        }
+        $map = [
+            'website' => ['website', 'web', 'web development'],
+            'web' => ['web', 'website', 'web development'],
+            'logo' => ['logo', 'graphic design', 'brand'],
+            'plumber' => ['plumber', 'plumbing'],
+            'plumbing' => ['plumber', 'plumbing'],
+            'electric' => ['electric', 'electrical', 'electrician'],
+            'electrician' => ['electric', 'electrical', 'electrician'],
+            'ui' => ['ui', 'ux', 'ui/ux', 'design'],
+            'ux' => ['ui', 'ux', 'ui/ux'],
+            'carpenter' => ['carpenter', 'carpentry'],
+            'carpentry' => ['carpenter', 'carpentry'],
+            'video' => ['video', 'video editing'],
+            'marketing' => ['marketing', 'digital marketing'],
+        ];
+        $low = mb_strtolower($q);
+        $out = [$q];
+        foreach ($map as $k => $extra) {
+            if ($low === $k || str_contains($low, $k)) {
+                $out = array_merge($out, $extra);
+            }
+        }
+        return array_values(array_unique($out));
     }
 
     private static function isWorker(int $id): bool

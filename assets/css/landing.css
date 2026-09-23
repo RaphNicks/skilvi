@@ -89,10 +89,10 @@
   flex: 1; border: 0; outline: none; font-size: 14.5px; padding: 14px 0; background: transparent; color: var(--ink); min-width: 0;
 }
 .lp-popular { margin-top: 16px; font-size: 13.5px; color: var(--ink-3); display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
-.lp-hero-alt { display: inline-block; margin-top: 18px; font-size: 13.5px; font-weight: 500; color: var(--royal-700); text-decoration: underline; text-decoration-thickness: 1.5px; text-underline-offset: 3px; }
+.lp-hero-alt { display: inline-block; margin-top: 18px; font-size: 13.5px; font-weight: 500; color: var(--royal-700); text-decoration: none; }
 .lp-hero-alt:hover { color: var(--royal-800); }
 .lp-popular b { font-weight: 600; color: var(--ink-3); }
-.lp-popular a { color: var(--ink); font-weight: 500; text-decoration: underline; text-decoration-thickness: 1.5px; text-underline-offset: 3px; }
+.lp-popular a { color: var(--ink); font-weight: 500; text-decoration: none; }
 .lp-popular a:hover { color: var(--royal-700); }
 
 /* hero visual */

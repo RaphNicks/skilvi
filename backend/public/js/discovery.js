@@ -66,7 +66,9 @@
     const list = $("#results");
     if (!list) return;
     const q = params.get("q") || ($("#qInput") && $("#qInput").value) || "";
+    if (q && $("#qInput")) $("#qInput").value = q;
     if (q && $("#searchTerm")) $("#searchTerm").textContent = "“" + q + "”";
+    else if ($("#searchTerm")) $("#searchTerm").textContent = "All services";
     const mode = ($$("#filters input[name=mode]:checked")[0] || {}).value || "";
     const state = $("#fState") ? $("#fState").value : "";
     const verified = $("#fVerified") && $("#fVerified").checked ? "1" : "";

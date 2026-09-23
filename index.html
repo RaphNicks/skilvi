@@ -10,7 +10,7 @@
   <title>Skilvi — Hire trusted talent for any job in Nigeria</title>
   <meta name="description" content="Skilvi is Nigeria's marketplace for hiring trusted professionals — digital skills and hands-on trades. Post a job, compare verified talent, and pay safely through escrow.">
   <link rel="stylesheet" href="assets/css/skilvi.css?v=16">
-  <link rel="stylesheet" href="assets/css/landing.css?v=24">
+  <link rel="stylesheet" href="assets/css/landing.css?v=25">
 </head>
 <body class="lp">
 
@@ -55,7 +55,7 @@
       <h1 class="lp-h1">Hire trusted talent.<br>Get it done right.</h1>
       <p class="lp-sub">Post a job and get matched with verified professionals — from web developers to master plumbers. You pay Skilvi first; your money is only released when the work is done to your standard.</p>
 
-      <form class="lp-search" id="heroSearch">
+      <form class="lp-search" id="heroSearch" action="search.html" method="get" role="search">
         <div class="lp-search-box">
           <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
           <input type="search" name="q" placeholder="What do you need done? e.g. website, plumber, logo…" aria-label="What do you need done?">
@@ -347,15 +347,8 @@ uncomment to restore.
 <script src="assets/js/skilvi.js?v=19"></script>
 <script>
   document.addEventListener("DOMContentLoaded", () => {
-    /* hero search -> search.html?q= */
-    $("#heroSearch")?.addEventListener("submit", (e) => {
-      e.preventDefault();
-      const q = (e.target.querySelector("input[name=q]").value || "").trim();
-      location.href = "search.html" + (q ? "?q=" + encodeURIComponent(q) : "");
-    });
-    /* close mobile menu after tapping a link (menu open/close itself is pure CSS) */
-    const menu = $("#lpMenu");
-    if (menu) $$(".lp-menu-in a").forEach((a) =>
+    const menu = document.getElementById("lpMenu");
+    if (menu) document.querySelectorAll(".lp-menu-in a").forEach((a) =>
       a.addEventListener("click", () => { menu.checked = false; }));
   });
 </script>
