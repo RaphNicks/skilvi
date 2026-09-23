@@ -53,15 +53,15 @@
         </div>
         <div class="ph-actions">
           <select class="select" style="width:auto" id="wjCat">
-            <option>All my categories</option><option>Web Development</option><option>UI/UX Design</option>
+            <option value="">All categories</option>
           </select>
         </div>
       </div>
 
       <div data-tabs>
         <div class="tabs">
-          <button class="tab active" data-tab="feed">New jobs for me <span class="count">4</span></button>
-          <button class="tab" data-tab="proposals">My proposals <span class="count">5</span></button>
+          <button class="tab active" data-tab="feed">New jobs for me <span class="count" id="wjCountJobs">0</span></button>
+          <button class="tab" data-tab="proposals">My proposals <span class="count" id="wjCountProps">0</span></button>
         </div>
 
         <!-- Feed -->

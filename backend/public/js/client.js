@@ -341,8 +341,10 @@
 
   async function workerJobs() {
     if (!$("#wjFeed") && !$("#wjProps")) return;
-    const jobs = await api("/api/jobs?per=12");
+    const jobs = await api("/api/jobs?per=24");
     const Ico = I;
+    const jobItems = jobs.items || [];
+    if ($("#wjCountJobs")) $("#wjCountJobs").textContent = String(jobs.total != null ? jobs.total : jobItems.length);
     if ($("#wjFeed")) {
       $("#wjFeed").innerHTML = (jobs.items || []).map((j) =>
         '<div class="job-card"><div class="jc-top"><h3><a href="job-detail.html?id=' + esc(j.id) + '">' + esc(j.title) + "</a></h3>" +
@@ -354,9 +356,11 @@
       ).join("") || '<p class="tiny faint">No open jobs right now.</p>';
     }
     const props = await api("/api/proposals/mine");
+    const propList = Array.isArray(props) ? props : [];
+    if ($("#wjCountProps")) $("#wjCountProps").textContent = String(propList.length);
     const stMap = { sent: "st-amber", accepted: "st-green", rejected: "st-gray", withdrawn: "st-gray" };
     if ($("#wjProps")) {
-      $("#wjProps").innerHTML = props.map((p) =>
+      $("#wjProps").innerHTML = propList.map((p) =>
         '<tr><td><span class="cell-main">' + esc(p.title) + '</span><div class="cell-sub">' + esc(p.job) + "</div></td>" +
         '<td class="num amount">' + esc(p.bid_label) + "</td><td>" + (p.days ? p.days + " days" : "—") + "</td><td>" + esc(p.date) + "</td>" +
         '<td><span class="st ' + (stMap[p.status] || "st-gray") + '">' + esc(p.status) + "</span></td>" +
@@ -392,11 +396,18 @@
       if (!el) return;
       el.innerHTML = head + (rows.map(orderRow).join("") || '<tr><td colspan="6" class="muted">Nothing here.</td></tr>') + "</tbody></table>";
     };
-    fill($("#woTable"), orders);
-    fill($("#woTableActive"), orders.filter((o) => o.status === "in_progress"));
-    fill($("#woTableDelivered"), orders.filter((o) => o.status === "completion_submitted"));
-    fill($("#woTableCompleted"), orders.filter((o) => o.status === "released"));
-    fill($("#woTableDisputed"), orders.filter((o) => o.status === "disputed"));
+    const list = Array.isArray(orders) ? orders : [];
+    fill($("#woTable"), list);
+    fill($("#woTableActive"), list.filter((o) => o.status === "in_progress"));
+    fill($("#woTableDelivered"), list.filter((o) => o.status === "completion_submitted"));
+    fill($("#woTableCompleted"), list.filter((o) => o.status === "released"));
+    fill($("#woTableDisputed"), list.filter((o) => o.status === "disputed"));
+    const set = (id, n) => { if ($(id)) $(id).textContent = String(n); };
+    set("#woCountAll", list.length);
+    set("#woCountActive", list.filter((o) => o.status === "in_progress").length);
+    set("#woCountDelivered", list.filter((o) => o.status === "completion_submitted").length);
+    set("#woCountCompleted", list.filter((o) => o.status === "released").length);
+    set("#woCountDisputed", list.filter((o) => o.status === "disputed").length);
   }
 
   document.addEventListener("DOMContentLoaded", () => {

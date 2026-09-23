@@ -258,6 +258,9 @@
           ngn(p.price_naira) + " · " + p.days + " days · " + p.revisions + " revisions</span></div>").join("") + "</div>"
       ).join("");
     }
+    if ($("#wpCountSvc")) $("#wpCountSvc").textContent = String((w.services || []).length);
+    if ($("#wpCountRev")) $("#wpCountRev").textContent = String((w.reviews_list || []).length);
+    if ($("#wpCountPort")) $("#wpCountPort").textContent = "0";
     if ($("#reviewList") && w.reviews_list) {
       $("#reviewList").innerHTML = w.reviews_list.map((r) =>
         '<div class="review-card"><div class="rv-head"><span class="avatar sm a2">' + esc(r.initials) + "</span>" +
