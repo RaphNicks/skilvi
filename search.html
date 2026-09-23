@@ -9,7 +9,7 @@
   <link rel="icon" href="assets/img/skilvi-logo-word.png">
   <title>Search — Skilvi</title>
   <meta name="description" content="Search verified workers and services on Skilvi — from web development to plumbing and bookkeeping. Compare ratings, packages, and delivery times.">
-  <link rel="stylesheet" href="assets/css/skilvi.css?v=16">
+  <link rel="stylesheet" href="assets/css/skilvi.css?v=17">
 </head>
 <body data-chrome="public" data-active="explore" data-page="search">
 
@@ -45,21 +45,21 @@
       <h1 style="font-size:24px">Search results</h1>
       <p class="small muted mt-1">Showing <b class="mono" id="rcCount" style="color:var(--ink)">12</b> workers <span id="searchTerm" class="tag tag-royal">All services</span></p>
     </div>
-    <div class="row">
-      <input class="input" id="qInput" style="width:240px" placeholder="Refine search…" aria-label="Refine search">
-      <select class="select" id="sortSel" style="width:auto" aria-label="Sort">
-        <option>Relevance</option><option>Top rated</option><option>Lowest price</option><option>Highest price</option><option>Newest</option>
+    <form class="row" action="search.html" method="get">
+      <input class="input" id="qInput" name="q" style="width:240px" placeholder="Refine search…" aria-label="Refine search">
+      <select class="select" id="sortSel" name="sort" style="width:auto" aria-label="Sort">
+        <option value="">Relevance</option><option value="orders">Top rated</option><option value="newest">Newest</option>
       </select>
-    </div>
+    </form>
   </div>
 
   <div class="row mb-2" id="chips" style="gap:8px">
-    <button class="chip" type="button">Web development</button>
-    <button class="chip" type="button">Tiling</button>
-    <button class="chip" type="button">Electrical</button>
-    <button class="chip" type="button">Graphic design</button>
-    <button class="chip" type="button">Plumbing</button>
-    <button class="chip" type="button">Generator &amp; power</button>
+    <a class="chip" href="search.html?q=Web%20development">Web development</a>
+    <a class="chip" href="search.html?q=Tiling">Tiling</a>
+    <a class="chip" href="search.html?q=Electrical">Electrical</a>
+    <a class="chip" href="search.html?q=Graphic%20design">Graphic design</a>
+    <a class="chip" href="search.html?q=Plumbing">Plumbing</a>
+    <a class="chip" href="search.html?q=Generator%20%26%20power">Generator &amp; power</a>
   </div>
 
   <div class="search-layout">

@@ -163,9 +163,9 @@ ul { margin: 0; padding: 0; list-style: none; }
   font-size: 13px; font-weight: 500; padding: 6px 12px; border-radius: var(--r-full);
 }
 .chip.active { background: var(--royal-600); border-color: var(--royal-600); color: #fff; }
-button.chip { cursor: pointer; }
-button.chip:hover { border-color: var(--royal-400); color: var(--royal-700); }
-button.chip.active:hover { color: #fff; }
+button.chip, a.chip { cursor: pointer; text-decoration: none; }
+button.chip:hover, a.chip:hover { border-color: var(--royal-400); color: var(--royal-700); }
+button.chip.active:hover, a.chip.active:hover { color: #fff; }
 
 .st {
   display: inline-flex; align-items: center; gap: 6px;

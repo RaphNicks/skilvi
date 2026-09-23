@@ -359,6 +359,10 @@
           }));
         } else if (page === "search") {
           await hydrateSearch();
+          const qNow = (params.get("q") || "").trim().toLowerCase();
+          $$("#chips .chip").forEach((c) => {
+            c.classList.toggle("active", qNow !== "" && c.textContent.trim().toLowerCase() === qNow);
+          });
           $$("#filters input, #filters select").forEach((el) => el.addEventListener("change", () => hydrateSearch().catch((e) => toast(e.message, "error"))));
           $("#qInput") && $("#qInput").addEventListener("keydown", (e) => {
             if (e.key === "Enter") { e.preventDefault(); location.search = "?q=" + encodeURIComponent($("#qInput").value.trim()); }
