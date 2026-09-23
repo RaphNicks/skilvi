@@ -112,12 +112,54 @@ final class MailGateway
         return null;
     }
 
+    /** @param callable(string, bool=): string $cmd */
+    private static function smtpAuth(callable $cmd, string $hello, string $user, string $pass): string
+    {
+        $plain = base64_encode("\0" . $user . "\0" . $pass);
+        $offersPlain = (bool) preg_match('/AUTH[^\r\n]*\bPLAIN\b/i', $hello);
+        $offersLogin = (bool) preg_match('/AUTH[^\r\n]*\bLOGIN\b/i', $hello);
+        $tryPlain = static fn () => $cmd('AUTH PLAIN ' . $plain, true);
+        $tryLogin = static function () use ($cmd, $user, $pass) {
+            $r = $cmd('AUTH LOGIN');
+            if (!str_starts_with(trim($r), '334')) {
+                return $r;
+            }
+            $cmd(base64_encode($user), true);
+            return $cmd(base64_encode($pass), true);
+        };
+        $order = [];
+        if ($offersPlain) {
+            $order[] = $tryPlain;
+        }
+        if ($offersLogin) {
+            $order[] = $tryLogin;
+        }
+        if ($order === []) {
+            $order = [$tryPlain, $tryLogin];
+        }
+        $last = "535 no AUTH method";
+        foreach ($order as $fn) {
+            $last = $fn();
+            if (preg_match('/^235\b/m', $last)) {
+                return $last;
+            }
+        }
+        return $last;
+    }
+
     private static function smtp(string $to, string $subject, string $body, string $dir): bool
     {
         $host = trim((string) Config::get('mail.host'));
         $port = (int) Config::get('mail.port', 587);
-        $user = (string) Config::get('mail.user');
+        $user = trim((string) Config::get('mail.user'));
         $pass = (string) Config::get('mail.pass');
+        $pass = trim($pass);
+        if (
+            (str_starts_with($pass, '"') && str_ends_with($pass, '"') && strlen($pass) >= 2)
+            || (str_starts_with($pass, "'") && str_ends_with($pass, "'") && strlen($pass) >= 2)
+        ) {
+            $pass = substr($pass, 1, -1);
+        }
         $enc = strtolower(trim((string) Config::get('mail.encryption', '')));
         $scheme = strtolower(trim((string) Config::get('mail.scheme', '')));
         $ehlo = trim((string) Config::get('mail.ehlo', 'localhost')) ?: 'localhost';
@@ -212,7 +254,7 @@ final class MailGateway
                 self::fail($dir, 'TLS handshake failed after STARTTLS');
                 return false;
             }
-            $cmd('EHLO ' . $ehlo);
+            $hello = $cmd('EHLO ' . $ehlo);
         }
         $authOk = $cmd('AUTH LOGIN');
         if (str_starts_with(trim($authOk), '334')) {
