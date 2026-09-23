@@ -168,6 +168,15 @@ final class Schema
                 PRIMARY KEY (user_id, idem_key)
             )'
         );
+        self::execSql(
+            'CREATE TABLE IF NOT EXISTS account_requests (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                user_id INTEGER NOT NULL,
+                kind TEXT NOT NULL,
+                note TEXT,
+                created_at TEXT NOT NULL
+            )'
+        );
         Db::exec('CREATE INDEX IF NOT EXISTS idx_orders_status ON orders(status, created_at)');
         Db::exec('CREATE INDEX IF NOT EXISTS idx_orders_client ON orders(client_id, status)');
         Db::exec('CREATE INDEX IF NOT EXISTS idx_orders_worker ON orders(worker_id, status)');

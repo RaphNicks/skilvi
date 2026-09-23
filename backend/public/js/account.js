@@ -119,6 +119,83 @@
         }
       });
 
+      $("#savePhone") && $("#savePhone").addEventListener("click", async () => {
+        const btn = $("#savePhone");
+        busy(btn, true);
+        try {
+          const updated = await api("/api/me/phone", { body: { phone: ($("#mePhone") && $("#mePhone").value) || "" } });
+          fill(updated);
+          toast("Phone updated.", "success");
+        } catch (err) {
+          toast(err.message, "error");
+        } finally {
+          busy(btn, false);
+        }
+      });
+
+      $("#btnExport") && $("#btnExport").addEventListener("click", async () => {
+        const btn = $("#btnExport");
+        busy(btn, true);
+        try {
+          const data = await api("/api/me/export");
+          const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+          const a = document.createElement("a");
+          a.href = URL.createObjectURL(blob);
+          a.download = "skilvi-data.json";
+          a.click();
+          URL.revokeObjectURL(a.href);
+          toast("Your data download started.", "success");
+        } catch (err) {
+          toast(err.message, "error");
+        } finally {
+          busy(btn, false);
+        }
+      });
+
+      $("#btnDelete") && $("#btnDelete").addEventListener("click", async () => {
+        if (!window.confirm("Request account deletion? We process this within 30 days, after any open escrow settles.")) return;
+        const btn = $("#btnDelete");
+        busy(btn, true);
+        try {
+          const r = await api("/api/me/delete-request", { body: {} });
+          toast(r.message || "Deletion request logged.", "success");
+        } catch (err) {
+          toast(err.message, "error");
+        } finally {
+          busy(btn, false);
+        }
+      });
+
+      $("#btnConsent") && $("#btnConsent").addEventListener("click", async () => {
+        const box = $("#consentBox");
+        try {
+          const r = await api("/api/me/consent");
+          if (box) {
+            box.style.display = "";
+            box.innerHTML = (r.items || []).map((it) =>
+              "<div>" + (it.on ? "On" : "Off") + " — " + it.title + (it.locked ? " (required)" : "") + "</div>"
+            ).join("") + (r.updated_at ? "<div>Last updated " + r.updated_at + "</div>" : "");
+          }
+        } catch (err) {
+          toast(err.message, "error");
+        }
+      });
+
+      $("#btnDeactivate") && $("#btnDeactivate").addEventListener("click", async () => {
+        if (!window.confirm("Deactivate this account? Your profile hides and you cannot take new orders until you log in and we restore it.")) return;
+        const btn = $("#btnDeactivate");
+        busy(btn, true);
+        try {
+          await api("/api/me/deactivate", { body: {} });
+          toast("Account deactivated.", "success");
+          location.href = "/login.html";
+        } catch (err) {
+          toast(err.message, "error");
+        } finally {
+          busy(btn, false);
+        }
+      });
+
       const file = $("#avatarFile");
       $("#avatarBtn") && $("#avatarBtn").addEventListener("click", () => file && file.click());
       file && file.addEventListener("change", async () => {

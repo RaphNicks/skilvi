@@ -39,6 +39,36 @@ final class AccountController
         Response::json(AuthService::updateEmail($id, $req->str('email')));
     }
 
+    public static function phone(Request $req, array $params = []): void
+    {
+        $id = self::requireUser();
+        Response::json(AuthService::updatePhone($id, $req->str('phone')));
+    }
+
+    public static function export(Request $req, array $params = []): void
+    {
+        $id = self::requireUser();
+        Response::json(AuthService::export($id));
+    }
+
+    public static function consent(Request $req, array $params = []): void
+    {
+        $id = self::requireUser();
+        Response::json(AuthService::consent($id));
+    }
+
+    public static function requestDeletion(Request $req, array $params = []): void
+    {
+        $id = self::requireUser();
+        Response::json(AuthService::requestDeletion($id));
+    }
+
+    public static function deactivate(Request $req, array $params = []): void
+    {
+        $id = self::requireUser();
+        Response::json(AuthService::deactivate($id));
+    }
+
     public static function avatar(Request $req, array $params = []): void
     {
         $id = self::requireUser();

@@ -32,6 +32,11 @@ Router::patch('/api/me', [AccountController::class, 'update']);
 Router::post('/api/me', [AccountController::class, 'update']);
 Router::post('/api/me/password', [AccountController::class, 'password']);
 Router::post('/api/me/email', [AccountController::class, 'email']);
+Router::post('/api/me/phone', [AccountController::class, 'phone']);
+Router::get('/api/me/export', [AccountController::class, 'export']);
+Router::get('/api/me/consent', [AccountController::class, 'consent']);
+Router::post('/api/me/delete-request', [AccountController::class, 'requestDeletion']);
+Router::post('/api/me/deactivate', [AccountController::class, 'deactivate']);
 Router::post('/api/me/avatar', [AccountController::class, 'avatar']);
 Router::get('/api/files/{token}', [AccountController::class, 'file']);
 

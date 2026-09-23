@@ -193,6 +193,11 @@
         t.active = String(t.id) === String(current);
         return renderThread(t);
       }).join("") || '<p class="tiny faint" style="padding:16px">No threads yet. They appear when an order is live.</p>';
+      const emptyHead = !list.length;
+      const orderBtn = document.querySelector(".chat-head a.btn");
+      if (orderBtn) orderBtn.style.display = emptyHead ? "none" : "";
+      if (emptyHead && $("#chName")) $("#chName").textContent = "Select a conversation";
+      if (emptyHead && $("#chSub")) $("#chSub").textContent = "Threads appear when an order is live.";
       $$(".thread-item", host).forEach((el) => el.addEventListener("click", () => {
         current = el.getAttribute("data-id");
         history.replaceState({}, "", "messages.html?id=" + current);
@@ -233,8 +238,15 @@
     if (sub) sub.textContent = (t.order ? "Order " + t.order + " · " : "") + t.title + (t.amount_label ? " · " + t.amount_label + " in escrow" : "");
     const av = document.querySelector(".chat-head .avatar");
     if (av) { av.textContent = t.initials; av.className = "avatar sm " + t.tone; }
-    const orderBtn = document.querySelector('.chat-head a.btn');
-    if (orderBtn && t.order) orderBtn.href = "order-detail.html?id=" + encodeURIComponent(t.order);
+    const orderBtn = document.querySelector(".chat-head a.btn");
+    if (orderBtn) {
+      if (t.order) {
+        orderBtn.href = "order-detail.html?id=" + encodeURIComponent(t.order);
+        orderBtn.style.display = "";
+      } else {
+        orderBtn.style.display = "none";
+      }
+    }
     if ($("#chatBody")) {
       $("#chatBody").innerHTML = renderBubbles(t.messages);
       $("#chatBody").scrollTop = $("#chatBody").scrollHeight;
@@ -260,7 +272,14 @@
     fill("#ntListMoney", "money");
     fill("#ntListOrders", "orders");
     fill("#ntListMsgs", "msgs");
-    if ($("#ntCountAll")) $("#ntCountAll").textContent = items.length;
+    const setCount = (sel, n) => {
+      const el = $(sel);
+      if (el) el.textContent = String(n);
+    };
+    setCount("#ntCountAll", items.length);
+    setCount("#ntCountMoney", items.filter((x) => x.cat === "money").length);
+    setCount("#ntCountOrders", items.filter((x) => x.cat === "orders").length);
+    setCount("#ntCountMsgs", items.filter((x) => x.cat === "msgs").length);
     const mark = $("#markRead");
     if (mark) {
       mark.addEventListener("click", async () => {

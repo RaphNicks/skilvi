@@ -65,6 +65,26 @@
     return '<a class="side-item' + (active ? " active" : "") + '" href="' + href + '">' + ico + "<span>" + label + "</span></a>";
   }
 
+  const SHELL_KEY = "skilvi_shell";
+  function rememberShell(want) {
+    try { sessionStorage.setItem(SHELL_KEY, want); } catch (e) { /* private mode */ }
+  }
+  function recalledShell() {
+    try { return sessionStorage.getItem(SHELL_KEY) || ""; } catch (e) { return ""; }
+  }
+
+  function activeKey() {
+    const f = file();
+    const tab = new URLSearchParams(location.search).get("tab") || "";
+    if (f === "client-dashboard.html") {
+      if (tab === "orders" || tab === "jobs" || tab === "payments") return tab;
+      return "overview";
+    }
+    if (f === "worker-wallet.html") return tab === "withdrawals" ? "withdrawals" : "wallet";
+    if (f === "notifications.html") return "";
+    return document.body.getAttribute("data-active") || "";
+  }
+
   function workerSide(me, active) {
     return '<div class="side-brand"><a class="brand" href="worker-dashboard.html"><img class="brand-logo" src="assets/img/skilvi-logo-word.png" alt="Skilvi"></a></div>' +
       '<div class="side-label">Work</div>' +
@@ -74,7 +94,7 @@
       item("worker-jobs.html", ICO.jobs, "Jobs & proposals", active === "jobs") +
       '<div class="side-label">Money</div>' +
       item("worker-wallet.html", ICO.wallet, "Wallet", active === "wallet") +
-      item("worker-wallet.html?tab=withdrawals", ICO.down, "Withdrawals", false) +
+      item("worker-wallet.html?tab=withdrawals", ICO.down, "Withdrawals", active === "withdrawals") +
       item("verification.html", ICO.shield, "Verification", active === "verification") +
       item("promotion.html", ICO.zap, "Promotion", active === "promotion") +
       '<div class="side-label">Account</div>' +
@@ -82,6 +102,7 @@
       item("disputes.html", ICO.scale, "Disputes", active === "disputes") +
       item("account-settings.html", ICO.gear, "Settings", active === "settings") +
       item("/logout.html", ICO.logout, "Sign out", false) +
+      (isClient(me) ? item("client-dashboard.html", ICO.heart, "Hire as a client", false) : "") +
       foot(me, "a1");
   }
 
@@ -124,10 +145,15 @@
     const side = document.querySelector("aside.side");
     if (!side) return;
     const f = file();
-    const active = document.body.getAttribute("data-active") || "";
+    if (WORKER_ONLY.indexOf(f) !== -1) rememberShell("worker");
+    if (CLIENT_ONLY.indexOf(f) !== -1) rememberShell("client");
+    const active = activeKey();
+    document.body.setAttribute("data-active", active);
     let want = document.body.getAttribute("data-shell") || "";
     if (SHARED.indexOf(f) !== -1) {
-      if (isWorker(me) && !isClient(me)) want = "worker";
+      if (isWorker(me) && isClient(me)) {
+        want = recalledShell() || "client";
+      } else if (isWorker(me) && !isClient(me)) want = "worker";
       else if (isClient(me) && !isWorker(me)) want = "client";
       else if (want !== "worker" && want !== "client") want = isWorker(me) ? "worker" : "client";
     }
@@ -197,7 +223,33 @@
     applySide(me);
     setHeader(me);
     paint(me);
+    paintBadges();
+    bindDashTabs(me);
     window.__me = me;
+  }
+
+  function bindDashTabs(me) {
+    const f = file();
+    if (f !== "client-dashboard.html" && f !== "worker-wallet.html") return;
+    document.querySelectorAll("[data-tabs] [data-tab]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const t = btn.getAttribute("data-tab") || "";
+        const next = (t && t !== "overview") ? (location.pathname + "?tab=" + encodeURIComponent(t)) : location.pathname;
+        history.replaceState({}, "", next);
+        applySide(me);
+        paint(me);
+      });
+    });
+  }
+
+  async function paintBadges() {
+    try {
+      const b = await api("/api/me/badges");
+      const n = (b && b.notifications) || 0;
+      document.querySelectorAll(".icon-btn .dot").forEach((el) => {
+        el.style.display = n > 0 ? "" : "none";
+      });
+    } catch (e) { /* keep static */ }
   }
 
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", run);

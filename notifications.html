@@ -11,7 +11,7 @@
   <meta name="description" content="Your Skilvi notifications.">
   <link rel="stylesheet" href="assets/css/skilvi.css?v=16">
 </head>
-<body data-shell="worker" data-active="messages" data-page="notifications">
+<body data-shell="worker" data-active="" data-page="notifications">
 
 <div class="shell">
   <input type="checkbox" id="sideCheck" class="side-check" aria-hidden="true">
@@ -56,10 +56,10 @@
 
       <div data-tabs>
         <div class="tabs">
-          <button class="tab active" data-tab="all">All <span class="count" id="ntCountAll">6</span></button>
-          <button class="tab" data-tab="money">Money <span class="count">2</span></button>
-          <button class="tab" data-tab="orders">Orders <span class="count">3</span></button>
-          <button class="tab" data-tab="msgs">Messages <span class="count">1</span></button>
+          <button class="tab active" data-tab="all">All <span class="count" id="ntCountAll">0</span></button>
+          <button class="tab" data-tab="money">Money <span class="count" id="ntCountMoney">0</span></button>
+          <button class="tab" data-tab="orders">Orders <span class="count" id="ntCountOrders">0</span></button>
+          <button class="tab" data-tab="msgs">Messages <span class="count" id="ntCountMsgs">0</span></button>
         </div>
 
         <div class="tab-panel active" data-panel="all">

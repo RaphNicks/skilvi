@@ -264,6 +264,97 @@ final class AuthService
         return User::public(User::find($id));
     }
 
+    public static function updatePhone(int $id, string $raw): array
+    {
+        $raw = trim($raw);
+        $user = User::find($id);
+        if ($user === null) {
+            throw new AppError('unauth', 'Log in to continue.', 401);
+        }
+        if ($raw === '') {
+            $email = strtolower((string) ($user['email'] ?? ''));
+            $placeholder = $email !== '' ? ('e:' . $email) : ('e:user' . $id);
+            User::updatePhone($id, $placeholder);
+            return User::public(User::find($id));
+        }
+        $phone = normalize_phone($raw);
+        if ($phone === '') {
+            throw new AppError('invalid', 'Use a Nigerian mobile, e.g. 0803 000 0000, or leave it blank.', 422, ['phone' => 'Use a Nigerian mobile, e.g. 0803 000 0000.']);
+        }
+        $other = User::findByPhone($phone);
+        if ($other && (int) $other['id'] !== $id) {
+            throw new AppError('phone_taken', 'An account already uses this number.', 409);
+        }
+        User::updatePhone($id, $phone);
+        return User::public(User::find($id));
+    }
+
+    public static function export(int $id): array
+    {
+        $user = User::find($id);
+        if ($user === null) {
+            throw new AppError('unauth', 'Log in to continue.', 401);
+        }
+        $me = User::public($user);
+        unset($me['phone']);
+        $orders = \App\Core\Db::fetchAll(
+            'SELECT code, title, status, amount_kobo, created_at FROM orders WHERE client_id = ? OR worker_id = ? ORDER BY id DESC LIMIT 200',
+            [$id, $id]
+        );
+        $jobs = \App\Core\Db::fetchAll(
+            'SELECT code, title, status, created_at FROM jobs WHERE client_id = ? ORDER BY id DESC LIMIT 200',
+            [$id]
+        );
+        return [
+            'exported_at' => now_iso(),
+            'account'     => $me,
+            'orders'      => $orders,
+            'jobs'        => $jobs,
+        ];
+    }
+
+    public static function consent(int $id): array
+    {
+        $user = User::find($id);
+        if ($user === null) {
+            throw new AppError('unauth', 'Log in to continue.', 401);
+        }
+        $me = User::public($user);
+        $profile = \App\Models\Profile::forUser($id) ?? [];
+        return [
+            'updated_at' => $profile['updated_at'] ?? $user['updated_at'] ?? null,
+            'items'      => [
+                ['title' => 'Order updates (email)', 'on' => true, 'locked' => true, 'note' => 'Always on for money events.'],
+                ['title' => 'Money alerts (SMS)', 'on' => !empty($me['notify_sms']), 'locked' => false],
+                ['title' => 'New job alerts (email)', 'on' => !empty($me['notify_jobs']), 'locked' => false],
+                ['title' => 'Marketing & tips (email)', 'on' => !empty($me['notify_marketing']), 'locked' => false],
+            ],
+        ];
+    }
+
+    public static function requestDeletion(int $id): array
+    {
+        \App\Core\Db::run(
+            'INSERT INTO account_requests (user_id, kind, note, created_at) VALUES (?,?,?,?)',
+            [$id, 'delete', 'NDPR deletion request', now_iso()]
+        );
+        return ['queued' => true, 'message' => 'Deletion request logged. We process it within 30 days, after any active escrow settles.'];
+    }
+
+    public static function deactivate(int $id): array
+    {
+        $open = (int) (\App\Core\Db::fetch(
+            "SELECT COUNT(*) c FROM orders WHERE (client_id = ? OR worker_id = ?) AND status IN ('pending_payment','funded','in_progress','completion_submitted','disputed')",
+            [$id, $id]
+        )['c'] ?? 0);
+        if ($open > 0) {
+            throw new AppError('escrow_open', 'Finish or settle open orders before deactivating. Escrow must clear first.', 409);
+        }
+        User::setStatus($id, 'deactivated');
+        Session::logout();
+        return ['deactivated' => true];
+    }
+
     public static function homeFor(array $me): string
     {
         $roles = $me['roles'] ?? [];
