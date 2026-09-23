@@ -22,11 +22,18 @@
   };
 
   function rolesOf(me) {
-    return me.roles || [];
+    const r = me && me.roles;
+    if (Array.isArray(r)) return r;
+    if (typeof r === "string") return r.split(",").map((s) => s.trim()).filter(Boolean);
+    return [];
   }
-  function isWorker(me) { return rolesOf(me).indexOf("worker") !== -1; }
-  function isClient(me) { return rolesOf(me).indexOf("client") !== -1; }
-  function isAdmin(me) { return rolesOf(me).indexOf("admin") !== -1; }
+  function hasRole(me, role) {
+    return rolesOf(me).some((r) => String(r).toLowerCase() === role);
+  }
+  function isWorker(me) { return hasRole(me, "worker"); }
+  function isClient(me) { return hasRole(me, "client"); }
+  function isAdmin(me) { return hasRole(me, "admin"); }
+  function isBoth(me) { return isWorker(me) && isClient(me); }
 
   function home(me) {
     if (isAdmin(me)) return "/admin/index.html";
@@ -102,8 +109,7 @@
       item("disputes.html", ICO.scale, "Disputes", active === "disputes") +
       item("account-settings.html", ICO.gear, "Settings", active === "settings") +
       item("/logout.html", ICO.logout, "Sign out", false) +
-      (isClient(me) ? item("client-dashboard.html", ICO.heart, "Hire as a client", false) : "") +
-      foot(me, "a1");
+      foot(me, "a1", "worker");
   }
 
   function clientSide(me, active) {
@@ -119,11 +125,17 @@
       item("disputes.html", ICO.scale, "Disputes", active === "disputes") +
       item("account-settings.html", ICO.gear, "Settings", active === "settings") +
       item("/logout.html", ICO.logout, "Sign out", false) +
-      foot(me, "a2");
+      foot(me, "a2", "client");
   }
 
-  function foot(me, tone) {
-    return '<div class="side-foot"><div class="side-user"><span class="avatar sm ' + tone + '">' +
+  function foot(me, tone, shell) {
+    const swap = isBoth(me)
+      ? (shell === "client"
+          ? item("worker-dashboard.html", ICO.layers, "Earn as a worker", false)
+          : item("client-dashboard.html", ICO.heart, "Hire as a client", false))
+      : "";
+    return '<div class="side-foot">' + swap +
+      '<div class="side-user"><span class="avatar sm ' + tone + '">' +
       (me.initials || "?") + '</span><div><div class="su-name">' + (me.full_name || "You") +
       '</div><div class="su-role">' + roleLine(me) + "</div></div></div></div>";
   }

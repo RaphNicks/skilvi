@@ -43,7 +43,7 @@ final class PagesController
 
     private static function inject(string $html, string $rel): string
     {
-        $extra = '<script src="/js/api.js?v=27"></script><script src="/js/chrome.js?v=27"></script>';
+        $extra = '<script src="/js/api.js?v=28"></script><script src="/js/chrome.js?v=28"></script>';
         $pageScripts = [
             'index.html'             => '/js/discovery.js?v=26',
             'jobs.html'              => '/js/discovery.js?v=26',
