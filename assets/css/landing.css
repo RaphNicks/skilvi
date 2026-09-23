@@ -202,9 +202,25 @@
 
 /* ---------- split (photo + checklist) ---------- */
 .lp-split { display: grid; grid-template-columns: .9fr 1.1fr; gap: 60px; align-items: center; }
-.lp-split-vis { position: relative; min-height: 460px; overflow: hidden; }
-.lp-split .lp-circle { left: 50%; right: auto; top: 0; transform: translateX(-50%); width: min(420px, 96%); height: min(420px, 96%); }
-.lp-split-photo { position: absolute; left: 50%; transform: translateX(-46%); bottom: 0; width: 320px; border-radius: 18px; object-fit: cover; aspect-ratio: 4 / 5; }
+.lp-split-vis {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  padding-top: 24px;
+}
+.lp-split .lp-circle {
+  left: 50%; right: auto; top: 0; transform: translateX(-50%);
+  width: min(420px, 92%); height: auto; aspect-ratio: 1;
+  z-index: 0; pointer-events: none;
+}
+.lp-split-photo {
+  position: relative; z-index: 1;
+  left: auto; bottom: auto; transform: none;
+  width: min(320px, 82%);
+  border-radius: 18px; object-fit: cover; aspect-ratio: 4 / 5;
+  display: block;
+}
 .lp-checks { list-style: none; margin: 26px 0 30px; padding: 0; display: grid; gap: 14px; }
 .lp-checks li { display: flex; align-items: center; gap: 11px; font-size: 15px; font-weight: 500; color: #0B0E1A; }
 .lp-checks .ck {
@@ -278,10 +294,10 @@
   .lp-hero-vis { min-height: 470px; max-width: 520px; margin: 0 auto; }
   .lp-opp-grid, .lp-pop-grid, .lp-worker-grid, .lp-how-grid { grid-template-columns: repeat(2, 1fr); }
   .lp-skill-grid, .lp-learn-grid { grid-template-columns: repeat(2, 1fr); }
-  .lp-split { grid-template-columns: 1fr; gap: 48px; }
-  .lp-split-vis { order: -1; max-width: 440px; margin: 0 auto; }
-  .lp-split .lp-circle { width: 380px; height: 380px; }
-  .lp-split-photo { width: 290px; }
+  .lp-split { grid-template-columns: 1fr; gap: 28px; }
+  .lp-split-vis { order: -1; max-width: 360px; width: 100%; margin: 0 auto; }
+  .lp-split .lp-circle { width: min(340px, 90%); }
+  .lp-split-photo { width: min(280px, 86%); }
   .lp-logos { grid-template-columns: repeat(3, 1fr); }
   .lp-foot-grid { grid-template-columns: 1fr 1fr; }
   .lp-how-head { grid-template-columns: 1fr; }
@@ -335,8 +351,10 @@
   .lp-float-1 { left: -6px; top: 52px; }
   .lp-float-2 { bottom: 16px; }
   .lp-bd-1 { right: 138px; top: 0; }
-  .lp-split .lp-circle { width: 262px; height: 262px; }
-  .lp-split-photo { width: 212px; }
+  .lp-split { gap: 22px; }
+  .lp-split-vis { max-width: 280px; padding-top: 16px; }
+  .lp-split .lp-circle { width: min(240px, 88%); }
+  .lp-split-photo { width: min(220px, 90%); }
   .lp-news { padding: 56px 0 60px; }
   .lp-sec { padding: 48px 0; }
   .lp-logo-item { font-size: 16px; }
@@ -355,8 +373,8 @@
   to   { transform: translateX(-50%) scale(1.05); }
 }
 @keyframes lpBreatheR {
-  from { transform: translateX(50%) scale(1); }
-  to   { transform: translateX(50%) scale(1.05); }
+  from { transform: translateX(-50%) scale(1); }
+  to   { transform: translateX(-50%) scale(1.05); }
 }
 @keyframes lpFloat {
   0%, 100% { transform: translateY(0); }
