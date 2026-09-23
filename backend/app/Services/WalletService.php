@@ -124,16 +124,28 @@ final class WalletService
         if ($fields) {
             throw new AppError('invalid', 'Please fix the highlighted fields.', 422, $fields);
         }
+        $dest = trim((string) ($user['email'] ?: $user['phone'] ?: ''));
+        if ($dest === '' || str_starts_with((string) ($user['phone'] ?? ''), 'e:')) {
+            $dest = (string) ($user['email'] ?: $user['phone']);
+        } elseif (!empty($user['phone'])) {
+            $dest = (string) $user['phone'];
+        }
+        if ($dest === '') {
+            throw new AppError('invalid', 'Add an email or phone on your account before withdrawing.', 422, [
+                'account_name' => 'Add an email or phone in Settings first.',
+            ]);
+        }
         Session::set('pending_withdraw', [
             'user_id'         => $userId,
             'amount_kobo'     => $kobo,
             'bank_name'       => $bank,
             'account_number'  => $acct,
             'account_name'    => $name,
+            'otp_dest'        => $dest,
             'at'              => time(),
         ]);
-        Session::claim($user['phone'], 'withdraw');
-        return OtpService::issue($user['phone'], 'withdraw', $ip);
+        Session::claim($dest, 'withdraw');
+        return OtpService::issue($dest, 'withdraw', $ip);
     }
 
     public static function confirm(int $userId, string $code): array
@@ -145,9 +157,13 @@ final class WalletService
         $user = User::find($userId);
         $claim = Session::get('otp_claim');
         if (!is_array($claim) || ($claim['purpose'] ?? '') !== 'withdraw') {
-            throw new AppError('otp_session', 'Start the withdrawal again.', 401);
+            throw new AppError('otp_session', 'Start the withdrawal again.', 401, ['code' => 'Start the withdrawal again.']);
         }
-        OtpService::verify((string) $user['phone'], 'withdraw', $code);
+        $dest = (string) ($pending['otp_dest'] ?? $user['email'] ?? $user['phone'] ?? '');
+        if ($code === '' || strlen($code) !== 6) {
+            throw new AppError('invalid', 'Please fix the highlighted fields.', 422, ['code' => 'Enter the 6-digit code we sent.']);
+        }
+        OtpService::verify($dest, 'withdraw', $code);
         Session::clearClaim();
         Session::remove('pending_withdraw');
 

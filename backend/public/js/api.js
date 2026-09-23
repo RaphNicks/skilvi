@@ -139,6 +139,11 @@
     bio: ["bio", "meBio"],
     state: ["state", "meState"],
     city: ["city", "meCity"],
+    amount: ["amount", "amount_naira", "wdAmount"],
+    bank_name: ["bank_name", "wdBank"],
+    account_number: ["account_number", "wdAcct"],
+    account_name: ["account_name", "wdName"],
+    code: ["code", "wdCode"],
   };
 
   function clearFieldErrors(root) {

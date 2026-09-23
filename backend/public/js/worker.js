@@ -99,6 +99,125 @@
     }
   }
 
+  function paintWithdrawErrors(fields) {
+    if (window.SkApi && window.SkApi.showFieldErrors) {
+      window.SkApi.showFieldErrors({ fields: fields }, $("#withdrawForm") || document);
+    }
+  }
+
+  function readWithdraw() {
+    return {
+      bank_name: ($("#wdBank") && $("#wdBank").value) || "",
+      account_number: String(($("#wdAcct") && $("#wdAcct").value) || "").replace(/\D/g, ""),
+      account_name: (($("#wdName") && $("#wdName").value) || "").trim(),
+      amount_naira: String(($("#wdAmount") && $("#wdAmount").value) || "0").replace(/\D/g, ""),
+    };
+  }
+
+  function validateWithdraw(minNaira, availableNaira) {
+    const v = readWithdraw();
+    const fields = {};
+    const naira = Number(v.amount_naira || 0);
+    const min = minNaira != null ? minNaira : 5000;
+    if (!v.bank_name) fields.bank_name = "Pick a bank.";
+    if (v.account_number.length !== 10) fields.account_number = "Use a 10-digit NUBAN.";
+    if (v.account_name.length < 3) fields.account_name = "Account name as it appears at the bank.";
+    if (!naira || naira < min) fields.amount = "Minimum withdrawal is ₦" + Number(min).toLocaleString("en-NG") + ".";
+    else if (availableNaira != null && naira > availableNaira) fields.amount = "That is more than your available balance.";
+    return fields;
+  }
+
+  function bindWithdrawForm(wallet) {
+    const form = $("#withdrawForm");
+    if (!form || form.dataset.bound === "1") return;
+    form.dataset.bound = "1";
+    const minNaira = wallet && wallet.min_naira != null ? wallet.min_naira : 5000;
+    const availableNaira = wallet && wallet.available_naira != null ? wallet.available_naira : null;
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const btn = form.querySelector('button[type="submit"]');
+      const wrap = $("#wdOtpWrap");
+      const code = ($("#wdCode") && $("#wdCode").value.trim()) || "";
+      if (wrap && wrap.style.display !== "none") {
+        if (code.length !== 6) {
+          paintWithdrawErrors({ code: "Enter the 6-digit code we sent." });
+          toast("Please fix the highlighted fields.", "error");
+          return;
+        }
+        busy(btn, true);
+        try {
+          await api("/api/withdrawals/confirm", { body: { code } });
+          toast("Withdrawal requested. We will pay it to your bank.", "success");
+          location.reload();
+        } catch (err) {
+          if (!gate(err)) {
+            if (window.SkApi && window.SkApi.showFieldErrors) window.SkApi.showFieldErrors(err, form);
+            toast(err.message, "error");
+          }
+        } finally {
+          busy(btn, false);
+        }
+        return;
+      }
+      const fields = validateWithdraw(minNaira, availableNaira);
+      if (Object.keys(fields).length) {
+        paintWithdrawErrors(fields);
+        toast("Please fix the highlighted fields.", "error");
+        return;
+      }
+      busy(btn, true);
+      try {
+        const v = readWithdraw();
+        const otp = await api("/api/withdrawals/start", { body: v });
+        if (wrap) wrap.style.display = "";
+        if ($("#wdOtpHint")) {
+          const via = otp.channel === "email" ? "email" : "phone";
+          $("#wdOtpHint").textContent = "Code sent to " + (otp.phone_mask || "you") + " (" + via + ")" +
+            (otp.dev_code ? " · dev " + otp.dev_code : "") + ".";
+        }
+        if ($("#wdCode")) $("#wdCode").focus();
+        toast("Enter the code we sent, then request again.", "success");
+      } catch (err) {
+        if (!gate(err)) {
+          if (window.SkApi && window.SkApi.showFieldErrors) window.SkApi.showFieldErrors(err, form);
+          toast(err.message, "error");
+        }
+      } finally {
+        busy(btn, false);
+      }
+    });
+
+    const addBank = $("#wdAddBank");
+    if (addBank) {
+      addBank.addEventListener("click", () => {
+        if ($("#wdBank")) { $("#wdBank").value = ""; $("#wdBank").focus(); }
+        if ($("#wdAcct")) $("#wdAcct").value = "";
+        if ($("#wdName")) $("#wdName").value = "";
+        toast("Enter the new bank, 10-digit NUBAN, and account name.", "success");
+      });
+    }
+  }
+
+  function exportLedgerCsv(rows) {
+    const lines = [["Date", "Movement", "Reference", "Amount", "Balance"]];
+    (rows || []).forEach((l) => {
+      lines.push([l.date || "", l.label || "", l.ref || "", l.amount_label || "", l.bal_label || ""]);
+    });
+    if (lines.length === 1) {
+      toast("No ledger rows to export yet.", "error");
+      return;
+    }
+    const csv = lines.map((r) => r.map((c) => '"' + String(c).replace(/"/g, '""') + '"').join(",")).join("\n");
+    const blob = new Blob([csv], { type: "text/csv;charset=utf-8" });
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = "skilvi-ledger.csv";
+    a.click();
+    URL.revokeObjectURL(a.href);
+    toast("Ledger downloaded.", "success");
+  }
+
   async function wallet() {
     const me = await api("/api/me");
     paintMe(me);
@@ -106,38 +225,38 @@
       const form = $("#withdrawForm");
       if (form) form.scrollIntoView({ block: "start" });
     }
-    const d = await api("/api/wallet");
+    let d = { wallet: {}, withdrawals: [], transactions: [] };
+    try {
+      d = await api("/api/wallet");
+    } catch (err) {
+      if (gate(err)) return;
+      toast(err.message || "Could not load wallet.", "error");
+    }
     const w = d.wallet || {};
     const cards = $$(".wallet-card .value");
     if (cards[0]) cards[0].textContent = w.available_label || "₦0";
     if (cards[1]) cards[1].textContent = w.pending_label || "₦0";
     if (cards[2]) cards[2].textContent = w.lifetime_label || "₦0";
+    const pendingSub = $$(".wallet-card .sub");
+    if (pendingSub[0]) pendingSub[0].textContent = "Available for withdrawal";
+    if (pendingSub[1]) pendingSub[1].textContent = "In escrow until clients approve work";
+    if (pendingSub[2]) pendingSub[2].textContent = "Lifetime earnings";
     const hint = $("#wdAmount") && $("#wdAmount").closest(".field") && $("#wdAmount").closest(".field").querySelector(".hint");
     if (hint) hint.textContent = "Maximum: " + (w.available_label || "₦0") + " · minimum " + (w.min_label || "₦5,000");
     const sel = $("#wdBank");
     if (sel) {
       const saved = w.banks || [];
       const opts = w.bank_options || [];
+      const current = sel.value;
       sel.innerHTML = '<option value="">Pick a bank</option>' +
-        saved.map((b) => '<option value="' + esc(b.bank_name) + '" data-acct="' + esc(b.account_number) + '" data-name="' + esc(b.account_name) + '">' + esc(b.label) + "</option>").join("") +
+        saved.map((b) => '<option value="' + esc(b.bank_name) + '" data-acct="' + esc(b.account_number || "") + '" data-name="' + esc(b.account_name || "") + '">' + esc(b.label) + "</option>").join("") +
         opts.map((b) => '<option value="' + esc(b) + '">' + esc(b) + "</option>").join("");
+      if (current) sel.value = current;
       sel.addEventListener("change", () => {
         const o = sel.options[sel.selectedIndex];
         if (o && o.dataset.acct && $("#wdAcct")) $("#wdAcct").value = o.dataset.acct;
         if (o && o.dataset.name && $("#wdName")) $("#wdName").value = o.dataset.name;
       });
-    }
-    const form = $("#withdrawForm");
-    if (form && !$("#wdAcct")) {
-      const extra = document.createElement("div");
-      extra.innerHTML =
-        '<div class="field mb-2"><label>Account number</label><input class="input" id="wdAcct" name="account_number" inputmode="numeric" maxlength="10" placeholder="10-digit NUBAN"></div>' +
-        '<div class="field mb-2"><label>Account name</label><input class="input" id="wdName" name="account_name" placeholder="As it appears at the bank"></div>' +
-        '<div class="field mb-2" id="wdOtpWrap" style="display:none"><label>SMS code</label><input class="input" id="wdCode" inputmode="numeric" maxlength="6" placeholder="6-digit code">' +
-        '<span class="hint" id="wdOtpHint"></span></div>';
-      const amt = $("#wdAmount") && $("#wdAmount").closest(".field");
-      if (amt) amt.parentNode.insertBefore(extra, amt);
-      else form.insertBefore(extra, form.firstChild);
     }
     const list = $("#wdList");
     if (list) {
@@ -148,49 +267,20 @@
       ).join("") || '<p class="tiny faint">No withdrawals yet.</p>';
     }
     const typeDot = { settlement: "var(--green)", commission: "var(--red)", withdrawal: "var(--amber)" };
+    const tx = d.transactions || [];
     if ($("#wdLedger")) {
-      $("#wdLedger").innerHTML = (d.transactions || []).map((l) =>
+      $("#wdLedger").innerHTML = tx.map((l) =>
         '<tr><td class="cell-sub">' + esc(l.date) + '</td><td><span class="ledger-type"><span class="lt-dot" style="background:' + (typeDot[l.type] || "var(--ink-3)") + '"></span>' + esc(l.label) + "</span>" +
         '<div class="cell-sub">' + esc(l.ref) + "</div></td>" +
         '<td class="num amount" style="color:' + (l.amount_kobo < 0 ? "var(--red)" : "var(--ink)") + '">' + esc(l.amount_label) + "</td>" +
         '<td class="num cell-sub">' + esc(l.bal_label) + "</td></tr>"
       ).join("") || '<tr><td colspan="4" class="muted">Ledger is empty until escrow releases.</td></tr>';
     }
-    if (form) {
-      form.addEventListener("submit", async (e) => {
-        e.preventDefault();
-        const btn = form.querySelector('button[type="submit"]');
-        const wrap = $("#wdOtpWrap");
-        const code = $("#wdCode") && $("#wdCode").value.trim();
-        busy(btn, true);
-        try {
-          if (wrap && wrap.style.display !== "none" && code) {
-            await api("/api/withdrawals/confirm", { body: { code } });
-            toast("Withdrawal requested. We will pay it to your bank.", "success");
-            location.reload();
-            return;
-          }
-          const otp = await api("/api/withdrawals/start", {
-            body: {
-              amount_naira: String($("#wdAmount") && $("#wdAmount").value),
-              bank_name: ($("#wdBank") && $("#wdBank").value) || "",
-              account_number: ($("#wdAcct") && $("#wdAcct").value) || "",
-              account_name: ($("#wdName") && $("#wdName").value) || "",
-            },
-          });
-          if (wrap) wrap.style.display = "";
-          if ($("#wdOtpHint")) {
-            $("#wdOtpHint").textContent = "Code sent to " + (otp.phone_mask || "your phone") +
-              (otp.dev_code ? " · dev " + otp.dev_code : "") + ".";
-          }
-          if ($("#wdCode")) $("#wdCode").focus();
-          toast("Enter the SMS code to confirm.", "success");
-        } catch (err) {
-          if (!gate(err)) toast(err.message, "error");
-        } finally {
-          busy(btn, false);
-        }
-      });
+    bindWithdrawForm(w);
+    const exp = $("#wdExport");
+    if (exp && !exp.dataset.bound) {
+      exp.dataset.bound = "1";
+      exp.addEventListener("click", () => exportLedgerCsv(tx));
     }
   }
 
