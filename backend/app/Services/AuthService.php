@@ -24,7 +24,10 @@ final class AuthService
             $fields['phone'] = 'Use a Nigerian mobile, e.g. 0803 000 0000, or leave it blank.';
         }
         $email = strtolower(trim($email));
-        if ($email === '' || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        $looksLikePhone = $email !== '' && !str_contains($email, '@') && preg_match('/^[0-9+\s().-]{7,}$/', $email);
+        if ($looksLikePhone || ($email !== '' && !str_contains($email, '@'))) {
+            $fields['email'] = 'Use an email like you@example.com — not a phone number.';
+        } elseif ($email === '' || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
             $fields['email'] = 'Enter a working email — we send your login code there.';
         }
         if (strlen($password) < 8) {

@@ -30,6 +30,12 @@ final class AdminController
         Response::json(AdminService::users($req->q('q'), $req->q('role'), $req->q('status')));
     }
 
+    public static function userGet(Request $req, array $params = []): void
+    {
+        self::admin();
+        Response::json(AdminService::userGet($params['id'] ?? ''));
+    }
+
     public static function userAction(Request $req, array $params = []): void
     {
         Response::json(AdminService::userAction(

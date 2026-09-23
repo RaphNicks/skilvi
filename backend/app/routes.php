@@ -83,6 +83,7 @@ Router::post('/api/admin/verifications/{id}/action', [\App\Controllers\CommsCont
 
 Router::get('/api/admin/dashboard', [\App\Controllers\AdminController::class, 'dashboard']);
 Router::get('/api/admin/users', [\App\Controllers\AdminController::class, 'users']);
+Router::get('/api/admin/users/{id}', [\App\Controllers\AdminController::class, 'userGet']);
 Router::patch('/api/admin/users/{id}', [\App\Controllers\AdminController::class, 'userAction']);
 Router::post('/api/admin/users/{id}', [\App\Controllers\AdminController::class, 'userAction']);
 Router::post('/api/admin/users/{id}/action', [\App\Controllers\AdminController::class, 'userAction']);

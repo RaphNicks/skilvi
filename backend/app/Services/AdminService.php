@@ -123,6 +123,103 @@ final class AdminService
         return $out;
     }
 
+    public static function userGet(string $key): array
+    {
+        $u = Db::fetch('SELECT * FROM users WHERE id = ?', [$key]);
+        if ($u === null) {
+            throw new AppError('not_found', 'User not found.', 404);
+        }
+        unset($u['password_hash']);
+        $id = (int) $u['id'];
+        $p = Db::fetch('SELECT * FROM profiles WHERE user_id = ?', [$id]) ?: [];
+        $w = Db::fetch('SELECT available_kobo, pending_kobo, updated_at FROM wallets WHERE user_id = ?', [$id]) ?: [];
+        $phoneRaw = (string) ($u['phone'] ?? '');
+        $phone = ($phoneRaw === '' || str_starts_with($phoneRaw, 'e:')) ? '' : format_phone($phoneRaw);
+        $roles = User::roles($u);
+        $roleLabel = in_array('admin', $roles, true) ? 'Admin'
+            : ((in_array('worker', $roles, true) && in_array('client', $roles, true)) ? 'Both'
+            : (in_array('worker', $roles, true) ? 'Worker' : 'Client'));
+        $flags = (int) (Db::fetch(
+            "SELECT COUNT(*) c FROM reports WHERE target_type='user' AND target_id=? AND status='open'",
+            [$id]
+        )['c'] ?? 0);
+        $v = Db::fetch('SELECT status, amount_kobo, created_at, expires_at FROM verifications WHERE user_id=? ORDER BY id DESC LIMIT 1', [$id]);
+        $promo = Db::fetch("SELECT plan, status, starts_at, ends_at, amount_kobo FROM promotions WHERE user_id=? ORDER BY id DESC LIMIT 1", [$id]);
+        $fmt = static function (?string $ts): string {
+            if (!$ts) {
+                return '—';
+            }
+            $t = strtotime($ts);
+            return $t ? date('j M Y, H:i', $t) : $ts;
+        };
+        $yn = static fn ($v) => $v ? 'Yes' : 'No';
+        $ngn = static fn ($kobo) => ngn_fmt((int) $kobo);
+        $sections = [
+            'Account' => [
+                ['User ID', (string) $id],
+                ['Full name', (string) $u['full_name']],
+                ['Email', (string) ($u['email'] ?: '—')],
+                ['Phone', $phone !== '' ? $phone : '—'],
+                ['Roles', $roleLabel . ' (' . implode(', ', $roles) . ')'],
+                ['Status', ucfirst((string) $u['status'])],
+                ['Email verified', $fmt($u['email_verified_at'] ?? null)],
+                ['Phone verified', $fmt($u['phone_verified_at'] ?? null)],
+                ['Last login', $fmt($u['last_login_at'] ?? null)],
+                ['Joined', $fmt($u['created_at'] ?? null)],
+                ['Updated', $fmt($u['updated_at'] ?? null)],
+            ],
+            'Profile' => [
+                ['Headline', (string) (($p['headline'] ?? '') !== '' ? $p['headline'] : '—')],
+                ['Bio', (string) (($p['bio'] ?? '') !== '' ? $p['bio'] : '—')],
+                ['Skill', (string) (($p['skill'] ?? '') !== '' ? $p['skill'] : '—')],
+                ['Work mode', (string) (($p['work_mode'] ?? '') !== '' ? $p['work_mode'] : '—')],
+                ['City', (string) (($p['city'] ?? '') !== '' ? $p['city'] : '—')],
+                ['State', (string) (($p['state'] ?? '') !== '' ? $p['state'] : '—')],
+                ['Public code', (string) (($p['public_code'] ?? '') !== '' ? $p['public_code'] : '—')],
+                ['Verified identity', $yn(!empty($p['verified']))],
+                ['Promoted', $yn(!empty($p['promo']))],
+                ['Rating', isset($p['rating_avg']) ? (string) $p['rating_avg'] : '—'],
+                ['Reviews', (string) (int) ($p['review_count'] ?? 0)],
+                ['Orders completed', (string) (int) ($p['orders_completed'] ?? 0)],
+                ['Typical reply', (string) (($p['reply'] ?? '') !== '' ? $p['reply'] : '—')],
+                ['Notify SMS', $yn(!empty($p['notify_sms']))],
+                ['Notify jobs', $yn(!empty($p['notify_jobs']))],
+                ['Notify marketing', $yn(!empty($p['notify_marketing']))],
+            ],
+            'Money' => [
+                ['Wallet available', $ngn((int) ($w['available_kobo'] ?? 0))],
+                ['Wallet pending', $ngn((int) ($w['pending_kobo'] ?? 0))],
+                ['Wallet updated', $fmt($w['updated_at'] ?? null)],
+            ],
+            'Activity' => [
+                ['Orders as client', (string) (int) (Db::fetch('SELECT COUNT(*) c FROM orders WHERE client_id=?', [$id])['c'] ?? 0)],
+                ['Orders as worker', (string) (int) (Db::fetch('SELECT COUNT(*) c FROM orders WHERE worker_id=?', [$id])['c'] ?? 0)],
+                ['Jobs posted', (string) (int) (Db::fetch('SELECT COUNT(*) c FROM jobs WHERE client_id=?', [$id])['c'] ?? 0)],
+                ['Services', (string) (int) (Db::fetch('SELECT COUNT(*) c FROM services WHERE worker_id=?', [$id])['c'] ?? 0)],
+                ['Open reports', (string) $flags],
+                ['Verification', $v ? (ucfirst((string) $v['status']) . ' · ' . $ngn((int) $v['amount_kobo']) . ' · ' . $fmt($v['created_at'] ?? null)) : 'None'],
+                ['Latest promotion', $promo ? (ucfirst((string) $promo['status']) . ' · ' . (string) $promo['plan'] . ' · ' . $ngn((int) $promo['amount_kobo'])) : 'None'],
+            ],
+        ];
+        $details = [];
+        foreach ($sections as $title => $rows) {
+            $details[] = ['section' => $title, 'rows' => array_map(static fn ($r) => ['label' => $r[0], 'value' => $r[1]], $rows)];
+        }
+        return [
+            'id'         => $id,
+            'name'       => $u['full_name'],
+            'email'      => $u['email'],
+            'phone'      => $phone,
+            'initials'   => initials((string) $u['full_name']),
+            'tone'       => ($p['tone'] ?? '') !== '' ? $p['tone'] : 'a1',
+            'role'       => $roleLabel,
+            'status'     => $u['status'],
+            'stateLabel' => ucfirst((string) $u['status']),
+            'chip'       => $u['status'] === 'active' ? 'st-green' : ($u['status'] === 'banned' ? 'st-red' : 'st-amber'),
+            'details'    => $details,
+        ];
+    }
+
     public static function userAction(int $adminId, string $key, string $action, string $reason, string $ip): array
     {
         $u = Db::fetch('SELECT * FROM users WHERE id = ?', [$key]);

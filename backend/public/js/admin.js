@@ -98,11 +98,13 @@
         $("#uBody").innerHTML = rows.map((u) =>
           '<tr><td><span class="row" style="gap:10px"><span class="avatar sm ' + esc(u.tone) + '">' + esc(u.initials) + "</span><span>" +
           '<span class="cell-main">' + esc(u.name) + (u.flags ? ' <span class="flag">' + u.flags + "</span>" : "") + '</span>' +
-          '<div class="cell-sub mono">' + esc(u.phone) + "</div></span></span></td>" +
+          '<div class="cell-sub">' + esc(u.email || "—") + "</div>" +
+          '<div class="cell-sub mono">' + esc(u.phone || "—") + "</div></span></span></td>" +
           "<td>" + esc(u.role) + "</td><td>" + u.orders + "</td>" +
           '<td class="cell-sub">' + esc(u.skill || "—") + "</td><td>" + esc(u.joined) + "</td>" +
           '<td><span class="st ' + esc(u.chip) + '">' + esc(u.stateLabel) + "</span></td>" +
           '<td class="right nowrap">' +
+          '<button class="btn btn-secondary btn-sm u-view" data-id="' + u.id + '" type="button">View</button> ' +
           (u.status === "active"
             ? '<button class="btn btn-danger btn-sm u-act" data-id="' + u.id + '" data-act="suspend" type="button">Suspend</button>'
             : '<button class="btn btn-primary btn-sm u-act" data-id="' + u.id + '" data-act="activate" type="button">Activate</button>') +
@@ -113,10 +115,38 @@
           if (b.dataset.act === "suspend" && reason.trim().length < 8) { toast("Need a short reason.", "error"); return; }
           act("/api/admin/users/" + b.dataset.id + "/action", { action: b.dataset.act, reason }, "Updated.");
         }));
+        $$(".u-view").forEach((b) => b.addEventListener("click", () => openUser(b.dataset.id)));
       }
     };
     ["#uSearch", "#uRole", "#uState", "#uFlags"].forEach((s) => { const el = $(s); if (el) el.addEventListener("input", load); if (el) el.addEventListener("change", load); });
     await load();
+  }
+
+  async function openUser(id) {
+    const modal = $("#userModal");
+    const body = $("#umBody");
+    const title = $("#umTitle");
+    if (!modal || !body) return;
+    body.innerHTML = '<p class="tiny faint">Loading…</p>';
+    modal.classList.add("open");
+    try {
+      const u = await api("/api/admin/users/" + encodeURIComponent(id));
+      if (title) title.textContent = u.name || "User";
+      body.innerHTML =
+        '<div class="row mb-2" style="gap:10px"><span class="avatar ' + esc(u.tone) + '">' + esc(u.initials) + "</span>" +
+        "<div><div class=\"bold\">" + esc(u.name) + '</div><div class="tiny faint">' + esc(u.email || "") +
+        " · " + esc(u.role) + ' · <span class="st ' + esc(u.chip) + '">' + esc(u.stateLabel) + "</span></div></div></div>" +
+        (u.details || []).map((sec) =>
+          "<h3 class=\"mt-3\" style=\"font-size:13px\">" + esc(sec.section) + "</h3>" +
+          (sec.rows || []).map((r) =>
+            '<div class="kv"><span class="k">' + esc(r.label) + '</span><span class="v" style="white-space:pre-wrap">' + esc(r.value) + "</span></div>"
+          ).join("")
+        ).join("");
+    } catch (err) {
+      if (!gate(err)) {
+        body.innerHTML = '<p class="small" style="color:var(--red)">' + esc(err.message || "Could not load this user.") + "</p>";
+      }
+    }
   }
 
   async function orders() {
