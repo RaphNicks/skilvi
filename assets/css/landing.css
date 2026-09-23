@@ -295,9 +295,19 @@
   .lp-opp-grid, .lp-pop-grid, .lp-worker-grid, .lp-how-grid { grid-template-columns: repeat(2, 1fr); }
   .lp-skill-grid, .lp-learn-grid { grid-template-columns: repeat(2, 1fr); }
   .lp-split { grid-template-columns: 1fr; gap: 28px; }
-  .lp-split-vis { order: -1; max-width: 360px; width: 100%; margin: 0 auto; }
-  .lp-split .lp-circle { width: min(340px, 90%); }
-  .lp-split-photo { width: min(280px, 86%); }
+  .lp-split-vis {
+    order: -1; width: min(340px, 86vw); max-width: 340px; margin: 0 auto;
+    display: grid; place-items: center; padding-top: 0; aspect-ratio: 1;
+  }
+  .lp-split .lp-circle {
+    position: absolute; inset: 0; left: auto; top: auto; right: auto;
+    width: 100%; height: 100%; transform: none; aspect-ratio: auto;
+  }
+  .lp-split-photo {
+    width: min(300px, 78vw); height: min(300px, 78vw); max-width: none;
+    aspect-ratio: 1; border-radius: 50%;
+    object-fit: cover; object-position: 50% 30%;
+  }
   .lp-logos { grid-template-columns: repeat(3, 1fr); }
   .lp-foot-grid { grid-template-columns: 1fr 1fr; }
   .lp-how-head { grid-template-columns: 1fr; }
@@ -352,9 +362,7 @@
   .lp-float-2 { bottom: 16px; }
   .lp-bd-1 { right: 138px; top: 0; }
   .lp-split { gap: 22px; }
-  .lp-split-vis { max-width: 280px; padding-top: 16px; }
-  .lp-split .lp-circle { width: min(240px, 88%); }
-  .lp-split-photo { width: min(220px, 90%); }
+  .lp-split-vis { width: min(300px, 82vw); max-width: 300px; }
   .lp-news { padding: 56px 0 60px; }
   .lp-sec { padding: 48px 0; }
   .lp-logo-item { font-size: 16px; }
@@ -394,4 +402,8 @@
   .lp-bd-1 { animation: lpFloatDot 8s ease-in-out infinite; }
   .lp-bd-2 { animation: lpFloatDot 9s ease-in-out -3s infinite; }
   .lp-bd-3 { animation: lpFloatDot 8.5s ease-in-out -5s infinite; }
+}
+
+@media (max-width: 1024px) {
+  .lp-split .lp-circle { animation: none; transform: none; }
 }
