@@ -2,7 +2,7 @@
   <div class="footer-in">
     <div class="footer-grid">
       <div>
-        <div class="f-brand"><span class="brand-mark"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 5 6v6c0 4.4 3 7.4 7 9 4-1.6 7-4.6 7-9V6l-7-3Z"/><path d="m9 12 2 2 4-4"/></svg></span>Skilvi</div>
+        <div class="f-brand"><img class="brand-logo" src="/assets/img/skilvi-logo-word.png" alt="Skilvi"></div>
         <p class="f-desc">Discover. Learn. Earn. A marketplace built for Nigeria — digital skills and hands-on trades, paid securely in Naira.</p>
       </div>
       <div><h4>For clients</h4><a href="/search.html">Browse workers</a><a href="/jobs.html">Post a job</a><a href="/help.html#faq-escrow">How escrow works</a><a href="/help.html#faq-fees">Fees &amp; pricing</a></div>

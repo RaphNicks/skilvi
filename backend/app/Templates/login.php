@@ -8,7 +8,7 @@ View::partial('head', ['title' => 'Log in — Skilvi', 'description' => 'Log in 
 
 <main class="container page-pad" style="max-width:480px">
   <div class="center" style="margin-bottom:18px">
-    <a class="brand" href="/index.html" style="justify-content:center"><span class="brand-mark" id="lgMark"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 5 6v6c0 4.4 3 7.4 7 9 4-1.6 7-4.6 7-9V6l-7-3Z"/><path d="m9 12 2 2 4-4"/></svg></span>Skilvi</a>
+    <a class="brand" href="/index.html" style="justify-content:center"><img class="brand-logo" id="lgMark" src="/assets/img/skilvi-logo-word.png" alt="Skilvi"></a>
     <p class="small faint mt-1">Email login, Naira-ready, escrow-protected.</p>
   </div>
 
@@ -107,7 +107,6 @@ View::partial('head', ['title' => 'Log in — Skilvi', 'description' => 'Log in 
 <script>
   document.addEventListener("DOMContentLoaded", () => {
     const I = SkIconSvg;
-    document.querySelector("#lgMark").innerHTML = I.mark;
     document.querySelector("#lgTrust").innerHTML = I.shield + "<span><b>Safe by design.</b> Accounts are email-verified, and every order is paid into escrow — neither side can run.</span>";
   });
 </script>

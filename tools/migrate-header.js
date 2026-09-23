@@ -20,7 +20,7 @@ function header(active) {
   return '<header class="topbar">\n' +
     '  <input type="checkbox" id="navCheck" class="nav-check" aria-hidden="true">\n' +
     '  <div class="container topbar-in">\n' +
-    '    <a class="brand" href="index.html"><span class="brand-mark">' + mark + "</span>Skilvi</a>\n" +
+    '    <a class="brand" href="index.html"><img class="brand-logo" src="assets/img/skilvi-logo-word.png" alt="Skilvi"></a>\n" +
     '    <nav class="mainnav">\n' + links + "\n    </nav>\n" +
     '    <div class="topact">\n' +
     '      <a class="btn btn-ghost" href="login.html">Log in</a>\n' +

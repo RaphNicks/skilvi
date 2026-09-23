@@ -131,7 +131,7 @@ function publicHeader(active) {
 }
 function footer() {
   return '<footer class="footer">\n  <div class="footer-in">\n    <div class="footer-grid">\n' +
-    '      <div>\n        <div class="f-brand"><span class="brand-mark">' + I.mark + "</span>Skilvi</div>\n" +
+    '      <div>\n        <div class="f-brand"><img class="brand-logo" src="assets/img/skilvi-logo-word.png" alt="Skilvi"></div>\n" +
     '        <p class="f-desc">Discover. Learn. Earn. A marketplace built for Nigeria — digital skills and hands-on trades, paid securely in Naira.</p>\n      </div>\n' +
     "      <div><h4>For clients</h4><a href=\"search.html\">Browse workers</a><a href=\"jobs.html\">Post a job</a><a href=\"help.html#faq-escrow\">How escrow works</a><a href=\"help.html#faq-fees\">Fees &amp; pricing</a></div>\n" +
     "      <div><h4>For workers</h4><a href=\"login.html#regForm\">Create a free profile</a><a href=\"verification.html\">Get verified</a><a href=\"help.html#faq-withdrawals\">Withdraw your money</a><a href=\"promotion.html\">Promote your profile</a></div>\n" +
@@ -143,7 +143,7 @@ function sideItem(href, icon, label, active, badge) {
     (badge ? ' <span class="badge-n">' + badge + "</span>" : "") + "</a>\n";
 }
 function workerSide(a) {
-  return '<aside class="side">\n  <div class="side-brand"><a class="brand" href="worker-dashboard.html"><span class="brand-mark">' + I.mark + '</span>Skilvi</a></div>\n' +
+  return '<aside class="side">\n  <div class="side-brand"><a class="brand" href="worker-dashboard.html"><img class="brand-logo" src="assets/img/skilvi-logo-word.png" alt="Skilvi"></a></div>\n' +
     '  <div class="side-label">Work</div>\n' +
     sideItem("worker-dashboard.html", "grid", "Overview", a === "overview") +
     sideItem("worker-orders.html", "briefcase", "My work", a === "orders") +
@@ -161,7 +161,7 @@ function workerSide(a) {
     '  <div class="side-foot"><div class="side-user"><span class="avatar sm a1">CO</span><div><div class="su-name">Chinedu Okafor</div><div class="su-role">Worker · Verified</div></div></div></div>\n</aside>';
 }
 function clientSide(a) {
-  return '<aside class="side">\n  <div class="side-brand"><a class="brand" href="client-dashboard.html"><span class="brand-mark">' + I.mark + '</span>Skilvi</a></div>\n' +
+  return '<aside class="side">\n  <div class="side-brand"><a class="brand" href="client-dashboard.html"><img class="brand-logo" src="assets/img/skilvi-logo-word.png" alt="Skilvi"></a></div>\n' +
     '  <div class="side-label">Marketplace</div>\n' +
     sideItem("client-dashboard.html", "grid", "Overview", a === "overview") +
     sideItem("client-dashboard.html?tab=orders", "briefcase", "My orders", a === "orders") +
@@ -175,7 +175,7 @@ function clientSide(a) {
     '  <div class="side-foot"><div class="side-user"><span class="avatar sm a2">AB</span><div><div class="su-name">Aisha Bello</div><div class="su-role">Client · Adaeze Boutique</div></div></div></div>\n</aside>';
 }
 function adminSide(a) {
-  return '<aside class="side">\n  <div class="side-brand"><a class="brand" href="../index.html"><span class="brand-mark">' + I.mark + '</span>Skilvi</a><span class="admin-tag">Admin</span></div>\n' +
+  return '<aside class="side">\n  <div class="side-brand"><a class="brand" href="../index.html"><img class="brand-logo" src="../assets/img/skilvi-logo-word.png" alt="Skilvi"></a><span class="admin-tag">Admin</span></div>\n'
     '  <div class="side-label">Operations</div>\n' +
     sideItem("index.html", "grid", "Dashboard", a === "dashboard") +
     sideItem("orders.html", "briefcase", "Orders", a === "orders") +
@@ -318,8 +318,7 @@ const CONTENT = {
     pjEscrow: I.shield + "<span><b>Your money is protected.</b> You never pay a worker directly. Payment sits with Skilvi until you approve the completed work — and you can open a dispute if anything goes wrong.</span>"
   },
   "login.html": {
-    lgMark: I.mark,
-    lgTrust: I.shield + "<span><b>Safe by design.</b> Accounts are phone-verified, and every order is paid into escrow — neither side can run. This demo is frontend-only; authentication is wired to the PHP backend next.</span>"
+    lgTrust: I.shield + "<span><b>Safe by design.</b> Accounts are email-verified, and every order is paid into escrow — neither side can run.</span>"
   },
   "help.html": {
     hIco: I.search, mIco: I.mail, cIco: I.chat,

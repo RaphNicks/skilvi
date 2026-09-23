@@ -69,7 +69,7 @@
 
   /* ---------------- Brand & chrome config ---------------- */
   const brand = (href) =>
-    '<a class="brand" href="' + href + '"><span class="brand-mark">' + I.mark + '</span>Skilvi</a>';
+    '<a class="brand" href="' + href + '"><img class="brand-logo" src="assets/img/skilvi-logo-word.png" alt="Skilvi"></a>';
 
   const PUBLIC_NAV = [
     { label: "Find Work", href: "jobs.html", key: "jobs" },
@@ -170,7 +170,7 @@
     el.className = "footer";
     el.innerHTML =
       '<div class="footer-in"><div class="footer-grid">' +
-      "<div><div class=\"f-brand\"><span class=\"brand-mark\">" + I.mark + "</span>Skilvi</div>" +
+      '<div><div class="f-brand"><img class="brand-logo" src="assets/img/skilvi-logo-word.png" alt="Skilvi"></div>' +
       '<p class="f-desc">Discover. Learn. Earn. A marketplace built for Nigeria — digital skills and hands-on trades, paid securely in Naira.</p></div>' +
       "<div><h4>For clients</h4><a href=\"search.html\">Browse workers</a><a href=\"jobs.html\">Post a job</a><a href=\"help.html#faq-escrow\">How escrow works</a><a href=\"help.html#faq-fees\">Fees & pricing</a></div>" +
       "<div><h4>For workers</h4><a href=\"login.html#regForm\">Create a free profile</a><a href=\"verification.html\">Get verified</a><a href=\"help.html#faq-withdrawals\">Withdraw your money</a><a href=\"promotion.html\">Promote your profile</a></div>" +
