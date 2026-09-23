@@ -55,7 +55,7 @@ final class PagesController
             'saved.html'             => '/js/discovery.js?v=31',
             'account-settings.html'  => '/js/account.js?v=31',
             'post-job.html'          => '/js/client.js?v=31',
-            'client-dashboard.html'  => '/js/client.js?v=31',
+            'client-dashboard.html'  => '/js/client.js?v=33',
             'order-detail.html'      => '/js/client.js?v=31',
             'review.html'            => '/js/client.js?v=31',
             'worker-jobs.html'       => '/js/client.js?v=31',

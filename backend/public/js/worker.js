@@ -69,7 +69,7 @@
         [I.star || "", "Rating", String(s.rating || 0), (s.reviews || 0) + " reviews"],
       ];
       $("#wdStats").innerHTML = stats.map(([i, l, v, delta]) =>
-        '<div class="stat-card"><div class="label">' + i + l + '</div><div class="value">' + esc(v) + '</div><div class="delta">' + esc(delta) + "</div></div>"
+        '<div class="stat-card"><div class="label"><span class="stat-icon">' + i + "</span>" + l + '</div><div class="value">' + esc(v) + '</div><div class="delta">' + esc(delta) + "</div></div>"
       ).join("");
     }
     const q = document.querySelector(".queue-card");

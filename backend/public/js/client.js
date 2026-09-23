@@ -81,7 +81,7 @@
     ];
     if ($("#cdStats")) {
       $("#cdStats").innerHTML = stats.map(([i, l, v, delta]) =>
-        '<div class="stat-card"><div class="label">' + i + l + '</div><div class="value">' + v + '</div><div class="delta">' + delta + "</div></div>"
+        '<div class="stat-card"><div class="label"><span class="stat-icon">' + i + "</span>" + l + '</div><div class="value">' + v + '</div><div class="delta">' + delta + "</div></div>"
       ).join("");
     }
     const orders = d.orders || [];

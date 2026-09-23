@@ -212,12 +212,13 @@ button.chip.active:hover, a.chip.active:hover { color: #fff; }
 .card-title { font-size: 15px; font-weight: 600; color: var(--ink); }
 
 .stat-card { background: #fff; border: 1px solid var(--line); border-radius: var(--r-lg); padding: 16px 18px; box-shadow: var(--sh-sm); }
-.stat-card .label { font-size: 12.5px; color: var(--ink-3); font-weight: 500; display: flex; align-items: center; gap: 6px; }
+.stat-card .label { font-size: 12.5px; color: var(--ink-3); font-weight: 500; display: flex; align-items: center; gap: 8px; }
+.stat-card .label svg { width: 16px; height: 16px; flex: none; }
 .stat-card .value { font-size: 24px; font-weight: 700; font-family: var(--font-display); color: var(--navy-900); margin-top: 4px; font-variant-numeric: tabular-nums; }
 .stat-card .delta { font-size: 12px; color: var(--green); font-weight: 500; margin-top: 2px; }
 .stat-card .delta.down { color: var(--red); }
-.stat-icon { width: 30px; height: 30px; border-radius: var(--r-md); background: var(--royal-50); color: var(--royal-600); display: inline-flex; align-items: center; justify-content: center; }
-.stat-icon svg { width: 16px; height: 16px; }
+.stat-icon { width: 28px; height: 28px; border-radius: var(--r-md); background: var(--royal-50); color: var(--royal-600); display: inline-flex; align-items: center; justify-content: center; flex: none; }
+.stat-icon svg { width: 15px; height: 15px; }
 
 /* ---------- Forms ---------- */
 .field { display: flex; flex-direction: column; gap: 6px; }
