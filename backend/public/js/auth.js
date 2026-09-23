@@ -32,11 +32,24 @@
     }
   }
 
-  function switchTab(mode) {
+  function hashFor(mode) {
+    return mode === "register" ? "#regForm" : "#loginForm";
+  }
+  function modeFromHash() {
+    return location.hash === "#regForm" ? "register" : "login";
+  }
+  function applyTab(mode) {
     document.querySelectorAll(".auth-tab").forEach((t) => t.classList.toggle("active", t.getAttribute("data-mode") === mode));
     document.querySelectorAll("#authStepMain .tab-panel").forEach((p) =>
       p.classList.toggle("active", p.getAttribute("data-panel") === mode)
     );
+  }
+  function switchTab(mode) {
+    applyTab(mode);
+    const hash = hashFor(mode);
+    // Must assign location.hash (not replaceState) so CSS :target updates.
+    // Sign Up lands on #regForm; without this, :target keeps the register form stuck.
+    if (location.hash !== hash) location.hash = hash;
   }
 
   document.querySelectorAll(".auth-tab").forEach((tab) => {
@@ -45,7 +58,8 @@
       switchTab(tab.getAttribute("data-mode"));
     });
   });
-  if (location.hash === "#regForm") switchTab("register");
+  applyTab(modeFromHash());
+  window.addEventListener("hashchange", () => applyTab(modeFromHash()));
 
   const readOtp = bindOtpBoxes(document.getElementById("otpBoxes"));
 

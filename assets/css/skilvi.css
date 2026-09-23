@@ -316,15 +316,19 @@ table.table { width: 100%; border-collapse: collapse; font-size: 13.5px; min-wid
 .tabs .tab.active .count { background: var(--royal-50); border-color: var(--royal-100); color: var(--royal-700); }
 .tab-panel { display: none; }
 .tab-panel.active { display: block; }
-/* login/register tabs work without JS via the URL fragment (:target) */
-#regForm:target { display: block; }
-#regForm:target ~ #loginForm { display: none; }
-#loginForm:target { display: block; }
+/* login/register tabs work without JS via the URL fragment (:target).
+   Both directions — Sign Up lands on #regForm, Log in on #loginForm. */
+#authStepMain:has(#regForm:target) #regForm { display: block; }
+#authStepMain:has(#regForm:target) #loginForm { display: none; }
+#authStepMain:has(#loginForm:target) #loginForm { display: block; }
+#authStepMain:has(#loginForm:target) #regForm { display: none; }
 /* keep the tab highlight in step with the visible form, even with JS off */
 #authStepMain:has(#regForm:target) .tab[href="#loginForm"] { color: var(--ink-3); border-bottom-color: transparent; font-weight: 500; }
 #authStepMain:has(#regForm:target) .tab[href="#loginForm"] .count { background: var(--bg); border-color: var(--line); color: var(--ink-2); }
 #authStepMain:has(#regForm:target) .tab[href="#regForm"] { color: var(--royal-700); border-bottom-color: var(--royal-600); font-weight: 600; }
 #authStepMain:has(#regForm:target) .tab[href="#regForm"] .count { background: var(--royal-50); border-color: var(--royal-100); color: var(--royal-700); }
+#authStepMain:has(#loginForm:target) .tab[href="#regForm"] { color: var(--ink-3); border-bottom-color: transparent; font-weight: 500; }
+#authStepMain:has(#loginForm:target) .tab[href="#loginForm"] { color: var(--royal-700); border-bottom-color: var(--royal-600); font-weight: 600; }
 
 /* ---------- Topbar (public) ---------- */
 .topbar { background: #fff; border-bottom: 1px solid var(--line); position: sticky; top: 0; z-index: 50; }

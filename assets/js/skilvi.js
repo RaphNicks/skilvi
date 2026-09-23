@@ -486,7 +486,13 @@
         $$(".auth-tab").forEach((t) => t.classList.toggle("active", t.getAttribute("data-mode") === m));
         $$("form.tab-panel").forEach((p) => p.classList.toggle("active", p.getAttribute("data-panel") === m));
       };
-      $$(".auth-tab").forEach((t) => t.addEventListener("click", () => activateMode(t.getAttribute("data-mode"))));
+      $$(".auth-tab").forEach((t) => t.addEventListener("click", (e) => {
+        e.preventDefault();
+        const m = t.getAttribute("data-mode");
+        activateMode(m);
+        const hash = m === "register" ? "#regForm" : "#loginForm";
+        if (location.hash !== hash) location.hash = hash;
+      }));
       const modeFromUrl = () =>
         new URLSearchParams(location.search).get("mode") ||
         (location.hash === "#regForm" ? "register" : location.hash === "#loginForm" ? "login" : null);

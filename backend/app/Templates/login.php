@@ -103,7 +103,7 @@ View::partial('head', ['title' => 'Log in — Skilvi', 'description' => 'Log in 
 </main>
 
 <?php View::partial('footer_public'); ?>
-<script src="/js/auth.js?v=19"></script>
+<script src="/js/auth.js?v=34"></script>
 <script>
   document.addEventListener("DOMContentLoaded", () => {
     const I = SkIconSvg;
