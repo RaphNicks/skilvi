@@ -43,16 +43,16 @@ final class PagesController
 
     private static function inject(string $html, string $rel): string
     {
-        $extra = '<script src="/js/api.js?v=28"></script><script src="/js/chrome.js?v=28"></script>';
+        $extra = '<script src="/js/api.js?v=29"></script><script src="/js/chrome.js?v=29"></script>';
         $pageScripts = [
-            'index.html'             => '/js/discovery.js?v=26',
-            'jobs.html'              => '/js/discovery.js?v=26',
-            'search.html'            => '/js/discovery.js?v=26',
-            'category.html'          => '/js/discovery.js?v=26',
-            'job-detail.html'        => '/js/discovery.js?v=26',
-            'worker-profile.html'    => '/js/discovery.js?v=26',
-            'service-detail.html'    => '/js/discovery.js?v=26',
-            'saved.html'             => '/js/discovery.js?v=26',
+            'index.html'             => '/js/discovery.js?v=29',
+            'jobs.html'              => '/js/discovery.js?v=29',
+            'search.html'            => '/js/discovery.js?v=29',
+            'category.html'          => '/js/discovery.js?v=29',
+            'job-detail.html'        => '/js/discovery.js?v=29',
+            'worker-profile.html'    => '/js/discovery.js?v=29',
+            'service-detail.html'    => '/js/discovery.js?v=29',
+            'saved.html'             => '/js/discovery.js?v=29',
             'account-settings.html'  => '/js/account.js?v=26',
             'post-job.html'          => '/js/client.js?v=26',
             'client-dashboard.html'  => '/js/client.js?v=26',

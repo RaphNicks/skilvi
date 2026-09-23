@@ -163,6 +163,8 @@ final class DiscoveryService
         );
         $card['scope'] = $row['scope'];
         $card['description'] = $row['description'];
+        $sinceRaw = $row['client_since'] ?? null;
+        $sinceTs = $sinceRaw ? strtotime((string) $sinceRaw) : false;
         $card['client'] = [
             'name'     => $row['client_name'],
             'verified' => (int) $row['client_verified'] === 1,
@@ -171,6 +173,7 @@ final class DiscoveryService
             'orders'   => (int) ($row['client_orders'] ?? 0),
             'tone'     => $row['client_tone'] ?: 'a2',
             'initials' => initials($row['client_name']),
+            'since'    => $sinceTs ? date('M Y', $sinceTs) : '',
         ];
         $me = Session::userId();
         $card['viewer'] = [
@@ -181,7 +184,7 @@ final class DiscoveryService
                 [$row['id'], $me]
             ),
         ];
-        $card['proposals'] = array_map(static function ($p) {
+        $card['proposals'] = array_map(static function ($p) use ($me) {
             return [
                 'id'         => (int) $p['id'],
                 'worker_id'  => $p['public_code'],
@@ -199,6 +202,7 @@ final class DiscoveryService
                 'days'       => (int) ($p['days'] ?? 0),
                 'shortlisted'=> (int) $p['shortlisted'] === 1,
                 'status'     => $p['status'],
+                'mine'       => $me !== null && (int) $p['worker_id'] === $me,
             ];
         }, $props);
         return $card;

@@ -79,33 +79,5 @@
   </div>
 </footer>
 <script src="assets/js/skilvi.js?v=19"></script>
-<script>
-  document.addEventListener("DOMContentLoaded", () => {
-    const I = SkIconSvg;
-    $("#plusIco").innerHTML = I.plus;
-    const st = { remote: "st-royal", "on-site": "st-amber" };
-    const modeIco = (m) => (m === "remote" ? I.code : I.truck);
-    const render = (mode) => {
-      const rows = MOCK.jobs.filter((j) => !mode || j.mode === mode);
-      $("#jobGrid").innerHTML = rows.map((j) =>
-        '<div class="job-card"><div class="jc-top"><h3><a href="job-detail.html">' + j.title + "</a></h3>" +
-        '<span class="jc-budget">' + (j.budgetType === "fixed" ? Sk.ngn(j.budget) : "Negotiable") + "</span></div>" +
-        '<div class="jc-meta"><span>' + modeIco(j.mode) + '<span class="st ' + st[j.mode] + '" style="padding:1px 8px">' + j.mode + "</span></span>" +
-        "<span>" + I.pin + j.loc + "</span>" +
-        "<span>" + I.clock + "Posted " + j.time + "</span>" +
-        (j.deadline !== "—" ? '<span>' + I.clock + "Due " + j.deadline + "</span>" : "") + "</div>" +
-        '<p class="small muted clamp-2">' + (j.desc || "Client is reviewing proposals now. Verified clients only see protected budget details after you apply.") + "</p>" +
-        '<div class="jc-foot"><span class="jc-proposals"><b style="color:var(--ink)">' + j.proposals + "</b> proposals · client " + j.clientRating + "★" +
-        (j.verified ? ' <span class="badge-verified" style="padding:1px 7px">' + I.shield + "</span>" : "") + "</span>" +
-        '<a class="btn btn-primary btn-sm" href="job-detail.html">Apply</a></div></div>').join("");
-    };
-    render("");
-    $("#modeSel").addEventListener("change", (e) => render(e.target.value));
-    $$("#catChips .chip").forEach((c) => c.addEventListener("click", () => {
-      $$("#catChips .chip").forEach((x) => x.classList.remove("active"));
-      c.classList.add("active");
-    }));
-  });
-</script>
 </body>
 </html>

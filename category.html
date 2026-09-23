@@ -86,38 +86,5 @@
   </div>
 </footer>
 <script src="assets/js/skilvi.js?v=19"></script>
-<script>
-  document.addEventListener("DOMContentLoaded", () => {
-    const I = SkIconSvg;
-
-    $("#catHead").innerHTML =
-      '<div class="row" style="gap:16px; align-items:center">' +
-      '<span class="cat-ico" style="width:52px;height:52px">' + I.wrench + "</span>" +
-      "<div class=\"grow\"><h1 style=\"font-size:24px\">Trades &amp; Home Services</h1>" +
-      "<p class=\"small muted mt-1\">Plumbing, electrical, tiling, painting, AC, generator power and more. All on-site workers show their service area before you hire. Travel costs are stated up front.</p></div>" +
-      '<div class="stack" style="gap:8px; min-width:150px"><span class="tag tag-royal">289 workers</span><span class="tag">Mostly on-site</span></div></div>';
-
-    const subs = ["Plumbing", "Electrical", "Tiling & Masonry", "Painting", "AC Installation & Repair", "Generator & Power", "Appliance Repair", "Locksmith"];
-    $("#subChips").innerHTML = subs.map((s, i) => '<a class="chip' + (i === 0 ? " active" : "") + '" href="category.html">' + s + "</a>").join("");
-
-    const ids = ["w03", "w05", "w06", "w08", "w10", "w04"];
-    const rows = ids.map((id) => MOCK.workers.find((w) => w.id === id));
-    $("#catResults").innerHTML = rows.map((w) => {
-      const svc = MOCK.services.find((s) => s.workerId === w.id);
-      return '<div class="result-item"><span class="avatar ' + w.tone + '">' + w.init + "</span>" +
-        '<div class="ri-main"><div class="ri-top"><span class="ri-name"><a href="worker-profile.html">' + w.name + "</a></span>" +
-        (w.verified ? '<span class="badge-verified">' + I.shield + "Verified</span>" : "") + "</div>" +
-        '<div class="ri-skill">' + w.headline + "</div>" +
-        '<div class="ri-meta"><span>' + I.pin + w.city + ", " + w.state + "</span>" +
-        '<span>' + I.truck + "On-site</span>" +
-        '<span>' + I.clock + "Replies " + w.resp + "</span>" +
-        '<span>' + I.checkc + w.jobs + " orders completed</span></div>" +
-        (svc ? '<div class="ri-svc"><div class="svc-line"><b><a href="service-detail.html">' + svc.title + "</a></b>" +
-        '<span>from <span class="amount">' + Sk.ngn(svc.from) + "</span></span></div></div>" : "") + "</div>" +
-        '<div class="ri-side"><span class="rating-line">' + SkStars(w.rating) + " <b>" + w.rating + "</b></span>" +
-        '<a class="btn btn-primary btn-sm" href="service-detail.html">View service</a></div></div>';
-    }).join("");
-  });
-</script>
 </body>
 </html>

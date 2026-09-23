@@ -7,7 +7,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
   <link rel="icon" href="assets/img/skilvi-logo-word.png">
-  <title>Bathroom tiling — 2 rooms, Lekki Phase 1 — Skilvi</title>
+  <title>Job — Skilvi</title>
   <meta name="description" content="Job detail on Skilvi: budget, timeline, and proposals — with secure escrow from award to payout.">
   <link rel="stylesheet" href="assets/css/skilvi.css?v=16">
 </head>
@@ -40,143 +40,38 @@
 </header>
 
 <main class="container page-pad">
-  <p class="small muted"><a href="jobs.html">Jobs</a> / Bathroom tiling — 2 rooms, Lekki Phase 1</p>
+  <p class="small muted" id="jdCrumb"><a href="jobs.html">Jobs</a></p>
 
   <div class="svc-layout mt-2">
-    <!-- Main -->
     <div>
       <div class="card card-pad">
         <div class="row spread" style="align-items:flex-start;gap:16px">
           <div>
-            <h1 style="font-size:23px">Bathroom tiling — 2 rooms, Lekki Phase 1</h1>
-            <div class="row mt-1" style="gap:8px;flex-wrap:wrap">
-              <span class="st st-amber">On-site</span>
-              <span class="tag">Tiling &amp; Masonry</span>
-              <span class="tag">Posted 2 days ago</span>
-            </div>
+            <h1 id="jdTitle" style="font-size:23px">Job</h1>
+            <div class="row mt-1" id="jdMeta" style="gap:8px;flex-wrap:wrap"></div>
           </div>
           <div class="right">
             <div class="tiny faint">BUDGET</div>
-            <div class="sc-price" style="font-size:24px">₦300,000</div>
-            <div class="tiny faint">fixed price</div>
+            <div class="sc-price" id="jdBudget" style="font-size:24px"></div>
+            <div class="tiny faint" id="jdBudgetType"></div>
           </div>
         </div>
         <hr class="divider mt-3 mb-2">
-        <div class="kv"><span class="k">Location</span><span class="v">Lekki Phase 1, Lagos</span></div>
-        <div class="kv"><span class="k">Deadline</span><span class="v">Oct 10, 2026</span></div>
-        <div class="kv"><span class="k">Job scope</span><span class="v">2 bathrooms (floor + walls), grouting, clean-up. Cement &amp; tiles supplied by client.</span></div>
+        <div class="kv"><span class="k">Location</span><span class="v" id="jdLoc"></span></div>
+        <div class="kv"><span class="k">Deadline</span><span class="v" id="jdDeadline"></span></div>
+        <div class="kv" id="jdScopeRow"><span class="k">Job scope</span><span class="v" id="jdScope"></span></div>
         <h3 class="mt-2">Description</h3>
-        <p class="mt-1" style="font-size:14px;color:var(--ink-2);line-height:1.7">
-          We're finishing a 4-bedroom duplex and need an experienced tiler for the two bathrooms —
-          roughly 80m² of wall and 24m² of floor. We have a reference photo set for the layout you should
-          follow. Work needs to start within 5 days of award. Please show photos of similar bathroom work
-          in your proposal.
-        </p>
+        <p class="mt-1" id="jdDesc" style="font-size:14px;color:var(--ink-2);line-height:1.7"></p>
       </div>
 
-      <!-- Proposals (client view) -->
-      <h2 class="mt-4" style="font-size:18px">5 proposals</h2>
-      <div class="stack mt-2">
-        <div class="card card-pad">
-          <div class="row spread" style="align-items:flex-start;gap:12px">
-            <div class="row" style="gap:11px">
-              <span class="avatar a1">IO</span>
-              <div>
-                <div class="bold" style="font-size:14.5px">Ifeanyi Okoro <span class="badge-verified" id="pb1"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 5 6v6c0 4.4 3 7.4 7 9 4-1.6 7-4.6 7-9V6l-7-3Z"/><path d="m9 12 2 2 4-4"/></svg> Verified</span></div>
-                <span class="rating-line" id="pr1"><span class="stars"><span class="on"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 2.6l2.9 5.9 6.5.95-4.7 4.6 1.1 6.5L12 17.5l-5.8 3.05 1.1-6.5-4.7-4.6 6.5-.95L12 2.6z"/></svg></span><span class="on"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 2.6l2.9 5.9 6.5.95-4.7 4.6 1.1 6.5L12 17.5l-5.8 3.05 1.1-6.5-4.7-4.6 6.5-.95L12 2.6z"/></svg></span><span class="on"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 2.6l2.9 5.9 6.5.95-4.7 4.6 1.1 6.5L12 17.5l-5.8 3.05 1.1-6.5-4.7-4.6 6.5-.95L12 2.6z"/></svg></span><span class="on"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 2.6l2.9 5.9 6.5.95-4.7 4.6 1.1 6.5L12 17.5l-5.8 3.05 1.1-6.5-4.7-4.6 6.5-.95L12 2.6z"/></svg></span><span class="on"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 2.6l2.9 5.9 6.5.95-4.7 4.6 1.1 6.5L12 17.5l-5.8 3.05 1.1-6.5-4.7-4.6 6.5-.95L12 2.6z"/></svg></span></span> <b>4.9</b> · 64 reviews · 91 orders</span>
-              </div>
-            </div>
-            <div class="right"><div class="amount" style="font-size:18px">₦280,000</div><div class="tiny faint">12 days · 2 bathrooms</div></div>
-          </div>
-          <p class="mt-2" style="font-size:13.5px;color:var(--ink-2);line-height:1.6">
-            Hi! I've tiled 30+ bathrooms across Lekki and Ikoyi over the past 3 years. I bring my own
-            tools and a helper, and I protect floors and fittings before work starts. Photos of two
-            recent jobs are attached — both are within 10 minutes of your area. I can start Monday.
-          </p>
-          <div class="row mt-2" style="gap:6px">
-            <span class="file-chip" id="fc1"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"/><circle cx="9.5" cy="9.5" r="1.5"/><path d="m5 18 5-5 4 4 2-2 3 3"/></svg>bathroom-1.jpg (2.1 MB)</span><span class="file-chip" id="fc2"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"/><circle cx="9.5" cy="9.5" r="1.5"/><path d="m5 18 5-5 4 4 2-2 3 3"/></svg>bathroom-2.jpg (1.8 MB)</span>
-          </div>
-          <div class="row mt-3" style="gap:8px">
-            <a class="btn btn-secondary btn-sm" href="worker-profile.html">View profile</a>
-            <button class="btn btn-secondary btn-sm prop-shortlist" type="button">Shortlist</button>
-            <span class="grow"></span>
-            <button class="btn btn-primary btn-sm prop-award" data-name="Ifeanyi Okoro — ₦280,000" type="button">Accept &amp; create order</button>
-          </div>
-        </div>
-
-        <div class="card card-pad">
-          <div class="row spread" style="align-items:flex-start;gap:12px">
-            <div class="row" style="gap:11px">
-              <span class="avatar a3">DA</span>
-              <div>
-                <div class="bold" style="font-size:14.5px">Daniel Achebe</div>
-                <span class="rating-line" id="pr2"><span class="stars"><span class="on"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 2.6l2.9 5.9 6.5.95-4.7 4.6 1.1 6.5L12 17.5l-5.8 3.05 1.1-6.5-4.7-4.6 6.5-.95L12 2.6z"/></svg></span><span class="on"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 2.6l2.9 5.9 6.5.95-4.7 4.6 1.1 6.5L12 17.5l-5.8 3.05 1.1-6.5-4.7-4.6 6.5-.95L12 2.6z"/></svg></span><span class="on"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 2.6l2.9 5.9 6.5.95-4.7 4.6 1.1 6.5L12 17.5l-5.8 3.05 1.1-6.5-4.7-4.6 6.5-.95L12 2.6z"/></svg></span><span class="on"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 2.6l2.9 5.9 6.5.95-4.7 4.6 1.1 6.5L12 17.5l-5.8 3.05 1.1-6.5-4.7-4.6 6.5-.95L12 2.6z"/></svg></span><span class="on"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 2.6l2.9 5.9 6.5.95-4.7 4.6 1.1 6.5L12 17.5l-5.8 3.05 1.1-6.5-4.7-4.6 6.5-.95L12 2.6z"/></svg></span></span> <b>4.7</b> · 31 reviews · 48 orders</span>
-              </div>
-            </div>
-            <div class="right"><div class="amount" style="font-size:18px">₦300,000</div><div class="tiny faint">10 days</div></div>
-          </div>
-          <p class="mt-2" style="font-size:13.5px;color:var(--ink-2);line-height:1.6">
-            Available to start within 3 days. I specialise in large-format tiles and can match the
-            reference layout exactly. My last similar job (3 bathrooms, Banana Island) took 9 days.
-          </p>
-          <div class="row mt-3" style="gap:8px">
-            <a class="btn btn-secondary btn-sm" href="worker-profile.html">View profile</a>
-            <button class="btn btn-secondary btn-sm prop-shortlist" type="button">Shortlist</button>
-            <span class="grow"></span>
-            <button class="btn btn-primary btn-sm prop-award" data-name="Daniel Achebe — ₦300,000" type="button">Accept &amp; create order</button>
-          </div>
-        </div>
-
-        <div class="card card-pad">
-          <div class="row spread" style="align-items:flex-start;gap:12px">
-            <div class="row" style="gap:11px">
-              <span class="avatar a5">MO</span>
-              <div>
-                <div class="bold" style="font-size:14.5px">Michael Obi</div>
-                <span class="rating-line" id="pr3"><span class="stars"><span class="on"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 2.6l2.9 5.9 6.5.95-4.7 4.6 1.1 6.5L12 17.5l-5.8 3.05 1.1-6.5-4.7-4.6 6.5-.95L12 2.6z"/></svg></span><span class="on"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 2.6l2.9 5.9 6.5.95-4.7 4.6 1.1 6.5L12 17.5l-5.8 3.05 1.1-6.5-4.7-4.6 6.5-.95L12 2.6z"/></svg></span><span class="on"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 2.6l2.9 5.9 6.5.95-4.7 4.6 1.1 6.5L12 17.5l-5.8 3.05 1.1-6.5-4.7-4.6 6.5-.95L12 2.6z"/></svg></span><span class="on"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 2.6l2.9 5.9 6.5.95-4.7 4.6 1.1 6.5L12 17.5l-5.8 3.05 1.1-6.5-4.7-4.6 6.5-.95L12 2.6z"/></svg></span><span class="on"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 2.6l2.9 5.9 6.5.95-4.7 4.6 1.1 6.5L12 17.5l-5.8 3.05 1.1-6.5-4.7-4.6 6.5-.95L12 2.6z"/></svg></span></span> <b>4.5</b> · 22 reviews · 40 orders</span>
-              </div>
-            </div>
-            <div class="right"><div class="amount" style="font-size:18px">₦265,000</div><div class="tiny faint">15 days</div></div>
-          </div>
-          <p class="mt-2" style="font-size:13.5px;color:var(--ink-2);line-height:1.6">
-            I can do this at a slightly lower rate since my team is already working a project nearby.
-            Quality is my priority — I'll send weekly photo updates until handover.
-          </p>
-          <div class="row mt-3" style="gap:8px">
-            <a class="btn btn-secondary btn-sm" href="worker-profile.html">View profile</a>
-            <button class="btn btn-secondary btn-sm prop-shortlist" type="button">Shortlist</button>
-            <span class="grow"></span>
-            <button class="btn btn-primary btn-sm prop-award" data-name="Michael Obi — ₦265,000" type="button">Accept &amp; create order</button>
-          </div>
-        </div>
-      </div>
-      <div class="pagination">
-        <button class="active" type="button">1</button><button type="button" data-toast="2 more proposals">2</button>
-      </div>
+      <h2 class="mt-4" id="jdPropsHead" style="font-size:18px">Proposals</h2>
+      <div class="stack mt-2" id="jdProps"></div>
+      <div id="jdApply"></div>
     </div>
 
-    <!-- Sidebar -->
     <aside class="stack" style="gap:16px">
-      <div class="card card-pad">
-        <h3 style="font-size:14px">Posted by</h3>
-        <div class="row mt-2" style="gap:11px">
-          <span class="avatar a2">AB</span>
-          <div>
-            <div class="bold" style="font-size:14px">Adaeze Boutique <span class="badge-verified" id="pb2"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 5 6v6c0 4.4 3 7.4 7 9 4-1.6 7-4.6 7-9V6l-7-3Z"/><path d="m9 12 2 2 4-4"/></svg> Verified</span></div>
-            <span class="rating-line" id="pr4"><span class="stars"><span class="on"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 2.6l2.9 5.9 6.5.95-4.7 4.6 1.1 6.5L12 17.5l-5.8 3.05 1.1-6.5-4.7-4.6 6.5-.95L12 2.6z"/></svg></span><span class="on"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 2.6l2.9 5.9 6.5.95-4.7 4.6 1.1 6.5L12 17.5l-5.8 3.05 1.1-6.5-4.7-4.6 6.5-.95L12 2.6z"/></svg></span><span class="on"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 2.6l2.9 5.9 6.5.95-4.7 4.6 1.1 6.5L12 17.5l-5.8 3.05 1.1-6.5-4.7-4.6 6.5-.95L12 2.6z"/></svg></span><span class="on"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 2.6l2.9 5.9 6.5.95-4.7 4.6 1.1 6.5L12 17.5l-5.8 3.05 1.1-6.5-4.7-4.6 6.5-.95L12 2.6z"/></svg></span><span class="on"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 2.6l2.9 5.9 6.5.95-4.7 4.6 1.1 6.5L12 17.5l-5.8 3.05 1.1-6.5-4.7-4.6 6.5-.95L12 2.6z"/></svg></span></span> <b>4.8</b> · 12 orders completed</span>
-            <div class="tiny faint mt-1">12 orders · Member since Feb 2026</div>
-          </div>
-        </div>
-        <a class="btn btn-secondary btn-sm btn-block mt-2" href="messages.html">Message about this job</a>
-      </div>
-      <div class="card card-pad">
-        <h3 style="font-size:14px">Your proposal</h3>
-        <div class="kv mt-1"><span class="k">Price offered</span><span class="v">₦280,000</span></div>
-        <div class="kv"><span class="k">Timeline</span><span class="v">12 days</span></div>
-        <div class="kv"><span class="k">Status</span><span class="v"><span class="st st-amber">Pending</span></span></div>
-        <p class="tiny faint mt-2">You proposed on Sep 15, 2026. You'll be notified as soon as the client responds. Editing closes for 24h after award.</p>
-        <button class="btn btn-secondary btn-sm btn-block mt-2" data-toast="Proposal editing opens in the app once the client is active" type="button">Edit proposal</button>
-      </div>
+      <div class="card card-pad" id="jdPoster"></div>
+      <div class="card card-pad" id="jdMine" style="display:none"></div>
       <div class="escrow-note" id="jdEscrow"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 5 6v6c0 4.4 3 7.4 7 9 4-1.6 7-4.6 7-9V6l-7-3Z"/><path d="m9 12 2 2 4-4"/></svg><span><b>How payment works:</b> once you accept a proposal, you pay into Skilvi escrow. The worker starts after payment is confirmed, and the money is released only when you approve the finished work.</span></div>
     </aside>
   </div>
@@ -197,19 +92,5 @@
   </div>
 </footer>
 <script src="assets/js/skilvi.js?v=19"></script>
-<script>
-  document.addEventListener("DOMContentLoaded", () => {
-    const I = SkIconSvg;
-    $("#pb1").innerHTML = I.shield + " Verified";
-    $("#pb2").innerHTML = I.shield + " Verified";
-    $("#pr1").innerHTML = SkStars(4.9) + " <b>4.9</b> · 64 reviews · 91 orders";
-    $("#pr2").innerHTML = SkStars(4.7) + " <b>4.7</b> · 31 reviews · 48 orders";
-    $("#pr3").innerHTML = SkStars(4.5) + " <b>4.5</b> · 22 reviews · 40 orders";
-    $("#pr4").innerHTML = SkStars(4.8) + " <b>4.8</b> · 12 orders completed";
-    $("#fc1").innerHTML = I.image + "bathroom-1.jpg (2.1 MB)";
-    $("#fc2").innerHTML = I.image + "bathroom-2.jpg (1.8 MB)";
-    $("#jdEscrow").innerHTML = I.shield + "<span><b>How payment works:</b> once you accept a proposal, you pay into Skilvi escrow. The worker starts after payment is confirmed, and the money is released only when you approve the finished work.</span>";
-  });
-</script>
 </body>
 </html>

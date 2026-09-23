@@ -100,85 +100,128 @@
     if ($("#catResults")) $("#catResults").innerHTML = data.workers.map(resultItem).join("") || empty("No workers in this category yet.");
   }
 
+  function rateLine(rating, reviews, orders) {
+    const bits = [];
+    if (rating) bits.push(stars(rating) + " <b>" + rating + "</b>");
+    if (reviews) bits.push(reviews + " review" + (reviews === 1 ? "" : "s"));
+    if (orders) bits.push(orders + " order" + (orders === 1 ? "" : "s"));
+    return bits.join(" · ");
+  }
+
   async function hydrateJobDetail() {
     const id = params.get("id") || "";
     if (!id) {
+      if ($("#jdTitle")) $("#jdTitle").textContent = "Job not found";
       toast("This job is not available.", "error");
       return;
     }
     const j = await api("/api/jobs/" + encodeURIComponent(id));
-    const main = $("main.container");
-    if (!main) return;
-    const crumb = $("main .small.muted");
-    if (crumb) crumb.innerHTML = '<a href="jobs.html">Jobs</a> / ' + esc(j.title);
-    const title = $("main h1");
-    if (title) title.textContent = j.title;
-    const budget = $(".sc-price");
-    if (budget) budget.textContent = j.budget_label;
-    const kvs = $$("main .kv");
-    if (kvs[0]) kvs[0].querySelector(".v").textContent = j.loc;
-    if (kvs[1]) kvs[1].querySelector(".v").textContent = j.deadline;
-    if (kvs[2] && j.desc) kvs[2].querySelector(".v").textContent = j.desc;
-    const desc = $("main h3.mt-2 + p");
-    if (desc && j.description) desc.textContent = j.description;
-    const h2 = $$("main h2").find((h) => /proposal/i.test(h.textContent || ""));
-    if (h2) h2.textContent = j.proposals.length + " proposal" + (j.proposals.length === 1 ? "" : "s");
-    const stack = h2 && h2.nextElementSibling;
-    if (stack && stack.classList.contains("stack")) {
-      stack.innerHTML = j.proposals.map((p) =>
-        '<div class="card card-pad"><div class="row spread" style="align-items:flex-start;gap:12px">' +
-        '<div class="row" style="gap:11px"><span class="avatar ' + esc(p.tone) + '">' + esc(p.initials) + "</span><div>" +
-        '<div class="bold" style="font-size:14.5px"><a href="worker-profile.html?id=' + esc(p.worker_id) + '">' + esc(p.name) + "</a> " +
-        (p.verified ? '<span class="badge-verified">' + (I.shield || "") + " Verified</span>" : "") + "</div>" +
-        '<span class="rating-line">' + stars(p.rating) + " <b>" + p.rating + "</b> · " + p.reviews + " reviews · " + p.jobs + " orders</span>" +
-        '<p class="small muted mt-1">' + esc(p.cover) + "</p></div></div>" +
-        '<div class="right"><div class="amount" style="font-size:18px">' + esc(p.bid_label) + "</div>" +
-        (p.days ? '<div class="tiny faint">' + p.days + " days</div>" : "") +
-        (p.status && p.status !== "sent" ? '<div class="tiny faint mt-1">' + esc(p.status) + "</div>" : "") +
-        (j.viewer && j.viewer.is_client && p.status === "sent" ? '<div class="row mt-2" style="gap:6px;justify-content:flex-end">' +
-          '<button class="btn btn-ghost btn-sm prop-act" data-act="shortlist" data-id="' + p.id + '">' + (p.shortlisted ? "Unshortlist" : "Shortlist") + "</button>" +
-          '<button class="btn btn-secondary btn-sm prop-act" data-act="reject" data-id="' + p.id + '">Pass</button>' +
-          '<button class="btn btn-primary btn-sm prop-act" data-act="accept" data-id="' + p.id + '">Accept</button></div>' : "") +
-        "</div></div></div>"
-      ).join("");
-      $$(".prop-act", stack).forEach((b) => b.addEventListener("click", async () => {
-        try {
-          const act = b.getAttribute("data-act");
-          const data = await api("/api/proposals/" + b.getAttribute("data-id") + "/" + act, { body: {} });
-          if (act === "accept") {
-            toast("Order " + data.id + " created. Pay into Skilvi escrow to start.", "success");
-            location.href = "checkout.html?order=" + encodeURIComponent(data.id);
-            return;
-          }
-          toast(act === "reject" ? "Proposal passed." : (data.shortlisted ? "Shortlisted." : "Removed from shortlist."), "success");
-          location.reload();
-        } catch (err) { toast(err.message, "error"); }
-      }));
+    document.title = (j.title || "Job") + " — Skilvi";
+    if ($("#jdCrumb")) $("#jdCrumb").innerHTML = '<a href="jobs.html">Jobs</a> / ' + esc(j.title || "");
+    if ($("#jdTitle")) $("#jdTitle").textContent = j.title || "Job";
+    const meta = [];
+    if (j.mode) meta.push('<span class="st ' + (j.mode === "remote" ? "st-royal" : "st-amber") + '">' + esc(j.mode) + "</span>");
+    if (j.category) meta.push('<span class="tag">' + esc(j.category) + "</span>");
+    if (j.time) meta.push('<span class="tag">Posted ' + esc(j.time) + "</span>");
+    if ($("#jdMeta")) $("#jdMeta").innerHTML = meta.join("");
+    if ($("#jdBudget")) $("#jdBudget").textContent = j.budget_label || "";
+    if ($("#jdBudgetType")) $("#jdBudgetType").textContent = j.budget_type === "negotiable" ? "negotiable" : (j.budget_label ? "fixed price" : "");
+    if ($("#jdLoc")) $("#jdLoc").textContent = j.loc || "—";
+    if ($("#jdDeadline")) $("#jdDeadline").textContent = j.deadline || "—";
+    const scope = j.scope || "";
+    if (scope) {
+      if ($("#jdScope")) $("#jdScope").textContent = scope;
+    } else if ($("#jdScopeRow")) $("#jdScopeRow").style.display = "none";
+    if ($("#jdDesc")) $("#jdDesc").textContent = j.description || "";
+
+    const viewer = j.viewer || {};
+    const props = Array.isArray(j.proposals) ? j.proposals : [];
+    const host = $("#jdProps");
+    const head = $("#jdPropsHead");
+    if (viewer.is_client) {
+      if (head) head.textContent = props.length ? (props.length + " proposal" + (props.length === 1 ? "" : "s")) : "Proposals";
+      if (host) {
+        host.innerHTML = props.map((p) =>
+          '<div class="card card-pad"><div class="row spread" style="align-items:flex-start;gap:12px">' +
+          '<div class="row" style="gap:11px"><span class="avatar ' + esc(p.tone) + '">' + esc(p.initials) + "</span><div>" +
+          '<div class="bold" style="font-size:14.5px"><a href="worker-profile.html?id=' + esc(p.worker_id) + '">' + esc(p.name) + "</a> " +
+          (p.verified ? '<span class="badge-verified">' + (I.shield || "") + " Verified</span>" : "") + "</div>" +
+          (rateLine(p.rating, p.reviews, p.jobs) ? '<span class="rating-line">' + rateLine(p.rating, p.reviews, p.jobs) + "</span>" : "") +
+          (p.cover ? '<p class="small muted mt-1">' + esc(p.cover) + "</p>" : "") +
+          "</div></div>" +
+          '<div class="right"><div class="amount" style="font-size:18px">' + esc(p.bid_label) + "</div>" +
+          (p.days ? '<div class="tiny faint">' + p.days + " days</div>" : "") +
+          (p.status && p.status !== "sent" ? '<div class="tiny faint mt-1">' + esc(p.status) + "</div>" : "") +
+          (p.status === "sent" ? '<div class="row mt-2" style="gap:6px;justify-content:flex-end">' +
+            '<button class="btn btn-ghost btn-sm prop-act" data-act="shortlist" data-id="' + p.id + '">' + (p.shortlisted ? "Unshortlist" : "Shortlist") + "</button>" +
+            '<button class="btn btn-secondary btn-sm prop-act" data-act="reject" data-id="' + p.id + '">Pass</button>' +
+            '<button class="btn btn-primary btn-sm prop-act" data-act="accept" data-id="' + p.id + '">Accept</button></div>' : "") +
+          "</div></div></div>"
+        ).join("") || '<p class="tiny faint">No proposals yet.</p>';
+        $$(".prop-act", host).forEach((b) => b.addEventListener("click", async () => {
+          try {
+            const act = b.getAttribute("data-act");
+            const data = await api("/api/proposals/" + b.getAttribute("data-id") + "/" + act, { body: {} });
+            if (act === "accept") {
+              toast("Order " + data.id + " created. Pay into Skilvi escrow to start.", "success");
+              location.href = "checkout.html?order=" + encodeURIComponent(data.id);
+              return;
+            }
+            toast(act === "reject" ? "Proposal passed." : (data.shortlisted ? "Shortlisted." : "Removed from shortlist."), "success");
+            location.reload();
+          } catch (err) { toast(err.message, "error"); }
+        }));
+      }
+    } else {
+      if (head) head.textContent = "Proposals";
+      if (host) host.innerHTML = '<p class="tiny faint">Proposals are visible to the client who posted this job.</p>';
     }
-    if (j.viewer && j.viewer.is_worker && !j.viewer.proposed && !j.viewer.is_client) {
-      const box = document.createElement("div");
-      box.className = "card card-pad mt-3";
-      box.innerHTML = '<h3 style="font-size:15px">Send a proposal</h3>' +
-        '<div class="form-row-2 mt-2"><div class="field"><label>Your bid (₦)</label><input class="input" id="bidNaira" inputmode="numeric" placeholder="280000"></div>' +
-        '<div class="field"><label>Days</label><input class="input" id="bidDays" inputmode="numeric" placeholder="10"></div></div>' +
+
+    const c = j.client && typeof j.client === "object" ? j.client : { name: j.client || "", initials: "?", tone: "a2" };
+    const posterBits = [];
+    posterBits.push('<h3 style="font-size:14px">Posted by</h3>');
+    posterBits.push('<div class="row mt-2" style="gap:11px"><span class="avatar ' + esc(c.tone || "a2") + '">' + esc(c.initials || "?") + "</span><div>");
+    posterBits.push('<div class="bold" style="font-size:14px">' + esc(c.name || "Client") + (c.verified ? ' <span class="badge-verified">' + (I.shield || "") + " Verified</span>" : "") + "</div>");
+    const cl = rateLine(c.rating, c.reviews, c.orders);
+    if (cl) posterBits.push('<span class="rating-line">' + cl + "</span>");
+    if (c.since) posterBits.push('<div class="tiny faint mt-1">Member since ' + esc(c.since) + "</div>");
+    posterBits.push("</div></div>");
+    if (viewer.is_client) posterBits.push('<p class="tiny faint mt-2">This is your job.</p>');
+    if ($("#jdPoster")) $("#jdPoster").innerHTML = posterBits.join("");
+
+    const mine = props.find((p) => p.mine);
+    if (viewer.proposed && mine && $("#jdMine")) {
+      $("#jdMine").style.display = "";
+      $("#jdMine").innerHTML =
+        '<h3 style="font-size:14px">Your proposal</h3>' +
+        '<div class="kv mt-1"><span class="k">Price offered</span><span class="v">' + esc(mine.bid_label) + "</span></div>" +
+        (mine.days ? '<div class="kv"><span class="k">Timeline</span><span class="v">' + mine.days + " days</span></div>" : "") +
+        '<div class="kv"><span class="k">Status</span><span class="v">' + esc(mine.status || "sent") + "</span></div>";
+    }
+
+    const apply = $("#jdApply");
+    if (apply && viewer.is_worker && !viewer.proposed && !viewer.is_client) {
+      apply.innerHTML =
+        '<div class="card card-pad mt-3"><h3 style="font-size:15px">Send a proposal</h3>' +
+        '<div class="form-row-2 mt-2"><div class="field"><label>Your bid (\u20a6)</label><input class="input" id="bidNaira" inputmode="numeric" placeholder="Amount in naira"></div>' +
+        '<div class="field"><label>Days</label><input class="input" id="bidDays" inputmode="numeric" placeholder="e.g. 10"></div></div>' +
         '<div class="field mt-2"><label>Cover note</label><textarea class="textarea" id="coverNote" rows="4" placeholder="How you\'ll do the work, when you can start."></textarea></div>' +
-        '<button class="btn btn-primary mt-2" type="button" id="sendProp">Send proposal</button>';
-      (stack || main).parentNode.appendChild(box);
-      $("#sendProp").addEventListener("click", async () => {
+        '<button class="btn btn-primary mt-2" type="button" id="sendProp">Send proposal</button></div>';
+      $("#sendProp") && $("#sendProp").addEventListener("click", async () => {
         try {
           await api("/api/jobs/" + encodeURIComponent(id) + "/propose", {
             body: {
-              bid_naira: Number(($('#bidNaira') || {}).value || 0),
-              days: Number(($('#bidDays') || {}).value || 0),
-              cover_note: ($('#coverNote') || {}).value || "",
+              bid_naira: Number(($("#bidNaira") || {}).value || 0),
+              days: Number(($("#bidDays") || {}).value || 0),
+              cover_note: ($("#coverNote") || {}).value || "",
             },
           });
           toast("Proposal sent.", "success");
           location.reload();
-        } catch (err) {
-          toast(err.message, "error");
-        }
+        } catch (err) { toast(err.message, "error"); }
       });
+    } else if (apply && !viewer.is_client && !viewer.is_worker) {
+      apply.innerHTML = '<p class="tiny faint mt-3"><a href="login.html?next=' + encodeURIComponent(location.pathname + location.search) + '">Log in</a> as a worker to send a proposal.</p>';
     }
   }
 
