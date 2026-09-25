@@ -27,6 +27,23 @@ View::partial('head', ['title' => 'Log in — Skilvi', 'description' => 'Log in 
       </div>
 
       <form id="regForm" class="tab-panel" data-panel="register" autocomplete="on">
+        <style>
+          #regDobWrap { display: none; }
+          #regForm:has(#joinAs_w:checked) #regDobWrap,
+          #regForm:has(#joinAs_b:checked) #regDobWrap { display: block; }
+        </style>
+        <div class="field mb-3">
+          <label>I am joining as…</label>
+          <div class="row" data-radio style="gap:8px">
+            <input type="radio" name="join_as" id="joinAs_w" class="pill-check" value="worker">
+            <label class="radio-pill" for="joinAs_w" style="flex:1"><span class="rd"></span>Worker</label>
+            <input type="radio" name="join_as" id="joinAs_c" class="pill-check" value="client" checked>
+            <label class="radio-pill" for="joinAs_c" style="flex:1"><span class="rd"></span>Client</label>
+            <input type="radio" name="join_as" id="joinAs_b" class="pill-check" value="both">
+            <label class="radio-pill" for="joinAs_b" style="flex:1"><span class="rd"></span>Both</label>
+          </div>
+          <span class="hint">Joining as both is free — your dashboards stay separate.</span>
+        </div>
         <div class="field mb-2">
           <label for="regName">Full name <span class="req" aria-hidden="true">*</span></label>
           <input class="input" id="regName" name="full_name" type="text" autocomplete="name" autocapitalize="words" placeholder="e.g. Chinedu Okafor" required minlength="2" maxlength="80">
@@ -53,37 +70,37 @@ View::partial('head', ['title' => 'Log in — Skilvi', 'description' => 'Log in 
           <label for="regCity">City <span class="req" aria-hidden="true">*</span></label>
           <select class="select" id="regCity" name="city" required disabled><option value="">Select city</option></select>
         </div>
-        <div class="form-row-2 mb-2">
-          <div class="field">
-            <label for="regDob">Date of birth <span class="req" aria-hidden="true">*</span></label>
-            <input class="input" id="regDob" name="dob" type="date" required>
-            <span class="hint">You must be 18 or older.</span>
-          </div>
-          <div class="field">
-            <label for="regGender">Gender <span class="faint" style="font-weight:500">(optional)</span></label>
-            <select class="select" id="regGender" name="gender">
-              <option value="">Prefer not to say</option>
-              <option value="female">Female</option>
-              <option value="male">Male</option>
-              <option value="prefer_not">Prefer not to say</option>
-            </select>
-          </div>
+        <div class="field mb-2" id="regDobWrap">
+          <label for="regDob">Date of birth <span class="req" aria-hidden="true">*</span></label>
+          <input class="input" id="regDob" name="dob" type="date">
+          <span class="hint">Workers must be 16 or older.</span>
+        </div>
+        <div class="field mb-2">
+          <label for="regGender">Gender <span class="faint" style="font-weight:500">(optional)</span></label>
+          <select class="select" id="regGender" name="gender">
+            <option value="">Prefer not to say</option>
+            <option value="female">Female</option>
+            <option value="male">Male</option>
+            <option value="prefer_not">Prefer not to say</option>
+          </select>
+        </div>
+        <div class="field mb-2">
+          <label for="regHeard">How did you hear about Skilvi? <span class="req" aria-hidden="true">*</span></label>
+          <select class="select" id="regHeard" name="heard_about" required>
+            <option value="">Select one</option>
+            <option value="google">Google / search</option>
+            <option value="instagram">Instagram</option>
+            <option value="facebook">Facebook</option>
+            <option value="whatsapp">WhatsApp</option>
+            <option value="tiktok">TikTok</option>
+            <option value="friend">A friend told me</option>
+            <option value="youtube">YouTube</option>
+            <option value="other">Other</option>
+          </select>
         </div>
         <div class="field mb-2">
           <label for="regPass">Password <span class="req" aria-hidden="true">*</span></label>
           <input class="input" id="regPass" name="password" type="password" autocomplete="new-password" placeholder="At least 8 characters" required minlength="8">
-        </div>
-        <div class="field mb-3">
-          <label>I am joining as…</label>
-          <div class="row" data-radio style="gap:8px">
-            <input type="radio" name="join_as" id="joinAs_w" class="pill-check" value="worker">
-            <label class="radio-pill" for="joinAs_w" style="flex:1"><span class="rd"></span>Worker</label>
-            <input type="radio" name="join_as" id="joinAs_c" class="pill-check" value="client" checked>
-            <label class="radio-pill" for="joinAs_c" style="flex:1"><span class="rd"></span>Client</label>
-            <input type="radio" name="join_as" id="joinAs_b" class="pill-check" value="both">
-            <label class="radio-pill" for="joinAs_b" style="flex:1"><span class="rd"></span>Both</label>
-          </div>
-          <span class="hint">Joining as both is free — your dashboards stay separate.</span>
         </div>
         <label class="check-row" style="padding:0">
           <input type="checkbox" name="terms" required style="accent-color:var(--royal-600);width:15px;height:15px">
@@ -132,7 +149,7 @@ View::partial('head', ['title' => 'Log in — Skilvi', 'description' => 'Log in 
 
 <?php View::partial('footer_public'); ?>
 <script src="/js/geo.js?v=1"></script>
-<script src="/js/auth.js?v=39"></script>
+<script src="/js/auth.js?v=40"></script>
 <script>
   document.addEventListener("DOMContentLoaded", () => {
     if (window.SkGeo) {

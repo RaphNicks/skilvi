@@ -39,6 +39,7 @@ final class Schema
                 'country_code TEXT',
                 'dob TEXT',
                 'gender TEXT',
+                'heard_about TEXT',
             ],
             'jobs' => [
                 "budget_type TEXT NOT NULL DEFAULT 'fixed'",

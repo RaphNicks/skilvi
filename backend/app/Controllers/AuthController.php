@@ -49,8 +49,9 @@ final class AuthController
                 'country' => $req->str('country'),
                 'state'   => $req->str('state'),
                 'city'    => $req->str('city'),
-                'dob'     => $req->str('dob'),
-                'gender'  => $req->str('gender'),
+                'dob'         => $req->str('dob'),
+                'gender'      => $req->str('gender'),
+                'heard_about' => $req->str('heard_about'),
             ]
         ));
     }

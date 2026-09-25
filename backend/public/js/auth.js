@@ -99,24 +99,41 @@
 
   const regForm = document.getElementById("regForm");
   if (regForm) {
+    const joinRadios = regForm.querySelectorAll('input[name="join_as"]');
+    const dobEl = document.getElementById("regDob");
+    function joinAs() {
+      const el = regForm.querySelector('input[name="join_as"]:checked');
+      return (el && el.value) || "client";
+    }
+    function syncDob() {
+      const worker = joinAs() !== "client";
+      if (dobEl) {
+        dobEl.required = worker;
+        if (!worker) dobEl.value = "";
+      }
+    }
+    joinRadios.forEach((r) => r.addEventListener("change", syncDob));
+    syncDob();
     regForm.addEventListener("submit", async (e) => {
       e.preventDefault();
       const btn = regForm.querySelector('[type="submit"]');
       busy(btn, true);
       try {
         const fd = new FormData(regForm);
+        const as = joinAs();
         const data = await api("/api/auth/register", {
           body: {
             full_name: fd.get("full_name"),
             phone: fd.get("phone"),
             email: fd.get("email"),
             password: fd.get("password"),
-            join_as: fd.get("join_as"),
+            join_as: as,
             country: fd.get("country"),
             state: fd.get("state"),
             city: fd.get("city"),
-            dob: fd.get("dob"),
+            dob: as === "client" ? "" : fd.get("dob"),
             gender: fd.get("gender"),
+            heard_about: fd.get("heard_about"),
           },
         });
         showOtp(data, "register");

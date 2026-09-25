@@ -57,8 +57,8 @@ final class User
         );
         $id = Db::lastInsertId();
         Db::run(
-            'INSERT INTO profiles (user_id, headline, bio, state, city, country, country_code, dob, gender, notify_sms, notify_jobs, notify_marketing, created_at, updated_at)
-             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 1, 1, 0, ?, ?)',
+            'INSERT INTO profiles (user_id, headline, bio, state, city, country, country_code, dob, gender, heard_about, notify_sms, notify_jobs, notify_marketing, created_at, updated_at)
+             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1, 1, 0, ?, ?)',
             [
                 $id,
                 $row['headline'] ?? null,
@@ -69,6 +69,7 @@ final class User
                 $row['country_code'] ?? null,
                 $row['dob'] ?? null,
                 $row['gender'] ?? null,
+                $row['heard_about'] ?? null,
                 $now,
                 $now,
             ]

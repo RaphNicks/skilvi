@@ -24,6 +24,7 @@ final class AuthService
         $cityIn = trim((string) ($extra['city'] ?? ''));
         $dob = trim((string) ($extra['dob'] ?? ''));
         $gender = strtolower(trim((string) ($extra['gender'] ?? '')));
+        $heard = strtolower(trim((string) ($extra['heard_about'] ?? '')));
         $geo = GeoService::resolve($countryIn, $stateIn, $cityIn);
         if ($geo['country'] === null) {
             $fields['country'] = 'Pick your country.';
@@ -65,17 +66,29 @@ final class AuthService
         if ($roles === '') {
             $fields['join_as'] = 'Choose Worker, Client, or Both.';
         }
-        if ($dob === '' || !preg_match('/^\d{4}-\d{2}-\d{2}$/', $dob)) {
-            $fields['dob'] = 'Enter your date of birth.';
-        } else {
-            $born = strtotime($dob . ' UTC');
-            $age = $born ? (int) floor((time() - $born) / (365.25 * 86400)) : 0;
-            if ($age < 18 || $age > 120) {
-                $fields['dob'] = 'You must be 18 or older.';
+        $needsDob = str_contains($roles, 'worker');
+        if ($needsDob) {
+            if ($dob === '' || !preg_match('/^\d{4}-\d{2}-\d{2}$/', $dob)) {
+                $fields['dob'] = 'Enter your date of birth.';
+            } else {
+                $born = \DateTimeImmutable::createFromFormat('Y-m-d', $dob);
+                $cutoff = (new \DateTimeImmutable('today'))->modify('-16 years');
+                $oldest = (new \DateTimeImmutable('today'))->modify('-120 years');
+                if ($born === false || $born > $cutoff) {
+                    $fields['dob'] = 'Workers must be 16 or older.';
+                } elseif ($born < $oldest) {
+                    $fields['dob'] = 'Enter a real date of birth.';
+                }
             }
+        } else {
+            $dob = '';
         }
         if ($gender !== '' && !in_array($gender, ['female', 'male', 'prefer_not'], true)) {
             $fields['gender'] = 'Pick one of the listed options, or leave it blank.';
+        }
+        $heardOk = ['google', 'instagram', 'facebook', 'whatsapp', 'tiktok', 'friend', 'youtube', 'other'];
+        if (!in_array($heard, $heardOk, true)) {
+            $fields['heard_about'] = 'Tell us how you heard about Skilvi.';
         }
         if ($fields) {
             throw new AppError('invalid', 'Please fix the highlighted fields.', 422, $fields);
@@ -102,8 +115,9 @@ final class AuthService
             'country_code'  => $iso2,
             'state'         => (string) ($geo['state']['name'] ?? $stateIn),
             'city'          => $cityIn,
-            'dob'           => $dob,
+            'dob'           => $dob !== '' ? $dob : null,
             'gender'        => $gender !== '' ? $gender : null,
+            'heard_about'   => $heard,
             'at'            => time(),
         ]);
         Session::claim($email, 'register');
@@ -274,7 +288,7 @@ final class AuthService
             User::updateName($id, $name);
         }
         $fields = [];
-        foreach (['headline', 'bio', 'state', 'city', 'country', 'country_code', 'dob', 'gender', 'work_mode', 'skill'] as $k) {
+        foreach (['headline', 'bio', 'state', 'city', 'country', 'country_code', 'dob', 'gender', 'heard_about', 'work_mode', 'skill'] as $k) {
             if (array_key_exists($k, $in)) {
                 $fields[$k] = $in[$k] === '' ? null : (string) $in[$k];
             }
