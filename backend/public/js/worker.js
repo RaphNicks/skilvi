@@ -296,6 +296,8 @@
   async function services() {
     const me = await api("/api/me");
     paintMe(me);
+    const pub = $("#viewPublicProfile") || $('a[href="worker-profile.html"]');
+    if (pub && me.public_code) pub.href = "worker-profile.html?id=" + encodeURIComponent(me.public_code);
     const list = await api("/api/services?owner=me");
     let host = $("#wsList");
     if (!host) {

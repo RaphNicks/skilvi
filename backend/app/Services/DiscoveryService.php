@@ -6,6 +6,7 @@ namespace App\Services;
 use App\AppError;
 use App\Core\Db;
 use App\Core\Session;
+use App\Models\User;
 
 final class DiscoveryService
 {
@@ -315,21 +316,30 @@ final class DiscoveryService
 
     public static function worker(string $id): array
     {
+        $id = trim($id);
+        if ($id === '') {
+            throw new AppError('not_found', 'Worker not found.', 404);
+        }
         $row = Db::fetch(
             "SELECT u.id, u.full_name, u.created_at AS joined, p.*
              FROM users u JOIN profiles p ON p.user_id = u.id
              WHERE p.public_code = ? OR u.id = ?",
-            [$id, $id]
+            [$id, ctype_digit($id) ? $id : 0]
         );
         if ($row === null) {
             throw new AppError('not_found', 'Worker not found.', 404);
         }
+        $uid = (int) ($row['user_id'] ?? $row['id']);
+        if (trim((string) ($row['public_code'] ?? '')) === '') {
+            $row['public_code'] = User::ensurePublicCode($uid);
+        }
         $card = self::workerCard($row);
+        $joined = $row['joined'] ?? null;
+        $card['joined'] = $joined ? date('M Y', strtotime((string) $joined) ?: time()) : '';
         $services = Db::fetchAll(
             'SELECT * FROM services WHERE worker_id = ? AND status = \'live\' ORDER BY id',
-            [$row['user_id'] ?? $row['id']]
+            [$uid]
         );
-        $uid = (int) ($row['user_id'] ?? $row['id']);
         $card['services'] = array_map([self::class, 'serviceCard'], $services);
         $card['bio'] = $row['headline']; // fallback; real bio on users/profiles
         $bio = Db::fetch('SELECT bio FROM profiles WHERE user_id = ?', [$uid]);
@@ -477,7 +487,7 @@ final class DiscoveryService
             [$w['user_id'] ?? $w['id']]
         );
         return [
-            'id'       => $w['public_code'],
+            'id'       => $w['public_code'] ?: ('u' . (int) ($w['user_id'] ?? $w['id'])),
             'numeric_id' => (int) ($w['user_id'] ?? $w['id']),
             'name'     => $w['full_name'],
             'init'     => initials($w['full_name']),
@@ -486,6 +496,7 @@ final class DiscoveryService
             'skill'    => $w['skill'],
             'city'     => $w['city'],
             'state'    => $w['state'],
+            'country'  => $w['country'] ?? null,
             'mode'     => $w['work_mode'],
             'rating'   => (float) $w['rating_avg'],
             'reviews'  => (int) $w['review_count'],

@@ -75,7 +75,20 @@ final class User
             ]
         );
         Db::run('INSERT INTO wallets (user_id, available_kobo, pending_kobo, updated_at) VALUES (?, 0, 0, ?)', [$id, $now]);
+        self::ensurePublicCode($id);
         return $id;
+    }
+
+    public static function ensurePublicCode(int $id): string
+    {
+        $p = Profile::forUser($id);
+        $code = trim((string) ($p['public_code'] ?? ''));
+        if ($code !== '') {
+            return $code;
+        }
+        $code = 'u' . $id;
+        Db::run('UPDATE profiles SET public_code = ? WHERE user_id = ?', [$code, $id]);
+        return $code;
     }
 
     public static function touchLogin(int $id): void
@@ -146,7 +159,7 @@ final class User
             'verified'   => (int) ($profile['verified'] ?? 0) === 1,
             'rating_avg' => (float) ($profile['rating_avg'] ?? 0),
             'review_count' => (int) ($profile['review_count'] ?? 0),
-            'public_code'=> $profile['public_code'] ?? null,
+            'public_code'=> self::ensurePublicCode((int) $user['id']),
             'member_since' => substr((string) $user['created_at'], 0, 10),
         ];
     }

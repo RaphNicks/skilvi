@@ -226,13 +226,31 @@
     }
   }
 
+  function paintMissingProfile() {
+    const main = $("main");
+    if (main) {
+      main.innerHTML =
+        '<p class="small muted"><a href="search.html">Explore</a></p>' +
+        '<div class="card card-pad mt-2"><h1>This profile is not available</h1>' +
+        '<p class="mt-1 small muted">That link has no worker on it. Open a profile from Find talent, or from your own services page after your account has loaded.</p>' +
+        '<p class="mt-2"><a class="btn btn-primary" href="search.html">Find talent</a></p></div>';
+    }
+    document.title = "Profile not found — Skilvi";
+  }
+
   async function hydrateProfile() {
-    const id = params.get("id") || "";
+    const id = (params.get("id") || "").trim();
     if (!id) {
-      toast("This profile is not available.", "error");
+      paintMissingProfile();
       return;
     }
-    const w = await api("/api/workers/" + encodeURIComponent(id));
+    let w;
+    try {
+      w = await api("/api/workers/" + encodeURIComponent(id));
+    } catch (err) {
+      paintMissingProfile();
+      throw err;
+    }
     const nameEl = $("main h1, .ph-title, .profile-hero h1");
     // hero name is often in a specific block
     $$(".bold, h1").forEach((el) => {
@@ -242,7 +260,28 @@
     });
     const h1 = $("h1");
     if (h1) h1.textContent = w.name;
+    document.title = w.name + " — Skilvi";
     $$(".avatar.lg, .avatar.a1").forEach((el, i) => { if (i === 0) { el.textContent = w.init; el.className = "avatar lg " + w.tone; } });
+    const badge = $("#vBadge");
+    if (badge) badge.style.display = w.verified ? "" : "none";
+    const hl = $(".ph-headline");
+    if (hl) hl.textContent = w.headline || "";
+    const bio = $("#wpBio");
+    if (bio) bio.textContent = w.bio || w.headline || "No bio yet.";
+    const skills = $("#skillTags");
+    if (skills) {
+      const tags = String(w.skill || "").split(",").map((s) => s.trim()).filter(Boolean);
+      skills.innerHTML = tags.map((t) => '<span class="tag">' + esc(t) + "</span>").join("") || "";
+    }
+    const mode = $("#wpMode");
+    if (mode) {
+      const loc = [w.city, w.state, w.country].filter(Boolean).join(", ");
+      mode.textContent = [w.mode === "remote" ? "Remote" : (w.mode === "on-site" ? "On-site" : (w.mode || "")), loc].filter(Boolean).join(" · ");
+    }
+    if ($("#ssJobs")) $("#ssJobs").textContent = String(w.jobs || 0);
+    if ($("#ssReply")) $("#ssReply").textContent = w.resp || "—";
+    if ($("#ssJoined")) $("#ssJoined").textContent = w.joined || "—";
+    if ($("#ssRatingLabel")) $("#ssRatingLabel").textContent = "Rating (" + (w.reviews || 0) + " reviews)";
     if ($("#phMeta")) {
       $("#phMeta").innerHTML =
         "<span>" + (I.pin || "") + esc(w.city) + ", " + esc(w.state) + "</span>" +
@@ -251,13 +290,17 @@
         "<span>" + (I.checkc || "") + w.jobs + " orders completed</span>";
     }
     if ($("#ssRating")) $("#ssRating").innerHTML = stars(w.rating) + " " + w.rating;
-    if ($("#profileServices") && w.services) {
+    if ($("#profileServices")) {
+      if (!w.services || !w.services.length) {
+        $("#profileServices").innerHTML = '<p class="tiny faint" style="padding:12px 0">No services listed yet.</p>';
+      } else {
       $("#profileServices").innerHTML = w.services.map((s) =>
         '<div class="card card-pad"><div class="row spread"><h3 style="font-family:var(--font-body)">' + esc(s.title) +
         '</h3><a class="btn btn-secondary btn-sm" href="service-detail.html?id=' + esc(s.id) + '">View details</a></div>' +
         (s.packages || []).map((p) => '<div class="kv"><span class="k">' + esc(p.name) + "</span><span class=\"v\">" +
           ngn(p.price_naira) + " · " + p.days + " days · " + p.revisions + " revisions</span></div>").join("") + "</div>"
       ).join("");
+      }
     }
     if ($("#wpCountSvc")) $("#wpCountSvc").textContent = String((w.services || []).length);
     if ($("#wpCountRev")) $("#wpCountRev").textContent = String((w.reviews_list || []).length);
