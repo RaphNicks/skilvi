@@ -11,8 +11,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
-  <link rel="icon" href="/assets/img/skilvi-favicon.png" type="image/png">
-  <link rel="apple-touch-icon" href="/assets/img/apple-touch-icon.png">
+  <link rel="icon" href="/assets/img/skilvi-favicon.png?v=2" type="image/png">
+  <link rel="apple-touch-icon" href="/assets/img/apple-touch-icon.png?v=2">
   <title><?= e($title) ?></title>
   <meta name="description" content="<?= e($description) ?>">
   <link rel="stylesheet" href="/assets/css/skilvi.css?v=30">
