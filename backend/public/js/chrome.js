@@ -257,6 +257,11 @@
     paintBadges();
     bindDashTabs(me);
     window.__me = me;
+    if (me.public_code) {
+      document.querySelectorAll('a[href="worker-profile.html"], a[href="worker-profile.html?id="], a[href="/worker-profile.html"]').forEach((a) => {
+        a.href = "worker-profile.html?id=" + encodeURIComponent(me.public_code);
+      });
+    }
   }
 
   function bindDashTabs(me) {

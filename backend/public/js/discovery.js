@@ -227,20 +227,23 @@
   }
 
   function paintMissingProfile() {
-    const main = $("main");
-    if (main) {
-      main.innerHTML =
-        '<p class="small muted"><a href="search.html">Explore</a></p>' +
-        '<div class="card card-pad mt-2"><h1>This profile is not available</h1>' +
-        '<p class="mt-1 small muted">That link has no worker on it. Open a profile from Find talent, or from your own services page after your account has loaded.</p>' +
-        '<p class="mt-2"><a class="btn btn-primary" href="search.html">Find talent</a></p></div>';
-    }
+    const miss = $("#wpMissing");
+    const live = $("#wpLive");
+    if (live) live.hidden = true;
+    if (miss) miss.hidden = false;
     document.title = "Profile not found — Skilvi";
   }
 
   async function hydrateProfile() {
-    const id = (params.get("id") || "").trim();
+    let id = (params.get("id") || "").trim();
     if (!id) {
+      try {
+        const me = await api("/api/me");
+        if (me && me.public_code) {
+          location.replace("worker-profile.html?id=" + encodeURIComponent(me.public_code));
+          return;
+        }
+      } catch (e) { /* guest */ }
       paintMissingProfile();
       return;
     }
@@ -251,45 +254,54 @@
       paintMissingProfile();
       throw err;
     }
-    const nameEl = $("main h1, .ph-title, .profile-hero h1");
-    // hero name is often in a specific block
-    $$(".bold, h1").forEach((el) => {
-      if (el.textContent && /Chinedu Okafor/.test(el.textContent) && el.tagName !== "SCRIPT") {
-        el.childNodes[0] && el.childNodes[0].nodeType === 3 ? (el.childNodes[0].textContent = w.name + " ") : null;
-      }
-    });
-    const h1 = $("h1");
-    if (h1) h1.textContent = w.name;
+    if ($("#wpMissing")) $("#wpMissing").hidden = true;
+    if ($("#wpLive")) $("#wpLive").hidden = false;
     document.title = w.name + " — Skilvi";
-    $$(".avatar.lg, .avatar.a1").forEach((el, i) => { if (i === 0) { el.textContent = w.init; el.className = "avatar lg " + w.tone; } });
+    if ($("#wpName")) $("#wpName").textContent = w.name;
+    if ($("#wpCrumb")) $("#wpCrumb").textContent = w.name;
+    const av = $("#wpAvatar");
+    if (av) { av.textContent = w.init || "?"; av.className = "avatar lg " + (w.tone || "a1"); }
     const badge = $("#vBadge");
-    if (badge) badge.style.display = w.verified ? "" : "none";
-    const hl = $(".ph-headline");
-    if (hl) hl.textContent = w.headline || "";
+    if (badge) badge.hidden = !w.verified;
+    if ($("#wpHeadline")) $("#wpHeadline").textContent = w.headline || "";
     const bio = $("#wpBio");
     if (bio) bio.textContent = w.bio || w.headline || "No bio yet.";
     const skills = $("#skillTags");
     if (skills) {
       const tags = String(w.skill || "").split(",").map((s) => s.trim()).filter(Boolean);
-      skills.innerHTML = tags.map((t) => '<span class="tag">' + esc(t) + "</span>").join("") || "";
+      skills.innerHTML = tags.length ? tags.map((t) => '<span class="tag">' + esc(t) + "</span>").join("") : '<span class="tiny faint">No skills listed yet.</span>';
     }
     const mode = $("#wpMode");
     if (mode) {
       const loc = [w.city, w.state, w.country].filter(Boolean).join(", ");
-      mode.textContent = [w.mode === "remote" ? "Remote" : (w.mode === "on-site" ? "On-site" : (w.mode || "")), loc].filter(Boolean).join(" · ");
+      mode.textContent = [w.mode === "remote" ? "Remote" : (w.mode === "on-site" ? "On-site" : (w.mode || "")), loc].filter(Boolean).join(" · ") || "—";
     }
     if ($("#ssJobs")) $("#ssJobs").textContent = String(w.jobs || 0);
     if ($("#ssReply")) $("#ssReply").textContent = w.resp || "—";
     if ($("#ssJoined")) $("#ssJoined").textContent = w.joined || "—";
     if ($("#ssRatingLabel")) $("#ssRatingLabel").textContent = "Rating (" + (w.reviews || 0) + " reviews)";
+    const locBits = [w.city, w.state].filter(Boolean).join(", ");
     if ($("#phMeta")) {
       $("#phMeta").innerHTML =
-        "<span>" + (I.pin || "") + esc(w.city) + ", " + esc(w.state) + "</span>" +
-        "<span>" + (w.mode === "remote" ? I.code : I.truck || "") + esc(w.mode === "remote" ? "Remote work" : "On-site") + "</span>" +
-        "<span>" + (I.clock || "") + "Replies " + esc(w.resp) + "</span>" +
-        "<span>" + (I.checkc || "") + w.jobs + " orders completed</span>";
+        (locBits ? "<span>" + (I.pin || "") + esc(locBits) + "</span>" : "") +
+        (w.mode ? "<span>" + (w.mode === "remote" ? (I.code || "") : (I.truck || "")) + esc(w.mode === "remote" ? "Remote work" : (w.mode === "on-site" ? "On-site" : w.mode)) + "</span>" : "") +
+        (w.resp ? "<span>" + (I.clock || "") + "Replies " + esc(w.resp) + "</span>" : "") +
+        "<span>" + (I.checkc || "") + (w.jobs || 0) + " orders completed</span>";
     }
-    if ($("#ssRating")) $("#ssRating").innerHTML = stars(w.rating) + " " + w.rating;
+    const ratingLabel = (w.reviews ? (stars(w.rating) + " " + w.rating) : "—");
+    if ($("#ssRating")) $("#ssRating").innerHTML = ratingLabel;
+    if ($("#rvAvg")) $("#rvAvg").textContent = w.reviews ? String(w.rating) : "—";
+    if ($("#rvStars")) $("#rvStars").innerHTML = w.reviews ? stars(w.rating) : "";
+    if ($("#rvCount")) $("#rvCount").textContent = (w.reviews || 0) + " reviews";
+    const hire = $("#wpHire");
+    if (hire) {
+      if (w.service && w.service.id) {
+        hire.hidden = false;
+        hire.href = "service-detail.html?id=" + encodeURIComponent(w.service.id);
+      } else {
+        hire.hidden = true;
+      }
+    }
     if ($("#profileServices")) {
       if (!w.services || !w.services.length) {
         $("#profileServices").innerHTML = '<p class="tiny faint" style="padding:12px 0">No services listed yet.</p>';
@@ -305,7 +317,10 @@
     if ($("#wpCountSvc")) $("#wpCountSvc").textContent = String((w.services || []).length);
     if ($("#wpCountRev")) $("#wpCountRev").textContent = String((w.reviews_list || []).length);
     if ($("#wpCountPort")) $("#wpCountPort").textContent = "0";
-    if ($("#reviewList") && w.reviews_list) {
+    if ($("#reviewList")) {
+      if (!w.reviews_list || !w.reviews_list.length) {
+        $("#reviewList").innerHTML = '<p class="tiny faint" style="padding:12px 0">No reviews yet.</p>';
+      } else {
       $("#reviewList").innerHTML = w.reviews_list.map((r) =>
         '<div class="review-card"><div class="rv-head"><span class="avatar sm a2">' + esc(r.initials) + "</span>" +
         '<span class="rv-name">' + esc(r.name) + "</span>" + stars(r.stars) +
@@ -314,13 +329,18 @@
         '<div class="rv-tags">' + (r.tags || []).map((t) => '<span class="tag">' + esc(t) + "</span>").join("") + "</div>" +
         (r.reply ? '<div class="rv-reply"><b>' + esc(w.name) + " replied:</b> " + esc(r.reply) + "</div>" : "") + "</div>"
       ).join("");
+      }
     }
-    if ($("#dist") && w.distribution) {
+    if ($("#dist")) {
+      if (!w.reviews || !w.distribution) {
+        $("#dist").innerHTML = "";
+      } else {
       $("#dist").innerHTML = w.distribution.map((d) =>
         '<div class="row" style="gap:8px;font-size:12px;color:var(--ink-3)"><span style="width:14px">' + d.stars + "★</span>" +
         '<span style="flex:1;height:6px;background:var(--bg);border-radius:99px;overflow:hidden;display:block"><span style="display:block;height:100%;width:' + d.pct + '%;background:var(--royal-600);border-radius:99px"></span></span>' +
         '<span style="width:26px;text-align:right">' + d.pct + "%</span></div>"
       ).join("");
+      }
     }
     try {
       const me = await api("/api/me");

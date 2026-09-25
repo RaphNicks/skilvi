@@ -43,14 +43,14 @@ final class PagesController
 
     private static function inject(string $html, string $rel): string
     {
-        $extra = '<script src="/js/api.js?v=39"></script><script src="/js/chrome.js?v=39"></script><script src="/js/geo.js?v=1"></script>';
+        $extra = '<script src="/js/api.js?v=39"></script><script src="/js/chrome.js?v=40"></script><script src="/js/geo.js?v=1"></script>';
         $pageScripts = [
             'index.html'             => '/js/discovery.js?v=31',
             'jobs.html'              => '/js/discovery.js?v=31',
             'search.html'            => '/js/discovery.js?v=32',
             'category.html'          => '/js/discovery.js?v=31',
             'job-detail.html'        => '/js/discovery.js?v=31',
-            'worker-profile.html'    => '/js/discovery.js?v=33',
+            'worker-profile.html'    => '/js/discovery.js?v=34',
             'service-detail.html'    => '/js/discovery.js?v=31',
             'saved.html'             => '/js/discovery.js?v=31',
             'account-settings.html'  => '/js/account.js?v=32',
