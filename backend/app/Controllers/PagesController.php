@@ -55,9 +55,9 @@ final class PagesController
             'saved.html'             => '/js/discovery.js?v=31',
             'account-settings.html'  => '/js/account.js?v=32',
             'post-job.html'          => '/js/client.js?v=32',
-            'client-dashboard.html'  => '/js/client.js?v=33',
+            'client-dashboard.html'  => '/js/client.js?v=37',
             'order-detail.html'      => '/js/client.js?v=35',
-            'review.html'            => '/js/client.js?v=36',
+            'review.html'            => '/js/client.js?v=37',
             'worker-jobs.html'       => '/js/client.js?v=31',
             'worker-orders.html'     => '/js/client.js?v=31',
             'worker-dashboard.html'  => '/js/worker.js?v=33',
@@ -89,7 +89,7 @@ final class PagesController
         if (str_starts_with($rel, 'admin/')) {
             // Do not bounce staff to a client/worker dashboard. Cookie is shared
             // across tabs; this tab's account is the Bearer token in JS.
-            $extra .= '<script src="/js/admin.js?v=41"></script>';
+            $extra .= '<script src="/js/admin.js?v=42"></script>';
         }
         if (in_array($rel, $gated, true) && !Session::userId() && empty($_SERVER['HTTP_AUTHORIZATION']) && empty($_SERVER['HTTP_X_SKILVI_TOKEN'])) {
             Response::redirect('/login.html?next=/' . $rel);

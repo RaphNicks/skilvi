@@ -124,6 +124,69 @@ final class User
         Db::run('UPDATE users SET status = ?, updated_at = ? WHERE id = ?', [$status, now_iso(), $id]);
     }
 
+    public static function isBlocked(?string $email, ?string $phone = null): bool
+    {
+        try {
+            $email = strtolower(trim((string) $email));
+            $phone = trim((string) $phone);
+            if ($email !== '') {
+                if (Db::fetch('SELECT id FROM account_blocks WHERE LOWER(email) = ?', [$email])) {
+                    return true;
+                }
+            }
+            if ($phone !== '' && !str_starts_with($phone, 'e:') && !str_starts_with($phone, 'x:')) {
+                if (Db::fetch("SELECT id FROM account_blocks WHERE phone <> '' AND phone = ?", [$phone])) {
+                    return true;
+                }
+            }
+        } catch (\Throwable $e) {
+            return false;
+        }
+        return false;
+    }
+
+    public static function block(array $user, int $adminId, string $reason): void
+    {
+        try {
+            Db::fetch('SELECT id FROM account_blocks LIMIT 1');
+        } catch (\Throwable $e) {
+            \App\Core\Schema::install();
+        }
+        $email = strtolower(trim((string) ($user['email'] ?? '')));
+        $phone = (string) ($user['phone'] ?? '');
+        if (str_starts_with($phone, 'e:') || str_starts_with($phone, 'x:')) {
+            $phone = '';
+        }
+        if ($email === '') {
+            $email = 'user:' . (int) $user['id'];
+        }
+        if (Db::fetch('SELECT id FROM account_blocks WHERE LOWER(email) = ?', [$email])) {
+            Db::run(
+                'UPDATE account_blocks SET phone=?, user_id=?, reason=?, admin_id=?, created_at=? WHERE LOWER(email)=?',
+                [$phone !== '' ? $phone : null, (int) $user['id'], $reason, $adminId, now_iso(), $email]
+            );
+            return;
+        }
+        Db::run(
+            'INSERT INTO account_blocks (email, phone, user_id, reason, admin_id, created_at) VALUES (?,?,?,?,?,?)',
+            [$email, $phone !== '' ? $phone : null, (int) $user['id'], $reason, $adminId, now_iso()]
+        );
+    }
+
+    public static function unblock(array $user): void
+    {
+        try {
+            $email = strtolower(trim((string) ($user['email'] ?? '')));
+            $id = (int) $user['id'];
+            if ($email !== '') {
+                Db::run('DELETE FROM account_blocks WHERE LOWER(email) = ? OR user_id = ?', [$email, $id]);
+                return;
+            }
+            Db::run('DELETE FROM account_blocks WHERE user_id = ?', [$id]);
+        } catch (\Throwable $e) {
+        }
+    }
+
     public static function roles(array $user): array
     {
         return array_values(array_filter(explode(',', (string) $user['roles'])));

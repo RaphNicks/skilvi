@@ -60,7 +60,7 @@
       <div class="row mb-2" style="gap:10px;flex-wrap:wrap">
         <input class="input" style="width:260px" placeholder="Search name, phone, email…" id="uSearch">
         <select class="select" style="width:auto" id="uRole"><option>All roles</option><option>Worker</option><option>Client</option></select>
-        <select class="select" style="width:auto" id="uState"><option>All states</option><option>Active</option><option>Suspended</option><option>Banned</option></select>
+        <select class="select" style="width:auto" id="uState"><option>All states</option><option>Active</option><option>Suspended</option><option>Banned</option><option>Deleted</option></select>
         <label class="check-row" style="padding:0"><input type="checkbox" id="uFlags" style="accent-color:var(--royal-600)"> Flagged only</label>
       </div>
 
@@ -70,7 +70,7 @@
           <tbody id="uBody"><tr><td colspan="7" class="muted">Loading…</td></tr></tbody>
         </table>
       </div>
-      <p class="tiny faint mt-2">Banning requires a reason and is logged. Suspended users can log in only to a read-only status page that explains why and how to appeal. Passwords are never shown.</p>
+      <p class="tiny faint mt-2">Ban blocks that email from opening another account. Unban restores it. Delete wipes their profile. Open the user to delete. Passwords are never shown.</p>
     </main>
   </div>
 </div>

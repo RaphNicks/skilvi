@@ -244,6 +244,7 @@ final class DisputeService
             Db::pdo()->rollBack();
             throw $e;
         }
+        JobService::completeFromOrder((int) $row['order_id'], $workerNet > 0);
         $summary = $decision === 'refund'
             ? 'Full refund to the client. Escrow released from hold.'
             : ($decision === 'release'

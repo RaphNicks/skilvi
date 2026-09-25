@@ -94,8 +94,54 @@ final class JobService
         return ['id' => $job['code'], 'status' => 'cancelled'];
     }
 
+    public static function completeFromOrder(int $orderId, bool $success = true): void
+    {
+        $o = Db::fetch('SELECT job_id FROM orders WHERE id = ?', [$orderId]);
+        $jid = (int) ($o['job_id'] ?? 0);
+        if ($jid < 1) {
+            return;
+        }
+        Db::run(
+            "UPDATE jobs SET status=?, updated_at=? WHERE id=? AND status IN ('awarded','open')",
+            [$success ? 'completed' : 'closed', now_iso(), $jid]
+        );
+    }
+
+    public static function syncCompleted(): void
+    {
+        if (Db::isMysql()) {
+            Db::run(
+                "UPDATE jobs j INNER JOIN orders o ON o.job_id = j.id AND o.status = 'released'
+                 SET j.status = 'completed', j.updated_at = ?
+                 WHERE j.status IN ('awarded','open')",
+                [now_iso()]
+            );
+            return;
+        }
+        Db::run(
+            "UPDATE jobs SET status='completed', updated_at=?
+             WHERE status IN ('awarded','open')
+               AND id IN (SELECT job_id FROM orders WHERE status='released' AND job_id IS NOT NULL)",
+            [now_iso()]
+        );
+    }
+
+    /** @return array{0:string,1:string} */
+    public static function statusUi(string $st): array
+    {
+        return match ($st) {
+            'open'       => ['Open', 'st-royal'],
+            'awarded'    => ['Hired', 'st-amber'],
+            'completed'  => ['Completed', 'st-green'],
+            'closed'     => ['Closed', 'st-gray'],
+            'cancelled'  => ['Cancelled', 'st-gray'],
+            default      => [ucfirst($st), 'st-gray'],
+        };
+    }
+
     public static function mine(int $clientId): array
     {
+        self::syncCompleted();
         $rows = Db::fetchAll(
             "SELECT j.*, c.name AS category,
                     (SELECT COUNT(*) FROM proposals p WHERE p.job_id = j.id) AS proposal_count
@@ -106,10 +152,13 @@ final class JobService
             [$clientId]
         );
         return array_map(static function ($j) {
+            $ui = self::statusUi((string) $j['status']);
             return [
                 'id'           => $j['code'],
                 'title'        => $j['title'],
                 'status'       => $j['status'],
+                'status_label' => $ui[0],
+                'chip'         => $ui[1],
                 'category'     => $j['category'],
                 'mode'         => $j['work_mode'],
                 'loc'          => $j['location'],

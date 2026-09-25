@@ -217,6 +217,20 @@
           <div class="kv"><span class="k">Wallet pending</span><span class="v" id="ueWalPe">—</span></div>
           <p class="tiny faint mt-2">Money is not edited here. Password is never shown.</p>
         </aside>
+
+        <aside class="summary-card" id="ueMod">
+          <h3 style="font-size:14px">Ban, unban, delete</h3>
+          <p class="tiny faint mt-1">Ban keeps the account but blocks that email from signing up again. If they use a new email and you recognise the same person on verification, open their user page and ban that account too. Unban restores access. Delete wipes profile details and still blocks the email.</p>
+          <div class="field mt-2">
+            <label for="ueModReason">Reason</label>
+            <textarea class="textarea" id="ueModReason" placeholder="Logged, and shown if they try to come back."></textarea>
+          </div>
+          <div class="stack mt-2" style="gap:8px">
+            <button class="btn btn-danger" type="button" id="ueBan">Ban account</button>
+            <button class="btn btn-secondary" type="button" id="ueUnban">Unban</button>
+            <button class="btn btn-ghost" type="button" id="ueDelete" style="color:var(--red)">Delete account</button>
+          </div>
+        </aside>
       </div>
 
     </main>

@@ -109,7 +109,7 @@
         '<tr><td><span class="cell-main">' + esc(j.title) + '</span><div class="cell-sub">' + esc(j.mode) + " · " + esc(j.loc) + "</div></td>" +
         '<td class="num amount">' + esc(j.budget_label) + "</td><td>" + esc(j.time) + "</td>" +
         "<td><b>" + j.proposals + "</b></td>" +
-        '<td><span class="st ' + (j.status === "open" ? "st-royal" : "st-green") + '">' + esc(j.status) + "</span></td>" +
+        '<td><span class="st ' + esc(j.chip || (j.status === "open" ? "st-royal" : "st-green")) + '">' + esc(j.status_label || j.status) + "</span></td>" +
         '<td class="right"><a class="btn btn-primary btn-sm" href="job-detail.html?id=' + encodeURIComponent(j.id) + '">Open</a></td></tr>'
       ).join("") || '<tr><td colspan="6" class="muted">No jobs posted yet.</td></tr>';
     }
@@ -441,6 +441,14 @@
         await api("/api/orders/" + encodeURIComponent(id) + "/review", { body: { rating: score, comment: text.value, tags } });
         if ($("#rvForm")) $("#rvForm").style.display = "none";
         if ($("#rvDone")) $("#rvDone").style.display = "";
+        const who = o.worker_name || "the worker";
+        if ($("#rvDoneCopy")) {
+          $("#rvDoneCopy").textContent = "It's now live on " + who + "'s profile and counts toward their rating. Reviews are how good workers get found — you just helped the marketplace.";
+        }
+        if ($("#rvDoneProfile")) {
+          $("#rvDoneProfile").textContent = "See their profile";
+          if (o.worker_code) $("#rvDoneProfile").href = "worker-profile.html?id=" + encodeURIComponent(o.worker_code);
+        }
         toast("Review published.", "success");
       } catch (err) { toast(err.message, "error"); }
     });

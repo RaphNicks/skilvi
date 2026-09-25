@@ -99,6 +99,9 @@ final class AuthService
         if (User::findByEmail($email)) {
             throw new AppError('email_taken', 'That email is already on an account. Log in instead.', 409);
         }
+        if (User::isBlocked($email, $phone)) {
+            throw new AppError('blocked', 'This email cannot be used to open an account.', 403, ['email' => 'This email cannot be used to open an account.']);
+        }
 
         $rl = RateLimit::hit('register:ip:' . $ip, 5, 3600);
         if (!$rl['ok']) {
@@ -138,7 +141,10 @@ final class AuthService
             ]);
         }
         if ($user['status'] !== 'active') {
-            throw new AppError('suspended', 'This account is not active. Contact support.', 403);
+            $msg = $user['status'] === 'banned'
+                ? 'This account is banned and cannot be used.'
+                : 'This account is not active. Contact support.';
+            throw new AppError('suspended', $msg, 403);
         }
         // Always bind the next OTP to THIS account — never keep a previous login.
         Session::forgetUser();
@@ -170,6 +176,9 @@ final class AuthService
             }
             if (User::findByEmail((string) $pending['email'])) {
                 throw new AppError('email_taken', 'That email is already on an account. Log in instead.', 409);
+            }
+            if (User::isBlocked((string) $pending['email'], (string) ($pending['phone'] ?? ''))) {
+                throw new AppError('blocked', 'This email cannot be used to open an account.', 403);
             }
             $id = User::create($pending);
             Session::remove('pending_register');
@@ -324,6 +333,9 @@ final class AuthService
             $other = User::findByEmail($email);
             if ($other && (int) $other['id'] !== $id) {
                 throw new AppError('email_taken', 'That email is already on an account.', 409);
+            }
+            if (User::isBlocked($email)) {
+                throw new AppError('blocked', 'This email cannot be used.', 403, ['email' => 'This email cannot be used.']);
             }
         }
         User::updateEmail($id, $email !== '' ? $email : null);

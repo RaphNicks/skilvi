@@ -39,7 +39,10 @@ final class Auth
             throw new AppError('unauth', 'Log in to continue.', 401);
         }
         if (($u['status'] ?? 'active') !== 'active') {
-            throw new AppError('suspended', 'This account is not active. Contact support.', 403);
+            $msg = ($u['status'] ?? '') === 'banned'
+                ? 'This account is banned and cannot be used.'
+                : 'This account is not active. Contact support.';
+            throw new AppError('suspended', $msg, 403);
         }
         return $u;
     }
@@ -73,6 +76,12 @@ final class Auth
         }
         self::ensureTable();
         Db::run('DELETE FROM auth_tokens WHERE token=?', [$t]);
+    }
+
+    public static function revokeUser(int $userId): void
+    {
+        self::ensureTable();
+        Db::run('DELETE FROM auth_tokens WHERE user_id=?', [$userId]);
     }
 
     private static function idFromBearer(): ?int

@@ -89,7 +89,7 @@
       const role = ($("#uRole") && $("#uRole").value) || "";
       const st = ($("#uState") && $("#uState").value) || "";
       const roleQ = /worker/i.test(role) ? "worker" : (/client/i.test(role) ? "client" : "");
-      const stQ = /suspend/i.test(st) ? "suspended" : (/ban/i.test(st) ? "banned" : (/active/i.test(st) ? "active" : ""));
+      const stQ = /suspend/i.test(st) ? "suspended" : (/deleted/i.test(st) ? "deleted" : (/ban/i.test(st) ? "banned" : (/active/i.test(st) ? "active" : "")));
       const list = await api("/api/admin/users?q=" + encodeURIComponent(q) + "&role=" + roleQ + "&status=" + stQ);
       const flagged = $("#uFlags") && $("#uFlags").checked;
       const rows = flagged ? list.filter((u) => u.flags > 0) : list;
@@ -104,14 +104,19 @@
           '<td><span class="st ' + esc(u.chip) + '">' + esc(u.stateLabel) + "</span></td>" +
           '<td class="right nowrap">' +
           '<a class="btn btn-secondary btn-sm" href="user.html?id=' + u.id + '">Edit</a> ' +
-          (u.status === "active"
-            ? '<button class="btn btn-danger btn-sm u-act" data-id="' + u.id + '" data-act="suspend" type="button">Suspend</button>'
-            : '<button class="btn btn-primary btn-sm u-act" data-id="' + u.id + '" data-act="activate" type="button">Activate</button>') +
+          (u.status === "banned"
+            ? '<button class="btn btn-primary btn-sm u-act" data-id="' + u.id + '" data-act="unban" type="button">Unban</button>'
+            : (u.status === "deleted"
+              ? ""
+              : '<button class="btn btn-danger btn-sm u-act" data-id="' + u.id + '" data-act="ban" type="button">Ban</button>')) +
           "</td></tr>"
         ).join("") || emptyRow(7, "No users match.");
         $$(".u-act").forEach((b) => b.addEventListener("click", () => {
-          const reason = b.dataset.act === "suspend" ? (prompt("Reason the user will see:") || "") : "Reactivated by staff.";
-          if (b.dataset.act === "suspend" && reason.trim().length < 8) { toast("Need a short reason.", "error"); return; }
+          let reason = "Reactivated by staff.";
+          if (b.dataset.act === "ban") {
+            reason = prompt("Reason for the ban (the email cannot sign up again):") || "";
+            if (reason.trim().length < 8) { toast("Need a short reason.", "error"); return; }
+          }
           act("/api/admin/users/" + b.dataset.id + "/action", { action: b.dataset.act, reason }, "Updated.");
         }));
       }
@@ -154,7 +159,7 @@
       return;
     }
     const joinLabel = { worker: "Worker", client: "Client", both: "Both" };
-    const statusLabel = { active: "Active", suspended: "Suspended", banned: "Banned" };
+    const statusLabel = { active: "Active", suspended: "Suspended", banned: "Banned", deleted: "Deleted" };
     const modeLabel = { remote: "Remote", "on-site": "On-site", both: "Both" };
     const set = (sel, val) => { const el = $(sel); if (el) el.value = val == null ? "" : String(val); };
     const show = (field, text) => {
@@ -289,6 +294,29 @@
         }
       });
     }
+    const runMod = async (action, confirmMsg) => {
+      const reason = (($("#ueModReason") && $("#ueModReason").value) || "").trim();
+      if ((action === "ban" || action === "delete") && reason.length < 8) {
+        toast("Write a short reason first.", "error");
+        return;
+      }
+      if (confirmMsg && !confirm(confirmMsg)) return;
+      try {
+        await api("/api/admin/users/" + encodeURIComponent(id) + "/action", { body: { action, reason: reason || "Reactivated by staff." } });
+        if (action === "delete") {
+          toast("Account deleted. That email cannot sign up again.", "success");
+          location.href = "users.html";
+          return;
+        }
+        toast("Updated.", "success");
+        await paint();
+      } catch (err) {
+        if (!gate(err)) toast(err.message, "error");
+      }
+    };
+    if ($("#ueBan")) $("#ueBan").addEventListener("click", () => runMod("ban"));
+    if ($("#ueUnban")) $("#ueUnban").addEventListener("click", () => runMod("unban"));
+    if ($("#ueDelete")) $("#ueDelete").addEventListener("click", () => runMod("delete", "Delete this account and all profile details? That email cannot sign up again."));
     try {
       await paint();
     } catch (err) {
@@ -401,8 +429,10 @@
         "<td>" + esc(v.date) + "</td><td><span class=\"sla\">" + esc(v.sla) + "</span></td>" +
         '<td class="right nowrap">' + (v.can_review
           ? '<button class="btn btn-primary btn-sm v-ok" data-id="' + v.id + '" type="button">Approve</button> ' +
-            '<button class="btn btn-danger btn-sm v-no" data-id="' + v.id + '" type="button">Reject</button>'
-          : '<span class="st st-green">' + esc(v.status) + "</span>") + "</td></tr>"
+            '<button class="btn btn-danger btn-sm v-no" data-id="' + v.id + '" type="button">Reject</button> '
+          : '<span class="st st-green">' + esc(v.status) + "</span> ") +
+          (v.user_id ? '<a class="btn btn-secondary btn-sm" href="user.html?id=' + v.user_id + '">User</a>' : "") +
+          "</td></tr>"
       ).join("") || emptyRow(6, "Queue is empty.");
       $$(".v-ok").forEach((b) => b.addEventListener("click", () => act("/api/admin/verifications/" + b.dataset.id + "/action", { action: "approve" }, "Badge is live. Identity only — not a skill certificate.")));
       $$(".v-no").forEach((b) => b.addEventListener("click", () => {

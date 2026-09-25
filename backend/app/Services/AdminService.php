@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace App\Services;
 
 use App\AppError;
+use App\Core\Auth;
 use App\Core\Db;
 use App\Models\User;
 
@@ -78,9 +79,11 @@ final class AdminService
             $where[] = "u.roles LIKE ?";
             $bind[] = '%' . $role . '%';
         }
-        if (in_array($status, ['active', 'suspended', 'banned'], true)) {
+        if (in_array($status, ['active', 'suspended', 'banned', 'deleted'], true)) {
             $where[] = 'u.status = ?';
             $bind[] = $status;
+        } else {
+            $where[] = "u.status <> 'deleted'";
         }
         $sql = implode(' AND ', $where);
         $rows = Db::fetchAll(
@@ -115,7 +118,7 @@ final class AdminService
                 'joined'     => date('M Y', strtotime($r['created_at']) ?: time()),
                 'status'     => $r['status'],
                 'stateLabel' => ucfirst($r['status']),
-                'chip'       => $r['status'] === 'active' ? 'st-green' : ($r['status'] === 'banned' ? 'st-red' : 'st-amber'),
+                'chip'       => $r['status'] === 'active' ? 'st-green' : ($r['status'] === 'banned' ? 'st-red' : ($r['status'] === 'deleted' ? 'st-gray' : 'st-amber')),
                 'verified'   => (int) ($r['verified'] ?? 0) === 1,
                 'flags'      => $flags,
             ];
@@ -340,7 +343,16 @@ final class AdminService
             if ($st !== 'active' && mb_strlen(trim((string) ($in['reason'] ?? ''))) < 8) {
                 throw new AppError('invalid', 'Write a reason the user will see.', 422, ['reason' => 'Write a reason.']);
             }
+            if ($st === 'banned' && str_contains((string) $u['roles'], 'admin')) {
+                throw new AppError('forbidden', 'Demote a staff account before banning it.', 403);
+            }
             User::setStatus($id, $st);
+            if ($st === 'banned') {
+                User::block($u, $adminId, trim((string) ($in['reason'] ?? '')));
+                Auth::revokeUser($id);
+            } elseif ($st === 'active') {
+                User::unblock($u);
+            }
             $changed[] = 'status';
         }
         $prof = [];
@@ -464,16 +476,25 @@ final class AdminService
             }
             User::setStatus((int) $u['id'], 'suspended');
             NotificationService::push((int) $u['id'], 'order', 'Account suspended', $reason, 'account-settings.html');
-        } elseif ($action === 'activate' || $action === 'unsuspend') {
+        } elseif ($action === 'activate' || $action === 'unsuspend' || $action === 'unban') {
             User::setStatus((int) $u['id'], 'active');
+            User::unblock($u);
             NotificationService::push((int) $u['id'], 'order', 'Account reactivated', 'You can use Skilvi again.', 'index.html');
         } elseif ($action === 'ban') {
             if (mb_strlen(trim($reason)) < 8) {
                 throw new AppError('invalid', 'Write a reason.', 422);
             }
+            if (str_contains((string) $u['roles'], 'admin')) {
+                throw new AppError('forbidden', 'Demote a staff account before banning it.', 403);
+            }
             User::setStatus((int) $u['id'], 'banned');
+            User::block($u, $adminId, trim($reason));
+            Auth::revokeUser((int) $u['id']);
             Db::run("UPDATE promotions SET status='paused' WHERE user_id=? AND status='active'", [$u['id']]);
             NotificationService::push((int) $u['id'], 'order', 'Account banned', $reason, 'help.html');
+        } elseif ($action === 'delete') {
+            self::deleteAccount($adminId, $u, $reason, $ip);
+            return self::users('', '', '');
         } elseif ($action === 'grant_admin') {
             if (!str_contains((string) $u['roles'], 'admin')) {
                 Db::run("UPDATE users SET roles = trim(roles || ',admin', ','), updated_at=? WHERE id=?", [$now, $u['id']]);
@@ -489,6 +510,44 @@ final class AdminService
         }
         self::audit($adminId, 'user.' . $action, 'user:' . $u['id'], ['reason' => $reason, 'name' => $u['full_name']], $ip);
         return self::users('', '', '');
+    }
+
+    /** @param array<string,mixed> $u */
+    private static function deleteAccount(int $adminId, array $u, string $reason, string $ip): void
+    {
+        if (mb_strlen(trim($reason)) < 8) {
+            throw new AppError('invalid', 'Write a reason for the audit log.', 422);
+        }
+        if (str_contains((string) $u['roles'], 'admin')) {
+            throw new AppError('forbidden', 'Demote a staff account before deleting it.', 403);
+        }
+        $id = (int) $u['id'];
+        $now = now_iso();
+        User::block($u, $adminId, trim($reason));
+        Auth::revokeUser($id);
+        $try = static function (string $sql, array $params): void {
+            try {
+                Db::run($sql, $params);
+            } catch (\Throwable $e) {
+            }
+        };
+        $try('DELETE FROM notifications WHERE user_id=?', [$id]);
+        $try('DELETE FROM saved_workers WHERE user_id=? OR worker_id=?', [$id, $id]);
+        $try('DELETE FROM account_requests WHERE user_id=?', [$id]);
+        $try('DELETE FROM promotions WHERE user_id=?', [$id]);
+        $try("UPDATE verifications SET status='rejected', notes=?, updated_at=? WHERE user_id=?", ['', $now, $id]);
+        $try("UPDATE services SET status='paused', updated_at=? WHERE worker_id=?", [$now, $id]);
+        $try("UPDATE jobs SET status='cancelled', updated_at=? WHERE client_id=? AND status='open'", [$now, $id]);
+        $try("UPDATE messages SET body='[removed]' WHERE sender_id=?", [$id]);
+        $try(
+            'UPDATE profiles SET headline=NULL, bio=NULL, skill=NULL, city=NULL, state=NULL, country=NULL, dob=NULL, gender=NULL, heard_about=NULL, verified=0, promo=0, updated_at=? WHERE user_id=?',
+            [$now, $id]
+        );
+        Db::run(
+            'UPDATE users SET full_name=?, email=NULL, phone=?, password_hash=?, status=?, updated_at=? WHERE id=?',
+            ['Deleted account', 'x:' . $id, password_hash(bin2hex(random_bytes(24)), PASSWORD_DEFAULT), 'deleted', $now, $id]
+        );
+        self::audit($adminId, 'user.delete', 'user:' . $id, ['reason' => $reason, 'name' => $u['full_name'], 'email' => $u['email'] ?? ''], $ip);
     }
 
     public static function orders(string $status, string $q): array
@@ -699,6 +758,7 @@ final class AdminService
             $sla = 2 - (int) floor((time() - $opened) / 86400);
             return [
                 'id'         => (int) $v['id'],
+                'user_id'    => (int) $v['user_id'],
                 'name'       => $v['full_name'],
                 'initials'   => initials($v['full_name']),
                 'tone'       => $v['tone'] ?: 'a1',

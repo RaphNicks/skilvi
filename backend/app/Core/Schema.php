@@ -182,6 +182,18 @@ final class Schema
                 created_at TEXT NOT NULL
             )'
         );
+        self::execSql(
+            'CREATE TABLE IF NOT EXISTS account_blocks (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                email TEXT NOT NULL,
+                phone TEXT,
+                user_id INTEGER,
+                reason TEXT,
+                admin_id INTEGER,
+                created_at TEXT NOT NULL
+            )'
+        );
+        self::execSql('CREATE UNIQUE INDEX IF NOT EXISTS idx_account_blocks_email ON account_blocks(email)');
         Db::exec('CREATE INDEX IF NOT EXISTS idx_orders_status ON orders(status, created_at)');
         Db::exec('CREATE INDEX IF NOT EXISTS idx_orders_client ON orders(client_id, status)');
         Db::exec('CREATE INDEX IF NOT EXISTS idx_orders_worker ON orders(worker_id, status)');

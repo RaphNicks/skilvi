@@ -226,6 +226,7 @@ final class OrderService
             Db::pdo()->rollBack();
             throw $e;
         }
+        JobService::completeFromOrder((int) $row['id'], true);
         self::notify((int) $row['worker_id'], 'order', 'Payment released', ngn_fmt($workerNet) . ' is in your wallet from ' . $row['code'] . '.');
         return self::get($key, $clientId);
     }
