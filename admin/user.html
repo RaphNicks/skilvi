@@ -9,7 +9,7 @@
   <link rel="icon" href="../assets/img/skilvi-logo-word.png">
   <title>Admin — Edit user</title>
   <meta name="description" content="Skilvi admin console: orders, escrow, payments, withdrawals, disputes, verification, and platform health.">
-  <link rel="stylesheet" href="../assets/css/skilvi.css?v=22">
+  <link rel="stylesheet" href="../assets/css/skilvi.css?v=23">
 </head>
 <body data-shell="admin" data-active="users" data-page="admin">
 
@@ -54,157 +54,176 @@
         <div>
           <p class="tiny faint mb-1"><a class="link" href="users.html">← All users</a></p>
           <h1 class="ph-title" id="ueTitle">User</h1>
-          <p class="ph-sub" id="ueSub">Edit this account. Password is never shown or changed here.</p>
+          <p class="ph-sub" id="ueSub">Their saved details. Edit one field at a time. Password is never shown.</p>
         </div>
         <div class="ph-actions">
           <span class="st st-gray" id="ueChip">—</span>
         </div>
       </div>
 
-      <form id="ueForm">
-        <div class="svc-layout" style="align-items:start">
-          <div class="stack" style="gap:16px">
-            <div class="card card-pad">
-              <h3 style="font-size:15px">Account</h3>
-              <div class="form-row-2 mt-2">
-                <div class="field">
-                  <label for="ueName">Full name</label>
-                  <input class="input" id="ueName" name="full_name" autocomplete="name">
-                </div>
-                <div class="field">
-                  <label for="ueEmail">Email</label>
-                  <input class="input" id="ueEmail" name="email" type="email" inputmode="email" autocomplete="email">
-                </div>
-              </div>
-              <div class="form-row-2 mt-2">
-                <div class="field">
-                  <label for="uePhone">Phone</label>
-                  <input class="input" id="uePhone" name="phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="Optional">
-                </div>
-                <div class="field">
-                  <label for="ueJoin">Joins as</label>
-                  <select class="select" id="ueJoin" name="join_as">
-                    <option value="client">Client</option>
-                    <option value="worker">Worker</option>
-                    <option value="both">Both</option>
-                  </select>
-                </div>
-              </div>
-              <div class="form-row-2 mt-2">
-                <div class="field">
-                  <label for="ueStatus">Account status</label>
-                  <select class="select" id="ueStatus" name="status">
-                    <option value="active">Active</option>
-                    <option value="suspended">Suspended</option>
-                    <option value="banned">Banned</option>
-                  </select>
-                </div>
-                <div class="field">
-                  <label for="ueReason">Reason (if you suspend or ban)</label>
-                  <input class="input" id="ueReason" name="reason" placeholder="Shown to the user and logged">
-                </div>
+      <div id="uePanel" class="svc-layout" style="align-items:start">
+        <div class="stack" style="gap:16px">
+          <div class="card card-pad">
+            <h3 style="font-size:15px">Account</h3>
+            <p class="tiny faint mt-1">What they saved. Open Edit on a row to change only that detail.</p>
+
+            <div class="ue-row" data-field="full_name">
+              <div class="ue-label">Full name</div>
+              <div class="ue-main">
+                <div class="ue-view"><div class="ue-val empty" data-val>—</div><button class="btn btn-ghost btn-sm ue-edit" type="button">Edit</button></div>
+                <div class="ue-editbox"><input class="input" id="ueName" name="full_name" autocomplete="name"><div class="row"><button class="btn btn-primary btn-sm ue-save" type="button">Save</button><button class="btn btn-secondary btn-sm ue-cancel" type="button">Cancel</button></div></div>
               </div>
             </div>
-
-            <div class="card card-pad">
-              <h3 style="font-size:15px">Profile, place &amp; skill</h3>
-              <div class="field mt-2">
-                <label for="ueHeadline">Headline</label>
-                <input class="input" id="ueHeadline" name="headline" placeholder="e.g. Plumber in Port Harcourt">
-              </div>
-              <div class="field mt-2">
-                <label for="ueBio">Bio</label>
-                <textarea class="textarea" id="ueBio" name="bio"></textarea>
-              </div>
-              <div class="form-row-2 mt-2">
-                <div class="field">
-                  <label for="ueState">State</label>
-                  <select class="select" id="ueState" name="state">
-                    <option value="">Select state</option>
-                    <option>Abia</option><option>Adamawa</option><option>Akwa Ibom</option><option>Anambra</option>
-                    <option>Bauchi</option><option>Bayelsa</option><option>Benue</option><option>Borno</option>
-                    <option>Cross River</option><option>Delta</option><option>Ebonyi</option><option>Edo</option>
-                    <option>Ekiti</option><option>Enugu</option><option>FCT</option><option>Gombe</option>
-                    <option>Imo</option><option>Jigawa</option><option>Kaduna</option><option>Kano</option>
-                    <option>Katsina</option><option>Kebbi</option><option>Kogi</option><option>Kwara</option>
-                    <option>Lagos</option><option>Nasarawa</option><option>Niger</option><option>Ogun</option>
-                    <option>Ondo</option><option>Osun</option><option>Oyo</option><option>Plateau</option>
-                    <option>Rivers</option><option>Sokoto</option><option>Taraba</option><option>Yobe</option>
-                    <option>Zamfara</option>
-                  </select>
-                </div>
-                <div class="field">
-                  <label for="ueCity">City</label>
-                  <input class="input" id="ueCity" name="city">
-                </div>
-              </div>
-              <div class="form-row-2 mt-2">
-                <div class="field">
-                  <label for="ueSkill">Skill</label>
-                  <input class="input" id="ueSkill" name="skill" list="ueSkillList" placeholder="e.g. Plumbing">
-                  <datalist id="ueSkillList"></datalist>
-                </div>
-                <div class="field">
-                  <label for="ueMode">Work mode</label>
-                  <select class="select" id="ueMode" name="work_mode">
-                    <option value="">Not set</option>
-                    <option value="remote">Remote</option>
-                    <option value="on-site">On-site</option>
-                    <option value="both">Both</option>
-                  </select>
-                </div>
+            <div class="ue-row" data-field="email">
+              <div class="ue-label">Email</div>
+              <div class="ue-main">
+                <div class="ue-view"><div class="ue-val empty" data-val>—</div><button class="btn btn-ghost btn-sm ue-edit" type="button">Edit</button></div>
+                <div class="ue-editbox"><input class="input" id="ueEmail" name="email" type="email" inputmode="email" autocomplete="email"><div class="row"><button class="btn btn-primary btn-sm ue-save" type="button">Save</button><button class="btn btn-secondary btn-sm ue-cancel" type="button">Cancel</button></div></div>
               </div>
             </div>
-
-            <div class="card card-pad">
-              <h3 style="font-size:15px">Jobs they posted</h3>
-              <div class="table-wrap mt-2">
-                <table class="table">
-                  <thead><tr><th>Job</th><th>Budget</th><th>Posted</th><th>Status</th><th class="right">Actions</th></tr></thead>
-                  <tbody id="ueJobs"><tr><td colspan="5" class="muted">None yet.</td></tr></tbody>
-                </table>
+            <div class="ue-row" data-field="phone">
+              <div class="ue-label">Phone</div>
+              <div class="ue-main">
+                <div class="ue-view"><div class="ue-val empty" data-val>—</div><button class="btn btn-ghost btn-sm ue-edit" type="button">Edit</button></div>
+                <div class="ue-editbox"><input class="input" id="uePhone" name="phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="Optional"><div class="row"><button class="btn btn-primary btn-sm ue-save" type="button">Save</button><button class="btn btn-secondary btn-sm ue-cancel" type="button">Cancel</button></div></div>
               </div>
             </div>
-
-            <div class="card card-pad">
-              <h3 style="font-size:15px">Services</h3>
-              <div class="table-wrap mt-2">
-                <table class="table">
-                  <thead><tr><th>Service</th><th>From</th><th>Status</th><th class="right">Actions</th></tr></thead>
-                  <tbody id="ueSvcs"><tr><td colspan="4" class="muted">None yet.</td></tr></tbody>
-                </table>
+            <div class="ue-row" data-field="join_as">
+              <div class="ue-label">Joins as</div>
+              <div class="ue-main">
+                <div class="ue-view"><div class="ue-val empty" data-val>—</div><button class="btn btn-ghost btn-sm ue-edit" type="button">Edit</button></div>
+                <div class="ue-editbox"><select class="select" id="ueJoin" name="join_as"><option value="client">Client</option><option value="worker">Worker</option><option value="both">Both</option></select><div class="row"><button class="btn btn-primary btn-sm ue-save" type="button">Save</button><button class="btn btn-secondary btn-sm ue-cancel" type="button">Cancel</button></div></div>
               </div>
             </div>
-
-            <div class="card card-pad">
-              <h3 style="font-size:15px">Orders</h3>
-              <div class="table-wrap mt-2">
-                <table class="table">
-                  <thead><tr><th>Order</th><th>Side</th><th>Amount</th><th>Date</th><th>Status</th></tr></thead>
-                  <tbody id="ueOrders"><tr><td colspan="5" class="muted">None yet.</td></tr></tbody>
-                </table>
+            <div class="ue-row" data-field="status">
+              <div class="ue-label">Status</div>
+              <div class="ue-main">
+                <div class="ue-view"><div class="ue-val empty" data-val>—</div><button class="btn btn-ghost btn-sm ue-edit" type="button">Edit</button></div>
+                <div class="ue-editbox">
+                  <select class="select" id="ueStatus" name="status"><option value="active">Active</option><option value="suspended">Suspended</option><option value="banned">Banned</option></select>
+                  <div class="field mt-2"><label for="ueReason">Reason (needed to suspend or ban)</label><input class="input" id="ueReason" name="reason" placeholder="Shown to the user and logged"></div>
+                  <div class="row"><button class="btn btn-primary btn-sm ue-save" type="button">Save</button><button class="btn btn-secondary btn-sm ue-cancel" type="button">Cancel</button></div>
+                </div>
               </div>
             </div>
           </div>
 
-          <aside class="summary-card">
-            <h3 style="font-size:14px">Trust &amp; visibility</h3>
-            <p class="tiny faint mt-1">These are separate. Verification is identity only — never a skill certificate. Promotion is paid (or staff) visibility.</p>
-            <div class="switch-row" style="padding:12px 0">
-              <div><div class="sw-title">Identity verified</div><div class="sw-sub">Badge says identity checked, not skill level</div></div>
-              <label class="switch"><input type="checkbox" id="ueVerified" name="verified"><span class="track"></span></label>
+          <div class="card card-pad">
+            <h3 style="font-size:15px">Profile, place &amp; skill</h3>
+            <div class="ue-row" data-field="headline">
+              <div class="ue-label">Headline</div>
+              <div class="ue-main">
+                <div class="ue-view"><div class="ue-val empty" data-val>—</div><button class="btn btn-ghost btn-sm ue-edit" type="button">Edit</button></div>
+                <div class="ue-editbox"><input class="input" id="ueHeadline" name="headline"><div class="row"><button class="btn btn-primary btn-sm ue-save" type="button">Save</button><button class="btn btn-secondary btn-sm ue-cancel" type="button">Cancel</button></div></div>
+              </div>
             </div>
-            <div class="switch-row">
-              <div><div class="sw-title">Promoted</div><div class="sw-sub">Search / category visibility. Not a trust badge.</div></div>
-              <label class="switch"><input type="checkbox" id="uePromo" name="promo"><span class="track"></span></label>
+            <div class="ue-row" data-field="bio">
+              <div class="ue-label">Bio</div>
+              <div class="ue-main">
+                <div class="ue-view"><div class="ue-val empty" data-val>—</div><button class="btn btn-ghost btn-sm ue-edit" type="button">Edit</button></div>
+                <div class="ue-editbox"><textarea class="textarea" id="ueBio" name="bio"></textarea><div class="row"><button class="btn btn-primary btn-sm ue-save" type="button">Save</button><button class="btn btn-secondary btn-sm ue-cancel" type="button">Cancel</button></div></div>
+              </div>
             </div>
-            <div class="kv mt-2"><span class="k">Wallet available</span><span class="v" id="ueWalAv">—</span></div>
-            <div class="kv"><span class="k">Wallet pending</span><span class="v" id="ueWalPe">—</span></div>
-            <p class="tiny faint mt-2">Money is not edited here. Use payments / withdrawals.</p>
-            <button class="btn btn-primary btn-block mt-3" id="ueSave" type="submit">Save changes</button>
-          </aside>
+            <div class="ue-row" data-field="state">
+              <div class="ue-label">State</div>
+              <div class="ue-main">
+                <div class="ue-view"><div class="ue-val empty" data-val>—</div><button class="btn btn-ghost btn-sm ue-edit" type="button">Edit</button></div>
+                <div class="ue-editbox"><select class="select" id="ueState" name="state">
+                  <option value="">Select state</option>
+                  <option>Abia</option><option>Adamawa</option><option>Akwa Ibom</option><option>Anambra</option>
+                  <option>Bauchi</option><option>Bayelsa</option><option>Benue</option><option>Borno</option>
+                  <option>Cross River</option><option>Delta</option><option>Ebonyi</option><option>Edo</option>
+                  <option>Ekiti</option><option>Enugu</option><option>FCT</option><option>Gombe</option>
+                  <option>Imo</option><option>Jigawa</option><option>Kaduna</option><option>Kano</option>
+                  <option>Katsina</option><option>Kebbi</option><option>Kogi</option><option>Kwara</option>
+                  <option>Lagos</option><option>Nasarawa</option><option>Niger</option><option>Ogun</option>
+                  <option>Ondo</option><option>Osun</option><option>Oyo</option><option>Plateau</option>
+                  <option>Rivers</option><option>Sokoto</option><option>Taraba</option><option>Yobe</option>
+                  <option>Zamfara</option>
+                </select><div class="row"><button class="btn btn-primary btn-sm ue-save" type="button">Save</button><button class="btn btn-secondary btn-sm ue-cancel" type="button">Cancel</button></div></div>
+              </div>
+            </div>
+            <div class="ue-row" data-field="city">
+              <div class="ue-label">City</div>
+              <div class="ue-main">
+                <div class="ue-view"><div class="ue-val empty" data-val>—</div><button class="btn btn-ghost btn-sm ue-edit" type="button">Edit</button></div>
+                <div class="ue-editbox"><input class="input" id="ueCity" name="city"><div class="row"><button class="btn btn-primary btn-sm ue-save" type="button">Save</button><button class="btn btn-secondary btn-sm ue-cancel" type="button">Cancel</button></div></div>
+              </div>
+            </div>
+            <div class="ue-row" data-field="skill">
+              <div class="ue-label">Skill</div>
+              <div class="ue-main">
+                <div class="ue-view"><div class="ue-val empty" data-val>—</div><button class="btn btn-ghost btn-sm ue-edit" type="button">Edit</button></div>
+                <div class="ue-editbox"><input class="input" id="ueSkill" name="skill" list="ueSkillList"><datalist id="ueSkillList"></datalist><div class="row"><button class="btn btn-primary btn-sm ue-save" type="button">Save</button><button class="btn btn-secondary btn-sm ue-cancel" type="button">Cancel</button></div></div>
+              </div>
+            </div>
+            <div class="ue-row" data-field="work_mode">
+              <div class="ue-label">Work mode</div>
+              <div class="ue-main">
+                <div class="ue-view"><div class="ue-val empty" data-val>—</div><button class="btn btn-ghost btn-sm ue-edit" type="button">Edit</button></div>
+                <div class="ue-editbox"><select class="select" id="ueMode" name="work_mode"><option value="">Not set</option><option value="remote">Remote</option><option value="on-site">On-site</option><option value="both">Both</option></select><div class="row"><button class="btn btn-primary btn-sm ue-save" type="button">Save</button><button class="btn btn-secondary btn-sm ue-cancel" type="button">Cancel</button></div></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card card-pad">
+            <h3 style="font-size:15px">Jobs they posted</h3>
+            <div class="table-wrap mt-2">
+              <table class="table">
+                <thead><tr><th>Job</th><th>Budget</th><th>Posted</th><th>Status</th><th class="right">Actions</th></tr></thead>
+                <tbody id="ueJobs"><tr><td colspan="5" class="muted">None yet.</td></tr></tbody>
+              </table>
+            </div>
+          </div>
+          <div class="card card-pad">
+            <h3 style="font-size:15px">Services</h3>
+            <div class="table-wrap mt-2">
+              <table class="table">
+                <thead><tr><th>Service</th><th>From</th><th>Status</th><th class="right">Actions</th></tr></thead>
+                <tbody id="ueSvcs"><tr><td colspan="4" class="muted">None yet.</td></tr></tbody>
+              </table>
+            </div>
+          </div>
+          <div class="card card-pad">
+            <h3 style="font-size:15px">Orders</h3>
+            <div class="table-wrap mt-2">
+              <table class="table">
+                <thead><tr><th>Order</th><th>Side</th><th>Amount</th><th>Date</th><th>Status</th></tr></thead>
+                <tbody id="ueOrders"><tr><td colspan="5" class="muted">None yet.</td></tr></tbody>
+              </table>
+            </div>
+          </div>
         </div>
-      </form>
+
+        <aside class="summary-card">
+          <h3 style="font-size:14px">Trust &amp; visibility</h3>
+          <p class="tiny faint mt-1">Verification is identity only — never a skill certificate. Promotion is visibility, not trust.</p>
+          <div class="ue-row" data-field="verified" style="padding-left:0;padding-right:0">
+            <div class="ue-label">Verified</div>
+            <div class="ue-main">
+              <div class="ue-view"><div class="ue-val empty" data-val>—</div><button class="btn btn-ghost btn-sm ue-edit" type="button">Edit</button></div>
+              <div class="ue-editbox">
+                <label class="check-row" style="padding:0"><input type="checkbox" id="ueVerified" name="verified" style="accent-color:var(--royal-600)"> Identity checked</label>
+                <div class="row"><button class="btn btn-primary btn-sm ue-save" type="button">Save</button><button class="btn btn-secondary btn-sm ue-cancel" type="button">Cancel</button></div>
+              </div>
+            </div>
+          </div>
+          <div class="ue-row" data-field="promo" style="padding-left:0;padding-right:0">
+            <div class="ue-label">Promoted</div>
+            <div class="ue-main">
+              <div class="ue-view"><div class="ue-val empty" data-val>—</div><button class="btn btn-ghost btn-sm ue-edit" type="button">Edit</button></div>
+              <div class="ue-editbox">
+                <label class="check-row" style="padding:0"><input type="checkbox" id="uePromo" name="promo" style="accent-color:var(--royal-600)"> Show as promoted</label>
+                <div class="row"><button class="btn btn-primary btn-sm ue-save" type="button">Save</button><button class="btn btn-secondary btn-sm ue-cancel" type="button">Cancel</button></div>
+              </div>
+            </div>
+          </div>
+          <div class="kv mt-2"><span class="k">Wallet available</span><span class="v" id="ueWalAv">—</span></div>
+          <div class="kv"><span class="k">Wallet pending</span><span class="v" id="ueWalPe">—</span></div>
+          <p class="tiny faint mt-2">Money is not edited here. Password is never shown.</p>
+        </aside>
+      </div>
+
     </main>
   </div>
 </div>

@@ -224,6 +224,28 @@ button.chip.active:hover, a.chip.active:hover { color: #fff; }
 .field { display: flex; flex-direction: column; gap: 6px; }
 .field label { font-size: 13px; font-weight: 600; color: var(--ink); }
 .req { color: var(--red); font-weight: 700; }
+.ue-row { display: flex; align-items: flex-start; gap: 14px; padding: 12px 0; border-bottom: 1px solid var(--line); }
+.ue-row:last-child { border-bottom: 0; }
+.ue-label { font-size: 12.5px; font-weight: 600; color: var(--ink-3); width: 132px; flex: none; padding-top: 3px; }
+.ue-main { flex: 1; min-width: 0; }
+.ue-view { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; }
+.ue-val { font-size: 14px; color: var(--ink); line-height: 1.45; white-space: pre-wrap; word-break: break-word; }
+.ue-val.empty { color: var(--ink-3); }
+.ue-editbox { display: none; }
+.ue-row.editing .ue-view { display: none; }
+.ue-row.editing .ue-editbox { display: block; }
+.ue-editbox .row { margin-top: 8px; gap: 8px; }
+.ue-row { display: flex; align-items: flex-start; gap: 14px; padding: 12px 0; border-bottom: 1px solid var(--line); }
+.ue-row:last-child { border-bottom: 0; }
+.ue-label { font-size: 12.5px; font-weight: 600; color: var(--ink-3); width: 132px; flex: none; padding-top: 3px; }
+.ue-main { flex: 1; min-width: 0; }
+.ue-view { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; }
+.ue-val { font-size: 14px; color: var(--ink); line-height: 1.45; white-space: pre-wrap; word-break: break-word; }
+.ue-val.empty { color: var(--ink-3); }
+.ue-editbox { display: none; }
+.ue-row.editing .ue-view { display: none; }
+.ue-row.editing .ue-editbox { display: block; }
+.ue-editbox .row { margin-top: 8px; gap: 8px; }
 .field .hint { font-size: 12px; color: var(--ink-3); }
 .input, .select, .textarea {
   width: 100%; border: 1px solid var(--line-2); border-radius: var(--r-md);

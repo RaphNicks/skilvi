@@ -154,25 +154,40 @@
       location.href = "users.html";
       return;
     }
+    const joinLabel = { worker: "Worker", client: "Client", both: "Both" };
+    const statusLabel = { active: "Active", suspended: "Suspended", banned: "Banned" };
+    const modeLabel = { remote: "Remote", "on-site": "On-site", both: "Both" };
     const set = (sel, val) => { const el = $(sel); if (el) el.value = val == null ? "" : String(val); };
+    const show = (field, text) => {
+      const row = document.querySelector('.ue-row[data-field="' + field + '"]');
+      if (!row) return;
+      const el = row.querySelector("[data-val]");
+      if (!el) return;
+      const empty = !text;
+      el.textContent = empty ? "Not set" : text;
+      el.classList.toggle("empty", empty);
+    };
     const paint = async () => {
       const u = await api("/api/admin/users/" + encodeURIComponent(id));
       const f = u.form || {};
+      $$(".ue-row.editing").forEach((r) => r.classList.remove("editing"));
       if ($("#ueTitle")) $("#ueTitle").textContent = u.name || "User";
-      if ($("#ueChip")) { $("#ueChip").className = "st " + esc(u.chip || "st-gray"); $("#ueChip").textContent = u.stateLabel || ""; }
-      set("#ueName", f.full_name);
-      set("#ueEmail", f.email);
-      set("#uePhone", f.phone);
-      set("#ueJoin", f.join_as || "client");
-      set("#ueStatus", f.status || "active");
-      set("#ueHeadline", f.headline);
-      set("#ueBio", f.bio);
-      set("#ueState", f.state);
-      set("#ueCity", f.city);
-      set("#ueSkill", f.skill);
-      set("#ueMode", f.work_mode);
+      if ($("#ueChip")) { $("#ueChip").className = "st " + (u.chip || "st-gray"); $("#ueChip").textContent = u.stateLabel || ""; }
+      set("#ueName", f.full_name); show("full_name", f.full_name);
+      set("#ueEmail", f.email); show("email", f.email);
+      set("#uePhone", f.phone); show("phone", f.phone);
+      set("#ueJoin", f.join_as || "client"); show("join_as", joinLabel[f.join_as] || f.join_as);
+      set("#ueStatus", f.status || "active"); show("status", statusLabel[f.status] || f.status);
+      set("#ueHeadline", f.headline); show("headline", f.headline);
+      set("#ueBio", f.bio); show("bio", f.bio);
+      set("#ueState", f.state); show("state", f.state);
+      set("#ueCity", f.city); show("city", f.city);
+      set("#ueSkill", f.skill); show("skill", f.skill);
+      set("#ueMode", f.work_mode); show("work_mode", modeLabel[f.work_mode] || f.work_mode);
       if ($("#ueVerified")) $("#ueVerified").checked = !!f.verified;
+      show("verified", f.verified ? "Yes — identity checked" : "No");
       if ($("#uePromo")) $("#uePromo").checked = !!f.promo;
+      show("promo", f.promo ? "Yes — promoted in search" : "No");
       if ($("#ueWalAv")) $("#ueWalAv").textContent = (u.wallet && u.wallet.available) || "—";
       if ($("#ueWalPe")) $("#ueWalPe").textContent = (u.wallet && u.wallet.pending) || "—";
       const dl = $("#ueSkillList");
@@ -217,37 +232,47 @@
         ).join("") || emptyRow(5, "No orders.");
       }
     };
-    const form = $("#ueForm");
-    if (form) {
-      form.addEventListener("submit", async (e) => {
-        e.preventDefault();
-        const btn = $("#ueSave");
-        try {
-          if (btn) btn.disabled = true;
-          await api("/api/admin/users/" + encodeURIComponent(id) + "/update", {
-            body: {
-              full_name: ($("#ueName") && $("#ueName").value) || "",
-              email: ($("#ueEmail") && $("#ueEmail").value) || "",
-              phone: ($("#uePhone") && $("#uePhone").value) || "",
-              join_as: ($("#ueJoin") && $("#ueJoin").value) || "client",
-              status: ($("#ueStatus") && $("#ueStatus").value) || "active",
-              reason: ($("#ueReason") && $("#ueReason").value) || "",
-              headline: ($("#ueHeadline") && $("#ueHeadline").value) || "",
-              bio: ($("#ueBio") && $("#ueBio").value) || "",
-              state: ($("#ueState") && $("#ueState").value) || "",
-              city: ($("#ueCity") && $("#ueCity").value) || "",
-              skill: ($("#ueSkill") && $("#ueSkill").value) || "",
-              work_mode: ($("#ueMode") && $("#ueMode").value) || "",
-              verified: !!($("#ueVerified") && $("#ueVerified").checked),
-              promo: !!($("#uePromo") && $("#uePromo").checked),
-            },
-          });
-          toast("Account saved.", "success");
-          await paint();
-        } catch (err) {
-          if (!gate(err)) toast(err.message, "error");
-        } finally {
-          if (btn) btn.disabled = false;
+    const panel = $("#uePanel");
+    if (panel && !panel.dataset.bound) {
+      panel.dataset.bound = "1";
+      panel.addEventListener("click", async (e) => {
+        const editBtn = e.target.closest(".ue-edit");
+        const saveBtn = e.target.closest(".ue-save");
+        const cancelBtn = e.target.closest(".ue-cancel");
+        const row = e.target.closest(".ue-row");
+        if (editBtn && row) {
+          $$(".ue-row.editing").forEach((r) => r.classList.remove("editing"));
+          row.classList.add("editing");
+          const inp = row.querySelector("input, select, textarea");
+          if (inp) inp.focus();
+          return;
+        }
+        if (cancelBtn && row) {
+          row.classList.remove("editing");
+          return;
+        }
+        if (saveBtn && row) {
+          const field = row.getAttribute("data-field");
+          const body = {};
+          if (field === "verified") body.verified = !!($("#ueVerified") && $("#ueVerified").checked);
+          else if (field === "promo") body.promo = !!($("#uePromo") && $("#uePromo").checked);
+          else if (field === "status") {
+            body.status = ($("#ueStatus") && $("#ueStatus").value) || "active";
+            body.reason = ($("#ueReason") && $("#ueReason").value) || "";
+          } else {
+            const inp = row.querySelector("input:not([type=checkbox]), select, textarea");
+            body[field] = inp ? inp.value : "";
+          }
+          saveBtn.disabled = true;
+          try {
+            await api("/api/admin/users/" + encodeURIComponent(id) + "/update", { body });
+            toast("Saved.", "success");
+            await paint();
+          } catch (err) {
+            if (!gate(err)) toast(err.message, "error");
+          } finally {
+            saveBtn.disabled = false;
+          }
         }
       });
     }

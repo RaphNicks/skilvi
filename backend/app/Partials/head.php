@@ -13,5 +13,5 @@
   <link rel="icon" href="/assets/img/skilvi-logo-word.png">
   <title><?= e($title) ?></title>
   <meta name="description" content="<?= e($description) ?>">
-  <link rel="stylesheet" href="/assets/css/skilvi.css?v=22">
+  <link rel="stylesheet" href="/assets/css/skilvi.css?v=23">
 </head>
