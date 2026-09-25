@@ -57,7 +57,7 @@ final class PagesController
             'post-job.html'          => '/js/client.js?v=32',
             'client-dashboard.html'  => '/js/client.js?v=33',
             'order-detail.html'      => '/js/client.js?v=35',
-            'review.html'            => '/js/client.js?v=31',
+            'review.html'            => '/js/client.js?v=36',
             'worker-jobs.html'       => '/js/client.js?v=31',
             'worker-orders.html'     => '/js/client.js?v=31',
             'worker-dashboard.html'  => '/js/worker.js?v=33',

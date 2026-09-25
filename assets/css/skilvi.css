@@ -138,6 +138,10 @@ ul { margin: 0; padding: 0; list-style: none; }
 }
 .icon-btn:hover { background: var(--bg); color: var(--ink); }
 .icon-btn svg { width: 18px; height: 18px; }
+.rv-star { color: var(--line-2); }
+.rv-star.on, .icon-btn.rv-star.on { color: #F59E0B; }
+.icon-btn.rv-star:hover { color: #F59E0B; }
+.rv-star svg { width: 26px; height: 26px; }
 .icon-btn .dot { position: absolute; top: 7px; right: 8px; width: 7px; height: 7px; border-radius: 50%; background: var(--red); border: 1.5px solid #fff; }
 
 /* ---------- Badges, chips, tags, status ---------- */

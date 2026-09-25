@@ -412,9 +412,15 @@
     }
     let score = 0;
     const labels = { 1: "Not satisfied", 2: "Below expectations", 3: "It was okay", 4: "Very good", 5: "Excellent" };
+    const starSvg = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 2.6l2.9 5.9 6.5.95-4.7 4.6 1.1 6.5L12 17.5l-5.8 3.05 1.1-6.5-4.7-4.6 6.5-.95L12 2.6z"/></svg>';
     const starBtns = $$("#rvStars .rv-star");
+    starBtns.forEach((b) => { if (!b.querySelector("svg")) b.innerHTML = starSvg; });
     const paint = () => {
-      starBtns.forEach((b) => { b.style.color = Number(b.dataset.v) <= score ? "#F59E0B" : "var(--line-2)"; });
+      starBtns.forEach((b) => {
+        const on = Number(b.dataset.v) <= score;
+        b.classList.toggle("on", on);
+        b.style.color = on ? "#F59E0B" : "var(--line-2)";
+      });
       if ($("#rvScore")) $("#rvScore").textContent = score ? score + ".0" : "—";
       if ($("#rvLabel")) $("#rvLabel").textContent = score ? labels[score] : "Tap a star to rate";
       validate();
