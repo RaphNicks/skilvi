@@ -44,7 +44,14 @@ final class AuthController
             $req->str('email'),
             $req->str('password'),
             $req->str('join_as'),
-            $req->ip()
+            $req->ip(),
+            [
+                'country' => $req->str('country'),
+                'state'   => $req->str('state'),
+                'city'    => $req->str('city'),
+                'dob'     => $req->str('dob'),
+                'gender'  => $req->str('gender'),
+            ]
         ));
     }
 

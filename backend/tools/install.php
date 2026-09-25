@@ -13,6 +13,15 @@ if ($driver === 'mysql') {
 
 try {
     App\Core\Schema::install();
+    try {
+        echo "importing world locations…\n";
+        App\Services\GeoService::importCountriesStates();
+        App\Services\GeoService::importCities();
+        echo "geo import ok\n";
+    } catch (Throwable $e) {
+        echo 'geo import skipped: ' . $e->getMessage() . "\n";
+        echo "run later: php tools/import-geo.php\n";
+    }
     App\Core\Seed::run();
 } catch (Throwable $e) {
     fwrite(STDERR, 'INSTALL FAILED: ' . $e->getMessage() . "\n");

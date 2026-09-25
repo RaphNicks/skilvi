@@ -28,6 +28,9 @@
   async function postJob() {
     const form = $("#postJobForm");
     if (!form) return;
+    if (window.SkGeo) {
+      window.SkGeo.bind({ country: "#pjCountry", state: "#pjState", city: "#pjCity", values: { country: "Nigeria" } });
+    }
     form.addEventListener("submit", async (e) => {
       e.preventDefault();
       const fields = form.querySelectorAll("input:not([type=radio]):not([type=checkbox]), select, textarea");

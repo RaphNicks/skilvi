@@ -14,7 +14,7 @@ final class Profile
 
     public static function update(int $userId, array $fields): void
     {
-        $allowed = ['headline', 'bio', 'state', 'city', 'avatar_path', 'notify_sms', 'notify_jobs', 'notify_marketing', 'work_mode', 'skill'];
+        $allowed = ['headline', 'bio', 'state', 'city', 'country', 'country_code', 'dob', 'gender', 'avatar_path', 'notify_sms', 'notify_jobs', 'notify_marketing', 'work_mode', 'skill'];
         $set = [];
         $vals = [];
         foreach ($allowed as $k) {

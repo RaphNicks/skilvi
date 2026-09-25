@@ -15,3 +15,4 @@
 <script src="/assets/js/skilvi.js?v=21"></script>
 <script src="/js/api.js?v=39"></script>
 <script src="/js/chrome.js?v=39"></script>
+<script src="/js/geo.js?v=1"></script>

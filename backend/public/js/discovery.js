@@ -71,9 +71,10 @@
     else if ($("#searchTerm")) $("#searchTerm").textContent = "All services";
     const mode = ($$("#filters input[name=mode]:checked")[0] || {}).value || "";
     const state = $("#fState") ? $("#fState").value : "";
+    const country = $("#fCountry") ? $("#fCountry").value : "";
     const verified = $("#fVerified") && $("#fVerified").checked ? "1" : "";
     const rating = $("#fRating") ? $("#fRating").value : "";
-    const qs = new URLSearchParams({ q, mode, state, verified, rating });
+    const qs = new URLSearchParams({ q, mode, state, country, verified, rating });
     const data = await api("/api/workers?" + qs.toString());
     list.innerHTML = data.items.map(resultItem).join("") || empty("No matches. Try different keywords.");
     if ($("#rcCount")) $("#rcCount").textContent = data.total;
@@ -405,6 +406,9 @@
             hydrateJobs().catch((e) => toast(e.message, "error"));
           }));
         } else if (page === "search") {
+          if (window.SkGeo) {
+            await window.SkGeo.bind({ country: "#fCountry", state: "#fState", countryPh: "All countries", statePh: "All states", defaultCountry: "" });
+          }
           await hydrateSearch();
           const qNow = (params.get("q") || "").trim().toLowerCase();
           $$("#chips .chip").forEach((c) => {

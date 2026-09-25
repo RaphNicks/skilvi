@@ -12,16 +12,44 @@ use App\Models\User;
 
 final class AuthService
 {
-    public static function registerStart(string $name, string $phoneRaw, string $email, string $password, string $joinAs, string $ip): array
+    public static function registerStart(string $name, string $phoneRaw, string $email, string $password, string $joinAs, string $ip, array $extra = []): array
     {
         $fields = [];
         $name = trim($name);
         if (mb_strlen($name) < 2) {
             $fields['full_name'] = 'Enter your full name.';
         }
-        $phone = $phoneRaw !== '' ? normalize_phone($phoneRaw) : '';
-        if ($phoneRaw !== '' && $phone === '') {
-            $fields['phone'] = 'Use a Nigerian mobile, e.g. 0803 000 0000, or leave it blank.';
+        $countryIn = trim((string) ($extra['country'] ?? ''));
+        $stateIn = trim((string) ($extra['state'] ?? ''));
+        $cityIn = trim((string) ($extra['city'] ?? ''));
+        $dob = trim((string) ($extra['dob'] ?? ''));
+        $gender = strtolower(trim((string) ($extra['gender'] ?? '')));
+        $geo = GeoService::resolve($countryIn, $stateIn, $cityIn);
+        if ($geo['country'] === null) {
+            $fields['country'] = 'Pick your country.';
+        }
+        if ($geo['state'] === null) {
+            $fields['state'] = 'Pick your state / region.';
+        }
+        if ($cityIn === '') {
+            $fields['city'] = 'Pick your city.';
+        }
+        $iso2 = strtoupper((string) ($geo['country']['iso2'] ?? ''));
+        $phone = '';
+        if ($phoneRaw !== '') {
+            if ($iso2 === 'NG' || $iso2 === '') {
+                $phone = normalize_phone($phoneRaw);
+                if ($phone === '') {
+                    $fields['phone'] = 'Use a Nigerian mobile, e.g. 0803 000 0000, or leave it blank.';
+                }
+            } else {
+                $digits = preg_replace('/\D/', '', $phoneRaw) ?? '';
+                if (strlen($digits) < 7 || strlen($digits) > 15) {
+                    $fields['phone'] = 'Enter a working mobile number, or leave it blank.';
+                } else {
+                    $phone = $digits;
+                }
+            }
         }
         $email = strtolower(trim($email));
         $looksLikePhone = $email !== '' && !str_contains($email, '@') && preg_match('/^[0-9+\s().-]{7,}$/', $email);
@@ -36,6 +64,18 @@ final class AuthService
         $roles = self::rolesFromJoin($joinAs);
         if ($roles === '') {
             $fields['join_as'] = 'Choose Worker, Client, or Both.';
+        }
+        if ($dob === '' || !preg_match('/^\d{4}-\d{2}-\d{2}$/', $dob)) {
+            $fields['dob'] = 'Enter your date of birth.';
+        } else {
+            $born = strtotime($dob . ' UTC');
+            $age = $born ? (int) floor((time() - $born) / (365.25 * 86400)) : 0;
+            if ($age < 18 || $age > 120) {
+                $fields['dob'] = 'You must be 18 or older.';
+            }
+        }
+        if ($gender !== '' && !in_array($gender, ['female', 'male', 'prefer_not'], true)) {
+            $fields['gender'] = 'Pick one of the listed options, or leave it blank.';
         }
         if ($fields) {
             throw new AppError('invalid', 'Please fix the highlighted fields.', 422, $fields);
@@ -58,6 +98,12 @@ final class AuthService
             'email'         => $email,
             'password_hash' => password_hash($password, PASSWORD_DEFAULT),
             'roles'         => $roles,
+            'country'       => (string) ($geo['country']['name'] ?? ''),
+            'country_code'  => $iso2,
+            'state'         => (string) ($geo['state']['name'] ?? $stateIn),
+            'city'          => $cityIn,
+            'dob'           => $dob,
+            'gender'        => $gender !== '' ? $gender : null,
             'at'            => time(),
         ]);
         Session::claim($email, 'register');
@@ -228,7 +274,7 @@ final class AuthService
             User::updateName($id, $name);
         }
         $fields = [];
-        foreach (['headline', 'bio', 'state', 'city', 'work_mode', 'skill'] as $k) {
+        foreach (['headline', 'bio', 'state', 'city', 'country', 'country_code', 'dob', 'gender', 'work_mode', 'skill'] as $k) {
             if (array_key_exists($k, $in)) {
                 $fields[$k] = $in[$k] === '' ? null : (string) $in[$k];
             }

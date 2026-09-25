@@ -9,10 +9,14 @@
     if ($("#meName")) $("#meName").value = me.full_name || "";
     if ($("#meHeadline")) $("#meHeadline").value = me.headline || "";
     if ($("#meBio")) $("#meBio").value = me.bio || "";
-    if ($("#meCity")) $("#meCity").value = me.city || "";
-    if ($("#meState") && me.state) {
-      const opt = Array.from($("#meState").options).find((o) => o.text === me.state || o.value === me.state);
-      if (opt) $("#meState").value = opt.value;
+    if (window.SkGeo && !window.__meGeo) {
+      window.__meGeo = true;
+      window.SkGeo.bind({
+        country: "#meCountry",
+        state: "#meState",
+        city: "#meCity",
+        values: { country: me.country, state: me.state, city: me.city },
+      });
     }
     if ($("#meEmail")) $("#meEmail").value = me.email || "";
     if ($("#mePhone")) {
@@ -53,6 +57,7 @@
               full_name: $("#meName") && $("#meName").value,
               headline: $("#meHeadline") && $("#meHeadline").value,
               bio: $("#meBio") && $("#meBio").value,
+              country: $("#meCountry") && $("#meCountry").value,
               state: $("#meState") && $("#meState").value,
               city: $("#meCity") && $("#meCity").value,
             },

@@ -39,6 +39,36 @@ View::partial('head', ['title' => 'Log in — Skilvi', 'description' => 'Log in 
           <label for="regPhone">Phone <span class="faint" style="font-weight:500">(optional)</span></label>
           <input class="input" id="regPhone" name="phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="+234 803 000 0000">
         </div>
+        <div class="form-row-2 mb-2">
+          <div class="field">
+            <label for="regCountry">Country <span class="req" aria-hidden="true">*</span></label>
+            <select class="select" id="regCountry" name="country" required><option value="">Select country</option></select>
+          </div>
+          <div class="field">
+            <label for="regState">State / region <span class="req" aria-hidden="true">*</span></label>
+            <select class="select" id="regState" name="state" required disabled><option value="">Select state / region</option></select>
+          </div>
+        </div>
+        <div class="field mb-2">
+          <label for="regCity">City <span class="req" aria-hidden="true">*</span></label>
+          <select class="select" id="regCity" name="city" required disabled><option value="">Select city</option></select>
+        </div>
+        <div class="form-row-2 mb-2">
+          <div class="field">
+            <label for="regDob">Date of birth <span class="req" aria-hidden="true">*</span></label>
+            <input class="input" id="regDob" name="dob" type="date" required>
+            <span class="hint">You must be 18 or older.</span>
+          </div>
+          <div class="field">
+            <label for="regGender">Gender <span class="faint" style="font-weight:500">(optional)</span></label>
+            <select class="select" id="regGender" name="gender">
+              <option value="">Prefer not to say</option>
+              <option value="female">Female</option>
+              <option value="male">Male</option>
+              <option value="prefer_not">Prefer not to say</option>
+            </select>
+          </div>
+        </div>
         <div class="field mb-2">
           <label for="regPass">Password <span class="req" aria-hidden="true">*</span></label>
           <input class="input" id="regPass" name="password" type="password" autocomplete="new-password" placeholder="At least 8 characters" required minlength="8">
@@ -101,7 +131,15 @@ View::partial('head', ['title' => 'Log in — Skilvi', 'description' => 'Log in 
 </main>
 
 <?php View::partial('footer_public'); ?>
-<script src="/js/auth.js?v=38"></script>
+<script src="/js/geo.js?v=1"></script>
+<script src="/js/auth.js?v=39"></script>
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    if (window.SkGeo) {
+      window.SkGeo.bind({ country: "#regCountry", state: "#regState", city: "#regCity", phone: "#regPhone", values: { country: "Nigeria" } });
+    }
+  });
+</script>
 <script>
   document.addEventListener("DOMContentLoaded", () => {
     const I = SkIconSvg;

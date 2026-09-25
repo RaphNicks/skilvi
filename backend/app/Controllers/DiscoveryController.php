@@ -52,6 +52,7 @@ final class DiscoveryController
         Response::json(DiscoveryService::workers([
             'q'        => $req->q('q'),
             'state'    => $req->q('state'),
+            'country'  => $req->q('country'),
             'mode'     => $req->q('mode'),
             'skill'    => $req->q('skill'),
             'parent'   => $req->q('parent'),

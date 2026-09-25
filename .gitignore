@@ -5,3 +5,5 @@ node_modules/
 backend/storage/*.sqlite
 backend/storage/.app_key
 backend/.env
+backend/storage/geo/cities.csv.gz
+backend/storage/geo/cities.csv

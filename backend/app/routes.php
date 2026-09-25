@@ -16,6 +16,10 @@ Router::get('/logout.html', [AuthController::class, 'logoutPage']);
 Router::get('/forgot-password', [AuthController::class, 'forgotPage']);
 Router::get('/forgot-password.html', [AuthController::class, 'forgotPage']);
 
+Router::get('/api/geo/countries', [\App\Controllers\GeoController::class, 'countries']);
+Router::get('/api/geo/states', [\App\Controllers\GeoController::class, 'states']);
+Router::get('/api/geo/cities', [\App\Controllers\GeoController::class, 'cities']);
+
 Router::get('/api/health', [AuthController::class, 'health']);
 Router::get('/api/csrf', [AuthController::class, 'csrf']);
 Router::get('/api/me', [AuthController::class, 'me']);

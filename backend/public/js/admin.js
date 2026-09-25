@@ -179,8 +179,18 @@
       set("#ueStatus", f.status || "active"); show("status", statusLabel[f.status] || f.status);
       set("#ueHeadline", f.headline); show("headline", f.headline);
       set("#ueBio", f.bio); show("bio", f.bio);
-      set("#ueState", f.state); show("state", f.state);
-      set("#ueCity", f.city); show("city", f.city);
+      show("country", f.country);
+      show("state", f.state);
+      show("city", f.city);
+      if (window.SkGeo && !window.__ueGeo) {
+        window.__ueGeo = true;
+        window.SkGeo.bind({
+          country: "#ueCountry",
+          state: "#ueState",
+          city: "#ueCity",
+          values: { country: f.country, state: f.state, city: f.city },
+        });
+      }
       set("#ueSkill", f.skill); show("skill", f.skill);
       set("#ueMode", f.work_mode); show("work_mode", modeLabel[f.work_mode] || f.work_mode);
       if ($("#ueVerified")) $("#ueVerified").checked = !!f.verified;
@@ -261,6 +271,10 @@
           } else {
             const inp = row.querySelector("input:not([type=checkbox]), select, textarea");
             body[field] = inp ? inp.value : "";
+            if (field === "country" && inp && inp.selectedIndex >= 0) {
+              const opt = inp.options[inp.selectedIndex];
+              body.country_code = (opt && opt.getAttribute("data-iso2")) || "";
+            }
           }
           saveBtn.disabled = true;
           try {

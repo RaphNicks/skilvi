@@ -98,13 +98,17 @@
           </div>
           <div class="form-row-2 mb-2">
             <div class="field">
-              <label>State <span style="color:var(--red)">*</span></label>
-              <select class="select" name="state" required><option value="">Select state…</option><option>Abia</option><option>Enugu</option><option>FCT</option><option>Kano</option><option>Kaduna</option><option>Lagos</option><option>Ogun</option><option>Oyo</option><option>Rivers</option></select>
+              <label>Country <span style="color:var(--red)">*</span></label>
+              <select class="select" name="country" id="pjCountry" required><option value="">Select country</option></select>
             </div>
             <div class="field">
-              <label>City / area</label>
-              <input class="input" name="city" placeholder="e.g. Lekki Phase 1">
+              <label>State / region <span style="color:var(--red)">*</span></label>
+              <select class="select" name="state" id="pjState" required><option value="">Select state / region</option></select>
             </div>
+          </div>
+          <div class="field mb-2">
+            <label>City / area</label>
+            <select class="select" name="city" id="pjCity"><option value="">Select city</option></select>
           </div>
           <div class="form-row-2 mb-3">
             <div class="field">

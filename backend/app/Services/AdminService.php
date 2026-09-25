@@ -264,8 +264,12 @@ final class AdminService
                 'status'    => (string) $u['status'],
                 'headline'  => (string) ($p['headline'] ?? ''),
                 'bio'       => (string) ($p['bio'] ?? ''),
-                'state'     => (string) ($p['state'] ?? ''),
-                'city'      => (string) ($p['city'] ?? ''),
+                'state'      => (string) ($p['state'] ?? ''),
+                'city'       => (string) ($p['city'] ?? ''),
+                'country'    => (string) ($p['country'] ?? ''),
+                'country_code' => (string) ($p['country_code'] ?? ''),
+                'dob'        => (string) ($p['dob'] ?? ''),
+                'gender'     => (string) ($p['gender'] ?? ''),
                 'skill'     => (string) ($p['skill'] ?? ''),
                 'work_mode' => (string) ($p['work_mode'] ?? ''),
                 'verified'  => !empty($p['verified']),
@@ -340,7 +344,7 @@ final class AdminService
             $changed[] = 'status';
         }
         $prof = [];
-        foreach (['headline', 'bio', 'state', 'city', 'skill', 'work_mode'] as $k) {
+        foreach (['headline', 'bio', 'state', 'city', 'country', 'country_code', 'skill', 'work_mode'] as $k) {
             if (array_key_exists($k, $in)) {
                 $val = trim((string) $in[$k]);
                 $prof[$k] = $val === '' ? null : $val;

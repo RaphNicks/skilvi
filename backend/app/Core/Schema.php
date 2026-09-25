@@ -35,6 +35,10 @@ final class Schema
                 'orders_completed INTEGER NOT NULL DEFAULT 0',
                 'verified INTEGER NOT NULL DEFAULT 0',
                 'promo INTEGER NOT NULL DEFAULT 0',
+                'country TEXT',
+                'country_code TEXT',
+                'dob TEXT',
+                'gender TEXT',
             ],
             'jobs' => [
                 "budget_type TEXT NOT NULL DEFAULT 'fixed'",
@@ -486,6 +490,38 @@ final class Schema
                 expires_at INTEGER NOT NULL,
                 created_at INTEGER NOT NULL
             )',
+            'CREATE TABLE IF NOT EXISTS geo_countries (
+                id INTEGER NOT NULL PRIMARY KEY,
+                name TEXT NOT NULL,
+                iso2 TEXT NOT NULL,
+                iso3 TEXT,
+                phonecode TEXT,
+                capital TEXT,
+                currency TEXT,
+                currency_name TEXT,
+                currency_symbol TEXT,
+                region TEXT,
+                nationality TEXT,
+                emoji TEXT
+            )',
+            'CREATE TABLE IF NOT EXISTS geo_states (
+                id INTEGER NOT NULL PRIMARY KEY,
+                country_id INTEGER NOT NULL,
+                country_code TEXT NOT NULL,
+                name TEXT NOT NULL,
+                iso2 TEXT,
+                type TEXT
+            )',
+            'CREATE TABLE IF NOT EXISTS geo_cities (
+                id INTEGER NOT NULL PRIMARY KEY,
+                name TEXT NOT NULL,
+                state_id INTEGER NOT NULL,
+                country_id INTEGER NOT NULL,
+                country_code TEXT NOT NULL
+            )',
+            'CREATE INDEX IF NOT EXISTS idx_geo_states_country ON geo_states(country_id, name)',
+            'CREATE INDEX IF NOT EXISTS idx_geo_cities_state ON geo_cities(state_id, name)',
+            'CREATE INDEX IF NOT EXISTS idx_geo_countries_iso2 ON geo_countries(iso2)',
         ];
     }
 

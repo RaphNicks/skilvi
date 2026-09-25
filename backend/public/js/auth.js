@@ -112,6 +112,11 @@
             email: fd.get("email"),
             password: fd.get("password"),
             join_as: fd.get("join_as"),
+            country: fd.get("country"),
+            state: fd.get("state"),
+            city: fd.get("city"),
+            dob: fd.get("dob"),
+            gender: fd.get("gender"),
           },
         });
         showOtp(data, "register");

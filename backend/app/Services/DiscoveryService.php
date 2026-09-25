@@ -261,6 +261,11 @@ final class DiscoveryService
             $where[] = 'p.state = ?';
             $bind[] = $f['state'];
         }
+        if (!empty($f['country'])) {
+            $where[] = '(p.country = ? OR p.country_code = ?)';
+            $bind[] = $f['country'];
+            $bind[] = $f['country'];
+        }
         if (!empty($f['mode'])) {
             $where[] = 'p.work_mode = ?';
             $bind[] = $f['mode'];

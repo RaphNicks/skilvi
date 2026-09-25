@@ -57,9 +57,21 @@ final class User
         );
         $id = Db::lastInsertId();
         Db::run(
-            'INSERT INTO profiles (user_id, headline, bio, state, city, notify_sms, notify_jobs, notify_marketing, created_at, updated_at)
-             VALUES (?, ?, ?, ?, ?, 1, 1, 0, ?, ?)',
-            [$id, $row['headline'] ?? null, $row['bio'] ?? null, $row['state'] ?? null, $row['city'] ?? null, $now, $now]
+            'INSERT INTO profiles (user_id, headline, bio, state, city, country, country_code, dob, gender, notify_sms, notify_jobs, notify_marketing, created_at, updated_at)
+             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 1, 1, 0, ?, ?)',
+            [
+                $id,
+                $row['headline'] ?? null,
+                $row['bio'] ?? null,
+                $row['state'] ?? null,
+                $row['city'] ?? null,
+                $row['country'] ?? null,
+                $row['country_code'] ?? null,
+                $row['dob'] ?? null,
+                $row['gender'] ?? null,
+                $now,
+                $now,
+            ]
         );
         Db::run('INSERT INTO wallets (user_id, available_kobo, pending_kobo, updated_at) VALUES (?, 0, 0, ?)', [$id, $now]);
         return $id;
@@ -121,6 +133,10 @@ final class User
             'bio'        => $profile['bio'] ?? null,
             'state'      => $profile['state'] ?? null,
             'city'       => $profile['city'] ?? null,
+            'country'    => $profile['country'] ?? null,
+            'country_code' => $profile['country_code'] ?? null,
+            'dob'        => $profile['dob'] ?? null,
+            'gender'     => $profile['gender'] ?? null,
             'notify_sms' => (int) ($profile['notify_sms'] ?? 1),
             'notify_jobs'=> (int) ($profile['notify_jobs'] ?? 1),
             'notify_marketing' => (int) ($profile['notify_marketing'] ?? 0),

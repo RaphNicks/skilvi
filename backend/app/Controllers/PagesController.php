@@ -43,18 +43,18 @@ final class PagesController
 
     private static function inject(string $html, string $rel): string
     {
-        $extra = '<script src="/js/api.js?v=39"></script><script src="/js/chrome.js?v=39"></script>';
+        $extra = '<script src="/js/api.js?v=39"></script><script src="/js/chrome.js?v=39"></script><script src="/js/geo.js?v=1"></script>';
         $pageScripts = [
             'index.html'             => '/js/discovery.js?v=31',
             'jobs.html'              => '/js/discovery.js?v=31',
-            'search.html'            => '/js/discovery.js?v=31',
+            'search.html'            => '/js/discovery.js?v=32',
             'category.html'          => '/js/discovery.js?v=31',
             'job-detail.html'        => '/js/discovery.js?v=31',
             'worker-profile.html'    => '/js/discovery.js?v=31',
             'service-detail.html'    => '/js/discovery.js?v=31',
             'saved.html'             => '/js/discovery.js?v=31',
-            'account-settings.html'  => '/js/account.js?v=31',
-            'post-job.html'          => '/js/client.js?v=31',
+            'account-settings.html'  => '/js/account.js?v=32',
+            'post-job.html'          => '/js/client.js?v=32',
             'client-dashboard.html'  => '/js/client.js?v=33',
             'order-detail.html'      => '/js/client.js?v=31',
             'review.html'            => '/js/client.js?v=31',
@@ -89,7 +89,7 @@ final class PagesController
         if (str_starts_with($rel, 'admin/')) {
             // Do not bounce staff to a client/worker dashboard. Cookie is shared
             // across tabs; this tab's account is the Bearer token in JS.
-            $extra .= '<script src="/js/admin.js?v=40"></script>';
+            $extra .= '<script src="/js/admin.js?v=41"></script>';
         }
         if (in_array($rel, $gated, true) && !Session::userId() && empty($_SERVER['HTTP_AUTHORIZATION']) && empty($_SERVER['HTTP_X_SKILVI_TOKEN'])) {
             Response::redirect('/login.html?next=/' . $rel);
