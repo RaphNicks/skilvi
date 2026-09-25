@@ -102,7 +102,7 @@
           "<td>" + esc(u.role) + "</td><td>" + u.orders + "</td>" +
           '<td class="cell-sub">' + esc(u.skill || "—") + "</td><td>" + esc(u.joined) + "</td>" +
           '<td><span class="st ' + esc(u.chip) + '">' + esc(u.stateLabel) + "</span></td>" +
-          '<td class="right nowrap">' +
+          '<td class="acts">' +
           '<a class="btn btn-secondary btn-sm" href="user.html?id=' + u.id + '">Edit</a> ' +
           (u.status === "deleted" || /admin/i.test(u.role) ? "" :
             (u.status === "banned"

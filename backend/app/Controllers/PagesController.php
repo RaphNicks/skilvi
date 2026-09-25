@@ -43,7 +43,12 @@ final class PagesController
 
     private static function inject(string $html, string $rel): string
     {
-        $extra = '<script src="/js/api.js?v=39"></script><script src="/js/chrome.js?v=41"></script><script src="/js/geo.js?v=1"></script>';
+        $html = preg_replace('/skilvi\\.css\\?v=\\d+/', 'skilvi.css?v=25', $html) ?? $html;
+        $boot = '<script>(function(){try{var p=localStorage.getItem("skilvi_theme")||"system";var dark=p==="dark"||(p!=="light"&&window.matchMedia("(prefers-color-scheme: dark)").matches);document.documentElement.setAttribute("data-theme",dark?"dark":"light");document.documentElement.setAttribute("data-theme-pref",p);}catch(e){}})();</script>';
+        if (str_contains($html, '<head>')) {
+            $html = preg_replace('/<head>/i', '<head>' . $boot, $html, 1) ?? $html;
+        }
+        $extra = '<script src="/js/theme.js?v=1"></script><script src="/js/api.js?v=39"></script><script src="/js/chrome.js?v=42"></script><script src="/js/geo.js?v=1"></script>';
         $pageScripts = [
             'index.html'             => '/js/discovery.js?v=31',
             'jobs.html'              => '/js/discovery.js?v=31',
@@ -89,7 +94,7 @@ final class PagesController
         if (str_starts_with($rel, 'admin/')) {
             // Do not bounce staff to a client/worker dashboard. Cookie is shared
             // across tabs; this tab's account is the Bearer token in JS.
-            $extra .= '<script src="/js/admin.js?v=43"></script>';
+            $extra .= '<script src="/js/admin.js?v=44"></script>';
         }
         if (in_array($rel, $gated, true) && !Session::userId() && empty($_SERVER['HTTP_AUTHORIZATION']) && empty($_SERVER['HTTP_X_SKILVI_TOKEN'])) {
             Response::redirect('/login.html?next=/' . $rel);

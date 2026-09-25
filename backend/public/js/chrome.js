@@ -177,6 +177,7 @@
     }
     if (want === "client") side.innerHTML = clientSide(me, active);
     else if (want === "worker") side.innerHTML = workerSide(me, active);
+    if (window.SkTheme && window.SkTheme.mount) window.SkTheme.mount();
   }
 
   function setHeader(me) {
@@ -252,12 +253,14 @@
       }
       setHeader(me);
       paint(me);
+      if (window.SkTheme && window.SkTheme.mount) window.SkTheme.mount();
       return;
     }
     if (gate(me)) return;
     applySide(me);
     setHeader(me);
     paint(me);
+    if (window.SkTheme && window.SkTheme.mount) window.SkTheme.mount();
     paintBadges();
     bindDashTabs(me);
     window.__me = me;
