@@ -52,6 +52,16 @@ final class Response
         ], $body);
     }
 
+    public static function download(string $filename, string $body, string $mime): never
+    {
+        $safe = preg_replace('/[^A-Za-z0-9._-]/', '_', $filename) ?: 'download.bin';
+        self::send(200, [
+            'Content-Type'        => $mime,
+            'Content-Disposition' => 'attachment; filename="' . $safe . '"',
+            'Cache-Control'       => 'no-store',
+        ], $body);
+    }
+
     public static function redirect(string $to, int $status = 302): never
     {
         if (!str_starts_with($to, '/') || str_starts_with($to, '//')) {

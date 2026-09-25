@@ -27,6 +27,12 @@ final class PaymentController
         Response::json(PaymentService::status(Auth::id(), $params['id'] ?? ''));
     }
 
+    public static function receipt(Request $req, array $params = []): void
+    {
+        $pdf = PaymentService::receiptPdf(Auth::id(), $params['id'] ?? '');
+        Response::download($pdf['filename'], $pdf['body'], 'application/pdf');
+    }
+
     public static function simulate(Request $req, array $params = []): void
     {
         Response::json(PaymentService::simulate(Auth::id(), $params['id'] ?? '', $req->str('result', 'success')));

@@ -77,26 +77,11 @@
       <!-- Payment method -->
       <div class="card card-pad">
         <h3 style="font-size:15px">Payment method</h3>
-        <p class="tiny faint mt-1">All payments are in Naira, verified automatically — no screenshots, no waiting for a human to confirm.</p>
-        <div class="stack mt-2" style="gap:10px">
-          <label class="radio-pill active" style="width:100%"><span class="rd"></span> Bank transfer (instant) — recommended <span class="tag tag-royal" style="margin-left:auto">NIP</span></label>
-          <label class="radio-pill" style="width:100%"><span class="rd"></span> Card (Visa / Mastercard / Verve)</label>
-          <label class="radio-pill" style="width:100%"><span class="rd"></span> USSD (no internet needed)</label>
+        <p class="mt-1" style="font-size:14px;color:var(--ink-2);line-height:1.6">You pay Skilvi through <b>Paystack</b>. Card, bank transfer, and USSD are all supported — Paystack shows those options when you continue.</p>
+        <div class="alert alert-info mt-3">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;flex:none;margin-top:1px"><path d="M12 3 5 6v6c0 4.4 3 7.4 7 9 4-1.6 7-4.6 7-9V6l-7-3Z"/><path d="m9 12 2 2 4-4"/></svg>
+          <span>Paystack checkout opens when you tap <b>Pay</b>. You pay Skilvi (escrow), not the worker. Confirmation is automatic.</span>
         </div>
-
-        <div class="alert alert-info mt-3" id="coPayHint" hidden></div>
-
-        <details class="acc mt-2">
-          <summary>Paying by card instead?</summary>
-          <div class="acc-body">
-            <div class="form-row-2">
-              <div class="field" style="grid-column:1/-1"><label>Card number</label><input class="input" placeholder="0000 0000 0000 0000" inputmode="numeric"></div>
-              <div class="field"><label>Expiry</label><input class="input" placeholder="MM / YY" inputmode="numeric"></div>
-              <div class="field"><label>CVV</label><input class="input" type="password" placeholder="•••" inputmode="numeric" maxlength="4"></div>
-            </div>
-            <p class="tiny faint mt-2">Processed securely by our payment partner (PCI-DSS). Skilvi never sees or stores your card number.</p>
-          </div>
-        </details>
       </div>
 
       <!-- What happens next -->

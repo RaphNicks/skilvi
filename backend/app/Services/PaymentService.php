@@ -24,9 +24,9 @@ final class PaymentService
             }
         }
         $purpose = (string) ($in['purpose'] ?? 'order');
-        $method = (string) ($in['method'] ?? 'transfer');
-        if (!in_array($method, ['transfer', 'card', 'ussd', 'mobile_money'], true)) {
-            $method = 'transfer';
+        $method = (string) ($in['method'] ?? 'paystack');
+        if (!in_array($method, ['paystack', 'transfer', 'card', 'ussd', 'mobile_money'], true)) {
+            $method = 'paystack';
         }
         if (!in_array($purpose, ['order', 'verification', 'promotion'], true)) {
             throw new AppError('invalid', 'Unknown payment purpose.', 422);
@@ -51,7 +51,7 @@ final class PaymentService
                 [$orderId]
             );
             if ($existing) {
-                $out = self::payload($existing, $order);
+                $out = self::payload($existing, self::orderRow($orderId));
                 if ($idem !== '') {
                     \App\Core\Idempotency::put($userId, $idem, $out);
                 }
@@ -82,7 +82,7 @@ final class PaymentService
             [$code, $userId, $orderId, $purpose, $ref, $amount, $method, json_encode($meta), $now, $now]
         );
         $row = Db::fetch('SELECT * FROM payments WHERE code = ?', [$code]);
-        $order = $orderId ? Db::fetch('SELECT * FROM orders WHERE id = ?', [$orderId]) : null;
+        $order = $orderId ? self::orderRow($orderId) : null;
         $out = self::payload($row, $order);
         if ($idem !== '') {
             \App\Core\Idempotency::put($userId, $idem, $out);
@@ -96,8 +96,37 @@ final class PaymentService
         if ((int) $row['user_id'] !== $userId) {
             throw new AppError('forbidden', 'This payment is not yours.', 403);
         }
-        $order = $row['order_id'] ? Db::fetch('SELECT * FROM orders WHERE id = ?', [$row['order_id']]) : null;
+        $order = $row['order_id'] ? self::orderRow((int) $row['order_id']) : null;
         return self::payload($row, $order);
+    }
+
+    /** @return array{filename:string,body:string} */
+    public static function receiptPdf(int $userId, string $key): array
+    {
+        $p = self::status($userId, $key);
+        $order = $p['order'] ?? null;
+        $when = (string) ($p['paid_at'] ?? '');
+        $rows = [
+            ['Receipt', (string) $p['id']],
+            ['Order', (string) ($order['id'] ?? '—')],
+            ['Service', (string) ($order['title'] ?? '—')],
+            ['Worker', (string) ($order['worker_name'] ?? '—')],
+            ['Client', (string) ($order['client_name'] ?? '—')],
+            ['Amount paid', (string) $p['amount_label']],
+            ['Payment method', (string) ($p['method_label'] ?? 'Paystack')],
+            ['Provider', 'Paystack'],
+            ['Provider reference', (string) ($p['provider_ref'] ?: $p['id'])],
+            ['Paid at', $when !== '' ? $when : '—'],
+            ['Escrow status', (string) ($p['escrow_label'] ?? '—')],
+            ['Paid to', 'Skilvi Technologies Ltd (escrow)'],
+        ];
+        $body = \App\Core\SimplePdf::receipt(
+            'Payment receipt',
+            $rows,
+            'Skilvi Technologies Ltd holds this amount in escrow until the client approves the work, or a dispute is resolved. This is a payment receipt, not a tax invoice. Built in Nigeria.'
+        );
+        $name = preg_replace('/[^A-Za-z0-9._-]/', '_', (string) $p['id']) . '-receipt.pdf';
+        return ['filename' => $name, 'body' => $body];
     }
 
     public static function simulate(int $userId, string $key, string $result = 'success'): array
@@ -200,6 +229,20 @@ final class PaymentService
         return $row;
     }
 
+    private static function orderRow(int $id): ?array
+    {
+        return Db::fetch(
+            "SELECT o.*, wu.full_name AS worker_name, cu.full_name AS client_name,
+                    wp.verified AS worker_verified
+             FROM orders o
+             JOIN users wu ON wu.id = o.worker_id
+             JOIN users cu ON cu.id = o.client_id
+             LEFT JOIN profiles wp ON wp.user_id = wu.id
+             WHERE o.id = ?",
+            [$id]
+        );
+    }
+
     /** @param array<string,mixed>|null $order */
     private static function payload(?array $row, ?array $order): array
     {
@@ -207,30 +250,35 @@ final class PaymentService
             throw new AppError('not_found', 'Payment not found.', 404);
         }
         $naira = kobo_naira((int) $row['amount_kobo']);
-        $va = [
-            'bank'            => 'GTBank',
-            'account_name'    => 'Skilvi Technologies Ltd',
-            'account_number'  => str_pad((string) (1000000000 + (int) $row['id']), 10, '0', STR_PAD_LEFT),
-            'reference'       => $row['code'],
-            'amount_label'    => ngn_fmt((int) $row['amount_kobo']),
-        ];
+        $paid = $row['status'] === 'succeeded' ? ($row['updated_at'] ?? $row['created_at']) : null;
+        $paidLabel = $paid ? date('j M Y, g:i A', strtotime((string) $paid) ?: time()) . ' WAT' : '';
+        $escrow = 'Unpaid';
+        if ($row['status'] === 'succeeded') {
+            $st = (string) ($order['status'] ?? '');
+            $escrow = $st === OrderService::RELEASED ? 'Released to the worker' : 'Held — released on your approval';
+        }
         $out = [
             'id'              => $row['code'],
             'numeric_id'      => (int) $row['id'],
             'purpose'         => $row['purpose'],
             'method'          => $row['method'],
+            'method_label'    => 'Paystack',
             'status'          => $row['status'],
             'amount_kobo'     => (int) $row['amount_kobo'],
             'amount_naira'    => $naira,
             'amount_label'    => ngn_fmt((int) $row['amount_kobo']),
             'provider'        => $row['provider'] ?: 'paystack',
             'provider_ref'    => $row['provider_ref'],
-            'virtual_account' => $row['method'] === 'card' ? null : $va,
+            'paid_at'         => $paidLabel,
+            'escrow_label'    => $escrow,
             'dev_simulate'    => Config::isDev() && $row['status'] === 'initiated',
             'order'           => $order ? [
-                'id'     => $order['code'],
-                'title'  => $order['title'],
-                'status' => $order['status'],
+                'id'              => $order['code'],
+                'title'           => $order['title'],
+                'status'          => $order['status'],
+                'worker_name'     => $order['worker_name'] ?? null,
+                'client_name'     => $order['client_name'] ?? null,
+                'worker_verified' => (int) ($order['worker_verified'] ?? 0) === 1,
             ] : null,
             'success_url'     => '/payment-success.html?id=' . rawurlencode($row['code']),
         ];

@@ -70,7 +70,6 @@
   }
 
   async function checkout() {
-    bindMethodPills();
     let orderId = params.get("order") || params.get("id") || "";
     const service = params.get("service");
     const pkg = params.get("pkg") || "";
@@ -137,16 +136,19 @@
       busy(payBtn, true);
       try {
         currentPay = await api("/api/payments/initiate", {
-          body: { purpose: "order", order_id: o.id, method: methodFromUi() },
+          body: { purpose: "order", order_id: o.id, method: "paystack" },
         });
-        showVa(currentPay);
         if (currentPay.dev_simulate) {
-          toast("Dev mode: simulating a successful Paystack webhook.", "success");
+          toast("Paystack (dev): confirming payment.", "success");
           await api("/api/payments/" + encodeURIComponent(currentPay.id) + "/simulate", { body: { result: "success" } });
           location.href = currentPay.success_url;
           return;
         }
-        toast("Waiting for the bank to confirm…", "success");
+        if (currentPay.authorization_url) {
+          location.href = currentPay.authorization_url;
+          return;
+        }
+        toast("Waiting for Paystack to confirm…", "success");
         await pollUntilDone(currentPay.id);
       } catch (err) {
         if (!gate(err)) toast(err.message, "error");
@@ -163,16 +165,48 @@
     const id = params.get("id") || params.get("pay") || "";
     if (!id) return;
     const p = await api("/api/payments/" + encodeURIComponent(id));
-    $$(".kv .v").forEach((el, i) => {
-      if (i === 0 && p.order) el.textContent = p.order.id;
-      if (i === 3) el.textContent = p.amount_label;
-      if (i === 4) el.textContent = p.method === "card" ? "Card" : "Bank transfer (instant)";
-      if (i === 5) el.textContent = p.provider_ref || p.id;
-    });
-    const track = document.querySelector('a.btn.btn-primary[href*="order-detail"]');
-    if (track && p.order) track.href = "order-detail.html?id=" + encodeURIComponent(p.order.id);
+    const o = p.order || {};
+    if ($("#psOrder")) $("#psOrder").textContent = o.id || "—";
+    if ($("#psService")) $("#psService").textContent = o.title || "—";
+    if ($("#psWorker")) {
+      $("#psWorker").textContent = o.worker_name || "—";
+    }
+    if ($("#psAmount")) $("#psAmount").textContent = p.amount_label || "—";
+    if ($("#psMethod")) $("#psMethod").textContent = p.method_label || "Paystack";
+    if ($("#psRef")) $("#psRef").textContent = p.provider_ref || p.id || "—";
+    if ($("#psWhen")) $("#psWhen").textContent = p.paid_at || "—";
+    if ($("#psEscrowKv")) $("#psEscrowKv").textContent = p.escrow_label || "—";
+    const track = $("#psTrack") || document.querySelector('a.btn.btn-primary[href*="order-detail"]');
+    if (track && o.id) {
+      track.href = "order-detail.html?id=" + encodeURIComponent(o.id);
+      track.textContent = "Track order " + o.id;
+    }
     const h1 = $("h1");
     if (h1 && p.status === "succeeded") h1.textContent = "Payment verified — your order is live";
+    const pdfBtn = $("#psPdf");
+    if (pdfBtn) {
+      pdfBtn.removeAttribute("data-toast");
+      pdfBtn.addEventListener("click", async () => {
+        try {
+          const tok = window.SkApi && window.SkApi.tabToken && window.SkApi.tabToken();
+          const r = await fetch("/api/payments/" + encodeURIComponent(p.id) + "/receipt.pdf", {
+            headers: tok ? { Authorization: "Bearer " + tok, "X-Skilvi-Token": tok } : {},
+            credentials: "same-origin",
+          });
+          if (!r.ok) throw new Error("Could not generate the receipt.");
+          const blob = await r.blob();
+          const a = document.createElement("a");
+          a.href = URL.createObjectURL(blob);
+          a.download = p.id + "-receipt.pdf";
+          document.body.appendChild(a);
+          a.click();
+          a.remove();
+          setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+        } catch (err) {
+          toast(err.message || "Could not download PDF.", "error");
+        }
+      });
+    }
   }
 
   async function verifyPage() {

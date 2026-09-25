@@ -60,16 +60,16 @@
           <div class="card card-pad">
             <div class="row spread mb-2">
               <h3 style="font-size:14px">Receipt</h3>
-              <button class="btn btn-secondary btn-sm" data-toast="Receipt PDF downloaded — OR-1043-receipt.pdf" type="button">Download PDF</button>
+              <button class="btn btn-secondary btn-sm" id="psPdf" type="button">Download PDF</button>
             </div>
-            <div class="kv"><span class="k">Order</span><span class="v">OR-1043 · Standard package</span></div>
-            <div class="kv"><span class="k">Service</span><span class="v">Website development — landing pages to full sites</span></div>
-            <div class="kv"><span class="k">Worker</span><span class="v">You · verified</span></div>
-            <div class="kv"><span class="k">Amount paid</span><span class="v amount" style="font-size:15px">—</span></div>
-            <div class="kv"><span class="k">Payment method</span><span class="v">Bank transfer (instant) · GTBank</span></div>
-            <div class="kv"><span class="k">Provider reference</span><span class="v mono">TXN-20260917-55214</span></div>
-            <div class="kv"><span class="k">Paid at</span><span class="v">17 Sep 2026, 2:47 PM WAT</span></div>
-            <div class="kv"><span class="k">Escrow status</span><span class="v"><span class="st st-teal">Held — released on your approval</span></span></div>
+            <div class="kv"><span class="k">Order</span><span class="v" id="psOrder">—</span></div>
+            <div class="kv"><span class="k">Service</span><span class="v" id="psService">—</span></div>
+            <div class="kv"><span class="k">Worker</span><span class="v" id="psWorker">—</span></div>
+            <div class="kv"><span class="k">Amount paid</span><span class="v amount" id="psAmount" style="font-size:15px">—</span></div>
+            <div class="kv"><span class="k">Payment method</span><span class="v" id="psMethod">Paystack</span></div>
+            <div class="kv"><span class="k">Provider reference</span><span class="v mono" id="psRef">—</span></div>
+            <div class="kv"><span class="k">Paid at</span><span class="v" id="psWhen">—</span></div>
+            <div class="kv"><span class="k">Escrow status</span><span class="v" id="psEscrowKv">—</span></div>
           </div>
 
           <div class="card card-pad">
@@ -81,7 +81,7 @@
               <div class="tl-item"><span class="tl-dot"></span><div class="tl-t">You approve → payment released</div><div class="tl-s">Or auto-released 5 business days after delivery if you don't respond. Disputes freeze funds at any point.</div></div>
             </div>
             <div class="row mt-3" style="gap:8px;flex-wrap:wrap">
-              <a class="btn btn-primary" href="order-detail.html?state=paid">Track order OR-1043</a>
+              <a class="btn btn-primary" id="psTrack" href="client-dashboard.html">Track order</a>
               <a class="btn btn-secondary" href="messages.html">Open messages</a>
               <a class="btn btn-ghost" href="client-dashboard.html">Back to dashboard</a>
             </div>
