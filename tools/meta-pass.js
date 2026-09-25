@@ -3,7 +3,7 @@ const fs = require("fs");
 const path = require("path");
 const root = path.resolve(__dirname, "..");
 
-const FAVICON = '<link rel="icon" href="assets/img/skilvi-logo-word.png">';
+const FAVICON = '<link rel="icon" href="assets/img/skilvi-favicon.png" type="image/png">';
 
 const DESC = {
   "index.html": "Discover. Learn. Earn. Skilvi is Nigeria's marketplace for digital skills and hands-on trades — browse verified workers, hire with escrow protection, and get paid for your skills.",
