@@ -480,6 +480,12 @@ final class Schema
                 hits INTEGER NOT NULL,
                 reset_at INTEGER NOT NULL
             )',
+            'CREATE TABLE IF NOT EXISTS auth_tokens (
+                token TEXT NOT NULL PRIMARY KEY,
+                user_id INTEGER NOT NULL,
+                expires_at INTEGER NOT NULL,
+                created_at INTEGER NOT NULL
+            )',
         ];
     }
 

@@ -8,13 +8,29 @@ use App\Models\User;
 
 final class Auth
 {
+    private static bool $resolved = false;
+    private static ?int $id = null;
+    private static ?string $token = null;
+
     public static function id(): int
     {
-        $id = Session::userId();
+        $id = self::resolvedId();
         if ($id === null) {
             throw new AppError('unauth', 'Log in to continue.', 401);
         }
         return $id;
+    }
+
+    public static function resolvedId(): ?int
+    {
+        if (!self::$resolved) {
+            self::$resolved = true;
+            self::$id = self::idFromBearer();
+            if (self::$id === null) {
+                self::$id = Session::userId();
+            }
+        }
+        return self::$id;
     }
 
     public static function user(): array
@@ -36,5 +52,94 @@ final class Auth
             throw new AppError('forbidden', 'This action needs a ' . $role . ' account.', 403);
         }
         return (int) $u['id'];
+    }
+
+    public static function issueToken(int $userId): string
+    {
+        self::ensureTable();
+        $token = bin2hex(random_bytes(32));
+        $now = time();
+        Db::run(
+            'INSERT INTO auth_tokens (token, user_id, expires_at, created_at) VALUES (?,?,?,?)',
+            [$token, $userId, $now + 30 * 86400, $now]
+        );
+        return $token;
+    }
+
+    public static function revokeCurrent(): void
+    {
+        $t = self::rawToken();
+        if ($t === null) {
+            return;
+        }
+        self::ensureTable();
+        Db::run('DELETE FROM auth_tokens WHERE token=?', [$t]);
+    }
+
+    private static function idFromBearer(): ?int
+    {
+        $t = self::rawToken();
+        if ($t === null) {
+            return null;
+        }
+        self::ensureTable();
+        $row = Db::fetch('SELECT user_id, expires_at FROM auth_tokens WHERE token=?', [$t]);
+        if ($row === null || (int) $row['expires_at'] < time()) {
+            if ($row) {
+                Db::run('DELETE FROM auth_tokens WHERE token=?', [$t]);
+            }
+            return null;
+        }
+        self::$token = $t;
+        return (int) $row['user_id'];
+    }
+
+    private static function rawToken(): ?string
+    {
+        $hdr = (string) ($_SERVER['HTTP_AUTHORIZATION'] ?? $_SERVER['REDIRECT_HTTP_AUTHORIZATION'] ?? '');
+        if ($hdr === '' && function_exists('apache_request_headers')) {
+            $h = apache_request_headers();
+            if (is_array($h)) {
+                $hdr = (string) ($h['Authorization'] ?? $h['authorization'] ?? '');
+            }
+        }
+        if (preg_match('/Bearer\s+([a-f0-9]{64})/i', $hdr, $m)) {
+            return strtolower($m[1]);
+        }
+        $x = (string) ($_SERVER['HTTP_X_SKILVI_TOKEN'] ?? '');
+        if (preg_match('/^[a-f0-9]{64}$/i', $x)) {
+            return strtolower($x);
+        }
+        return null;
+    }
+
+    private static function ensureTable(): void
+    {
+        static $done = false;
+        if ($done) {
+            return;
+        }
+        $done = true;
+        $sql = 'CREATE TABLE IF NOT EXISTS auth_tokens (
+            token VARCHAR(64) NOT NULL PRIMARY KEY,
+            user_id INT NOT NULL,
+            expires_at INT NOT NULL,
+            created_at INT NOT NULL
+        )';
+        if (!Db::isMysql()) {
+            $sql = 'CREATE TABLE IF NOT EXISTS auth_tokens (
+                token TEXT NOT NULL PRIMARY KEY,
+                user_id INTEGER NOT NULL,
+                expires_at INTEGER NOT NULL,
+                created_at INTEGER NOT NULL
+            )';
+        } else {
+            $sql .= ' ENGINE=InnoDB DEFAULT CHARSET=utf8mb4';
+        }
+        try {
+            Db::exec($sql);
+        } catch (\Throwable $e) {
+            error_log('SKILVI auth_tokens ' . $e->getMessage());
+        }
     }
 }

@@ -200,12 +200,13 @@ final class AuthService
 
     public static function logout(): void
     {
+        \App\Core\Auth::revokeCurrent();
         Session::logout();
     }
 
     public static function me(): array
     {
-        $id = Session::userId();
+        $id = \App\Core\Auth::resolvedId();
         if ($id === null) {
             throw new AppError('unauth', 'Log in to continue.', 401);
         }
@@ -377,7 +378,11 @@ final class AuthService
         Session::login($id);
         User::touchLogin($id);
         $me = User::public(User::find($id));
-        return ['user' => $me, 'redirect' => self::homeFor($me)];
+        return [
+            'user'     => $me,
+            'redirect' => self::homeFor($me),
+            'token'    => \App\Core\Auth::issueToken($id),
+        ];
     }
 
     private static function rolesFromJoin(string $joinAs): string

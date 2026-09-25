@@ -7,13 +7,29 @@
     return m ? decodeURIComponent(m[1]) : "";
   }
 
+  function tabToken() {
+    try { return sessionStorage.getItem("skilvi_auth") || ""; } catch (e) { return ""; }
+  }
+  function setTabToken(t) {
+    try {
+      if (t) sessionStorage.setItem("skilvi_auth", t);
+      else sessionStorage.removeItem("skilvi_auth");
+    } catch (e) { /* private mode */ }
+  }
+  document.addEventListener("click", (e) => {
+    const a = e.target && e.target.closest && e.target.closest('a[href*="logout"]');
+    if (a) setTabToken("");
+  });
+
   async function api(path, opts) {
     opts = opts || {};
+    const tok = tabToken();
     const headers = Object.assign(
       {
         Accept: "application/json",
         "X-CSRF-Token": csrf(),
       },
+      tok ? { Authorization: "Bearer " + tok, "X-Skilvi-Token": tok } : {},
       opts.body && !(opts.body instanceof FormData)
         ? { "Content-Type": "application/json" }
         : {},
@@ -238,5 +254,5 @@
     if (e.target && e.target.tagName === "FORM") clearFieldErrors(e.target);
   }, true);
 
-  window.SkApi = { api, csrf, busy, toast, bindOtpBoxes, refreshBadges, showFieldErrors, clearFieldErrors };
+  window.SkApi = { api, csrf, busy, toast, bindOtpBoxes, refreshBadges, showFieldErrors, clearFieldErrors, setTabToken, tabToken };
 })();

@@ -43,7 +43,7 @@ final class PagesController
 
     private static function inject(string $html, string $rel): string
     {
-        $extra = '<script src="/js/api.js?v=32"></script><script src="/js/chrome.js?v=31"></script>';
+        $extra = '<script src="/js/api.js?v=38"></script><script src="/js/chrome.js?v=38"></script>';
         $pageScripts = [
             'index.html'             => '/js/discovery.js?v=31',
             'jobs.html'              => '/js/discovery.js?v=31',
@@ -87,25 +87,14 @@ final class PagesController
             'verification.html', 'promotion.html',
         ];
         if (str_starts_with($rel, 'admin/')) {
-            if (!Session::userId()) {
-                Response::redirect('/login.html?next=/' . $rel);
-            }
-            $u = User::find((int) Session::userId());
-            if ($u === null || !str_contains((string) $u['roles'], 'admin')) {
-                Response::redirect('/client-dashboard.html');
-            }
-            $extra .= '<script src="/js/admin.js?v=36"></script>';
+            // Do not bounce staff to a client/worker dashboard. Cookie is shared
+            // across tabs; this tab's account is the Bearer token in JS.
+            $extra .= '<script src="/js/admin.js?v=38"></script>';
         }
-        if (in_array($rel, $gated, true) && !Session::userId()) {
+        if (in_array($rel, $gated, true) && !Session::userId() && empty($_SERVER['HTTP_AUTHORIZATION']) && empty($_SERVER['HTTP_X_SKILVI_TOKEN'])) {
             Response::redirect('/login.html?next=/' . $rel);
         }
-        if (in_array($rel, $workerOnly, true) && Session::userId()) {
-            $u = User::find((int) Session::userId());
-            $roles = (string) ($u['roles'] ?? '');
-            if ($u === null || !str_contains($roles, 'worker')) {
-                Response::redirect('/client-dashboard.html');
-            }
-        }
+        // Worker-only HTML is gated in chrome.js. Do not bounce on the shared cookie.
         if (isset($pageScripts[$rel])) {
             $extra .= '<script src="' . $pageScripts[$rel] . '"></script>';
         }

@@ -146,6 +146,9 @@
         const purposeEl = document.getElementById("otpPurpose");
         const purpose = (purposeEl && purposeEl.value) || "login";
         const data = await api("/api/auth/verify", { body: { code, purpose } });
+        if (data && data.token && window.SkApi && window.SkApi.setTabToken) {
+          window.SkApi.setTabToken(data.token);
+        }
         if (status) status.textContent = "You're in — opening your dashboard…";
         window.location.replace(safeDest(data && data.redirect));
       } catch (err) {
@@ -211,6 +214,9 @@
           body: { code: fd.get("code"), password: fd.get("password") },
         });
         toast("Password updated. You're in.", "success");
+        if (data && data.token && window.SkApi && window.SkApi.setTabToken) {
+          window.SkApi.setTabToken(data.token);
+        }
         location.href = data.redirect || "/login.html";
       } catch (err) {
         toast(err.message, "error");

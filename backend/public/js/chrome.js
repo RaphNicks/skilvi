@@ -156,6 +156,7 @@
   function applySide(me) {
     const side = document.querySelector("aside.side");
     if (!side) return;
+    if ((document.body.getAttribute("data-shell") || "") === "admin") return;
     const f = file();
     if (WORKER_ONLY.indexOf(f) !== -1) rememberShell("worker");
     if (CLIENT_ONLY.indexOf(f) !== -1) rememberShell("client");
@@ -231,6 +232,12 @@
       me = null;
     }
     if (!me) return;
+    if ((location.pathname || "").indexOf("/admin/") !== -1) {
+      applySide(me);
+      setHeader(me);
+      paint(me);
+      return;
+    }
     if (gate(me)) return;
     applySide(me);
     setHeader(me);

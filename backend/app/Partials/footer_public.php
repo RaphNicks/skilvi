@@ -13,5 +13,5 @@
   </div>
 </footer>
 <script src="/assets/js/skilvi.js?v=21"></script>
-<script src="/js/api.js?v=19"></script>
-<script src="/js/chrome.js?v=19"></script>
+<script src="/js/api.js?v=38"></script>
+<script src="/js/chrome.js?v=38"></script>

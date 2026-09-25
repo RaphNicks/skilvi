@@ -13,11 +13,7 @@ final class AccountController
 {
     public static function requireUser(): int
     {
-        $id = Session::userId();
-        if ($id === null) {
-            throw new AppError('unauth', 'Log in to continue.', 401);
-        }
-        return $id;
+        return \App\Core\Auth::id();
     }
 
     public static function update(Request $req, array $params = []): void
@@ -81,7 +77,7 @@ final class AccountController
 
     public static function file(Request $req, array $params = []): void
     {
-        $id = (int) (Session::userId() ?? 0);
+        $id = (int) (\App\Core\Auth::resolvedId() ?? 0);
         $admin = false;
         if ($id) {
             $u = \App\Models\User::find($id);
