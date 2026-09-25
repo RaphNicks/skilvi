@@ -89,7 +89,7 @@ final class PagesController
         if (str_starts_with($rel, 'admin/')) {
             // Do not bounce staff to a client/worker dashboard. Cookie is shared
             // across tabs; this tab's account is the Bearer token in JS.
-            $extra .= '<script src="/js/admin.js?v=39"></script>';
+            $extra .= '<script src="/js/admin.js?v=40"></script>';
         }
         if (in_array($rel, $gated, true) && !Session::userId() && empty($_SERVER['HTTP_AUTHORIZATION']) && empty($_SERVER['HTTP_X_SKILVI_TOKEN'])) {
             Response::redirect('/login.html?next=/' . $rel);

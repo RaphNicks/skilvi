@@ -58,7 +58,7 @@
       </div>
 
       <div class="row mb-2" style="gap:10px;flex-wrap:wrap">
-        <select class="select" style="width:auto" id="aAdmin"><option>All staff</option><option>A. Okafor (super)</option><option>B. Eze (support)</option><option>F. Bello (finance)</option></select>
+        <select class="select" style="width:auto" id="aAdmin"><option value="">All staff</option></select>
         <select class="select" style="width:auto"><option>All actions</option><option>Withdrawals</option><option>User actions</option><option>Disputes</option><option>Verification</option></select>
         <input class="input" style="width:200px" id="aFrom" type="date" value="2026-09-10">
         <input class="input" style="width:200px" id="aTo" type="date" value="2026-09-17">
@@ -75,15 +75,5 @@
   </div>
 </div>
 <script src="../assets/js/skilvi.js?v=19"></script>
-<script>
-  document.addEventListener("DOMContentLoaded", () => {
-    $("#aBody").innerHTML = MOCK.admin.audit.map((a) =>
-      '<tr><td class="cell-sub nowrap">' + a.time + '</td><td class="cell-sub">' + a.admin + "</td>" +
-      '<td class="cell-main">' + a.action + "</td>" +
-      '<td class="cell-sub">' + a.target + "</td>" +
-      '<td class="cell-sub">' + a.reason + "</td>" +
-      '<td class="cell-sub mono">' + a.ip + "</td></tr>").join("");
-  });
-</script>
 </body>
 </html>

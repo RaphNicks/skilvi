@@ -75,22 +75,5 @@
   </div>
 </div>
 <script src="../assets/js/skilvi.js?v=19"></script>
-<script>
-  document.addEventListener("DOMContentLoaded", () => {
-    const I = SkIconSvg;
-    $("#rPolicy").innerHTML = I.scale + "<span><b>Escalation policy:</b> 1–2 reports → investigate. 3+ reports or any “scam/fraud” with evidence → flag the account. Confirmed violation #1 → recorded warning. #2 → 30-day suspension. #3 or fraud with funds at risk → ban + withdrawal freeze, then recovery process.</span>";
-    $("#rBody").innerHTML = MOCK.admin.reports.map((r) =>
-      '<tr><td class="cell-main">' + r.id + "</td>" +
-      '<td>' + r.target + "</td>" +
-      '<td class="cell-sub">' + r.reason + "</td>" +
-      '<td>' + r.reports + (r.reports >= 3 ? ' <span class="flag">threshold</span>' : "") + "</td>" +
-      "<td>" + r.last + "</td>" +
-      '<td><span class="st ' + (r.state === "Open" ? "st-amber" : "st-gray") + '">' + r.state + "</span></td>" +
-      '<td class="right nowrap">' +
-      '<button class="btn btn-ghost btn-sm" data-act="dismiss" data-name="' + r.id + '" type="button">Dismiss</button> ' +
-      '<button class="btn btn-secondary btn-sm" data-act="warn" data-name="' + r.target + '" type="button">Warn</button> ' +
-      '<button class="btn btn-danger btn-sm" data-act="ban" data-name="' + r.target + '" type="button">Ban</button></td></tr>').join("");
-  });
-</script>
 </body>
 </html>

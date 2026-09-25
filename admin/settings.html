@@ -147,20 +147,5 @@
   </div>
 </div>
 <script src="../assets/js/skilvi.js?v=19"></script>
-<script>
-  document.addEventListener("DOMContentLoaded", () => {
-    const I = SkIconSvg;
-    $("#setNote").innerHTML = I.flag + "<span><b>Config integrity:</b> fee and escrow changes apply to <b>new orders only</b> — existing orders keep the terms at the time of purchase. Commission changes never rewrite the payment ledger.</span>";
-    $("#setAudit").innerHTML = I.doc + "<span>Every save here creates an audit entry: who, what changed, old → new value, reason. That's the first record examined in any money question.</span>";
-    const recent = [
-      ["Sep 12, 2026", "F. Bello (finance)", "Withdrawal auto-approve threshold ₦50,000 → ₦100,000"],
-      ["Aug 28, 2026", "A. Okafor (super)", "Dispute resolution SLA 7 → 5 business days"],
-      ["Aug 15, 2026", "A. Okafor (super)", "Verification fee ₦3,000 → ₦5,000"]
-    ];
-    $("#setRecent").innerHTML = recent.map(([d, who, what]) =>
-      '<div class="kv"><span class="k">' + d + ' · ' + who + "</span><span class=\"v small\">" + what + "</span></div>").join("");
-    $("#saveAll").addEventListener("click", () => Sk.toast("Settings saved. Change diff written to the audit log.", "success"));
-  });
-</script>
 </body>
 </html>

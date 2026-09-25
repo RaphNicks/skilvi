@@ -55,17 +55,14 @@
           <h1 class="ph-title">Payments</h1>
           <p class="ph-sub">All inflows, refunds and chargebacks. Statuses come from provider webhooks — never from page redirects.</p>
         </div>
-        <div class="ph-actions">
-          <button class="btn btn-secondary btn-sm" data-toast="Reconciliation: 7/7 payments match provider settlement file" type="button">Run reconciliation</button>
-          <button class="btn btn-secondary btn-sm" data-toast="payments-2026-09.csv downloaded" type="button">Export CSV</button>
-        </div>
+        <div class="ph-actions"></div>
       </div>
 
-      <div class="kpi-grid mb-3" style="grid-template-columns:repeat(4,1fr)">
-        <div class="kpi"><div class="k-label">Paid (7d)</div><div class="k-value">₦3.53M</div><div class="k-sub">41 payments</div></div>
-        <div class="kpi"><div class="k-label">Failure rate (7d)</div><div class="k-value">2.1%</div><div class="k-sub">3 failed · within normal range</div></div>
-        <div class="kpi"><div class="k-label">Refunds (7d)</div><div class="k-value">₦60,000</div><div class="k-sub">1 refund · dispute outcome</div></div>
-        <div class="kpi"><div class="k-label">Chargebacks (30d)</div><div class="k-value">1</div><div class="k-sub">₦35,000 · under review</div></div>
+      <div class="kpi-grid mb-3" style="grid-template-columns:repeat(4,1fr)" id="pKpis">
+        <div class="kpi"><div class="k-label">Paid</div><div class="k-value" id="pPaid">—</div><div class="k-sub" id="pPaidSub">from the ledger</div></div>
+        <div class="kpi"><div class="k-label">Failed</div><div class="k-value" id="pFail">—</div><div class="k-sub">from the ledger</div></div>
+        <div class="kpi"><div class="k-label">Refunds</div><div class="k-value" id="pRef">—</div><div class="k-sub">from the ledger</div></div>
+        <div class="kpi"><div class="k-label">Other</div><div class="k-value" id="pOther">—</div><div class="k-sub">pending or frozen</div></div>
       </div>
 
       <div class="row mb-2" style="gap:10px;flex-wrap:wrap">
@@ -85,25 +82,5 @@
   </div>
 </div>
 <script src="../assets/js/skilvi.js?v=19"></script>
-<script>
-  document.addEventListener("DOMContentLoaded", () => {
-    const st = { paid: "st-green", refunded: "st-gray", failed: "st-red" };
-    const render = () => {
-      const q = ($("#pSearch").value || "").toLowerCase();
-      const state = $("#pState").value, method = $("#pMethod").value;
-      const rows = MOCK.admin.payments.filter((p) =>
-        (!q || (p.id + p.order).toLowerCase().includes(q)) &&
-        (!state || p.stateLabel === state) &&
-        (!method || p.method === method));
-      $("#pBody").innerHTML = rows.map((p) =>
-        '<tr><td class="cell-main">' + p.id + '</td><td class="cell-sub">' + p.order + "</td>" +
-        "<td>" + p.client + "</td><td>" + p.method + "</td>" +
-        '<td class="num amount">' + Sk.ngn(p.amount) + "</td><td>" + p.date + "</td>" +
-        '<td><span class="st ' + (p.stateLabel.includes("frozen") ? "st-red" : st[p.state]) + '">' + p.stateLabel + "</span></td></tr>").join("");
-    };
-    render();
-    ["pState", "pMethod", "pSearch"].forEach((id) => $("#" + id).addEventListener("input", render));
-  });
-</script>
 </body>
 </html>

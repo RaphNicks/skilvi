@@ -78,31 +78,5 @@
   </div>
 </div>
 <script src="../assets/js/skilvi.js?v=19"></script>
-<script>
-  document.addEventListener("DOMContentLoaded", () => {
-    const st = { delivered: "st-teal", in_progress: "st-amber", settled: "st-green", completed: "st-green", disputed: "st-red", cancelled: "st-gray" };
-    const render = () => {
-      const q = ($("#oSearch").value || "").toLowerCase();
-      const state = $("#oState").value, amt = $("#oAmount").value;
-      const rows = MOCK.admin.orders.filter((o) =>
-        (!q || (o.id + o.client + o.worker + o.title).toLowerCase().includes(q)) &&
-        (!state || o.stateLabel === state) &&
-        (amt !== "gt" || o.amount > 250000) &&
-        (amt !== "lt" || o.amount < 100000));
-      $("#oBody").innerHTML = rows.map((o) =>
-        '<tr><td><span class="cell-main">' + o.title + '</span><div class="cell-sub">' + o.id + "</div></td>" +
-        '<td class="cell-sub">' + o.client + " → " + o.worker + "</td>" +
-        '<td class="num amount">' + Sk.ngn(o.amount) + "</td><td>" + o.date + "</td>" +
-        '<td><span class="st ' + st[o.state] + '">' + o.stateLabel + "</span></td>" +
-        '<td class="right nowrap"><a class="btn btn-secondary btn-sm" href="../order-detail.html">Timeline</a> ' +
-        (o.state === "delivered" || o.state === "in_progress"
-          ? '<button class="btn btn-danger btn-sm" data-act="release" data-amount="' + o.amount + '" data-name="' + o.id + '" type="button">Force release</button>' : "—") +
-        "</td></tr>").join("") ||
-        '<tr><td colspan="6" class="center muted" style="padding:24px">No orders match.</td></tr>';
-    };
-    render();
-    ["oState", "oAmount", "oSearch"].forEach((id) => $("#" + id).addEventListener("input", render));
-  });
-</script>
 </body>
 </html>

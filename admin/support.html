@@ -59,57 +59,7 @@
 
       <div class="order-grid">
         <div class="stack" style="gap:12px" id="tList">
-          <div class="card card-pad">
-            <div class="row spread" style="align-items:flex-start;gap:10px">
-              <div class="row" style="gap:10px">
-                <span class="avatar sm a3">PA</span>
-                <div>
-                  <div class="bold" style="font-size:14px">Peter Anya <span class="flag">3 flags</span></div>
-                  <div class="tiny faint">Worker · suspended · OR history: 8 orders, 2 failed payments</div>
-                </div>
-              </div>
-              <span class="st st-red">Suspended user</span>
-            </div>
-            <p class="small mt-2" style="color:var(--ink-2);line-height:1.6">"Why was my account suspended? I have 2 clients expecting their work by Friday. Please explain the reason and what I need to do to be active again."</p>
-            <div class="row mt-2" style="gap:8px">
-              <button class="btn btn-primary btn-sm" data-toast="Reply composer — tone check: state the reason plainly, the evidence, and the exact path back" type="button">Reply</button>
-              <a class="btn btn-secondary btn-sm" href="users.html">View account</a>
-            </div>
-          </div>
-          <div class="card card-pad">
-            <div class="row spread" style="align-items:flex-start;gap:10px">
-              <div class="row" style="gap:10px">
-                <span class="avatar sm a2">AO</span>
-                <div>
-                  <div class="bold" style="font-size:14px">Adaeze Obi</div>
-                  <div class="tiny faint">Client · 12 orders · LTV ₦1.2M</div>
-                </div>
-              </div>
-              <span class="st st-gray">Question</span>
-            </div>
-            <p class="small mt-2" style="color:var(--ink-2);line-height:1.6">"When my worker delivers tiling on-site, how do I confirm completion? Can my brother confirm on my behalf if I'm travelling?"</p>
-            <div class="row mt-2" style="gap:8px">
-              <button class="btn btn-primary btn-sm" data-toast="Reply composer" type="button">Reply</button>
-              <a class="btn btn-secondary btn-sm" href="users.html">View account</a>
-            </div>
-          </div>
-          <div class="card card-pad">
-            <div class="row spread" style="align-items:flex-start;gap:10px">
-              <div class="row" style="gap:10px">
-                <span class="avatar sm a5">FD</span>
-                <div>
-                  <div class="bold" style="font-size:14px">Felix Danladi <span class="flag">6 flags</span></div>
-                  <div class="tiny faint">Client · banned Sep 14 · 6 off-platform payment reports</div>
-                </div>
-              </div>
-              <span class="st st-red">Banned user</span>
-            </div>
-            <p class="small mt-2" style="color:var(--ink-2);line-height:1.6">"I was banned without explanation. I want it reversed."</p>
-            <div class="row mt-2" style="gap:8px">
-              <button class="btn btn-primary btn-sm" data-toast="Reply composer — cite the 6 reports; ban stands unless new evidence is provided" type="button">Reply</button>
-              <a class="btn btn-secondary btn-sm" href="users.html">View account</a>
-            </div>
-          </div>
+          <div class="card card-pad"><p class="tiny faint">Inbox is empty.</p></div>
         </div>
 
         <aside class="stack" style="gap:16px">
@@ -118,7 +68,7 @@
             <div class="kv"><span class="k">First response</span><span class="v">Same business day</span></div>
             <div class="kv"><span class="k">Money-related (payment/withdrawal)</span><span class="v">4 business hours</span></div>
             <div class="kv"><span class="k">Suspended/banned appeals</span><span class="v">2 business days</span></div>
-            <div class="kv"><span class="k">Median time to first reply (7d)</span><span class="v">3.4 hrs ✓</span></div>
+            <div class="kv"><span class="k">Median time to first reply (7d)</span><span class="v">From live tickets</span></div>
           </div>
           <div class="escrow-note" id="sbNote"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a8 8 0 0 1-8 8H4l2-3a8 8 0 1 1 15-5Z"/></svg><span><b>Escalation rule:</b> any user mentioning police, courts, or media gets flagged red and routed to the super-admin within 1 hour. Never argue in the inbox — acknowledge, state the next step, and move the case.</span></div>
         </aside>
@@ -127,11 +77,5 @@
   </div>
 </div>
 <script src="../assets/js/skilvi.js?v=19"></script>
-<script>
-  document.addEventListener("DOMContentLoaded", () => {
-    const I = SkIconSvg;
-    $("#sbNote").innerHTML = I.chat + "<span><b>Escalation rule:</b> any user mentioning police, courts, or media gets flagged red and routed to the super-admin within 1 hour. Never argue in the inbox — acknowledge, state the next step, and move the case.</span>";
-  });
-</script>
 </body>
 </html>

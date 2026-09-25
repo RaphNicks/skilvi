@@ -71,24 +71,13 @@
       </div>
 
       <div class="grid grid-3 mt-3">
-        <div class="stat-card"><div class="label">Open disputes</div><div class="value">3</div><div class="delta">₦570,000 frozen</div></div>
-        <div class="stat-card"><div class="label">Median time to resolve (30d)</div><div class="value">3.2 days</div><div class="delta">target: 5 days</div></div>
-        <div class="stat-card"><div class="label">Worker-favoured rate (30d)</div><div class="value">64%</div><div class="delta down">rising — check for client-side abuse</div></div>
+        <div class="stat-card"><div class="label">Open disputes</div><div class="value" id="dOpen">—</div><div class="delta" id="dFrozen">from live cases</div></div>
+        <div class="stat-card"><div class="label">Total cases</div><div class="value" id="dTotal">—</div><div class="delta">in the database</div></div>
+        <div class="stat-card"><div class="label">Resolved</div><div class="value" id="dDone">—</div><div class="delta">closed in the ledger</div></div>
       </div>
     </main>
   </div>
 </div>
 <script src="../assets/js/skilvi.js?v=19"></script>
-<script>
-  document.addEventListener("DOMContentLoaded", () => {
-    $("#dBody").innerHTML = MOCK.admin.disputes.map((d) =>
-      '<tr><td><span class="cell-main">' + d.id + '</span><div class="cell-sub">' + d.state + "</div></td>" +
-      '<td class="cell-sub">' + d.order + "</td>" +
-      '<td class="num amount">' + Sk.ngn(d.amount) + "</td><td>" + d.by + "</td>" +
-      '<td class="cell-sub">' + d.reason + "</td>" +
-      '<td><span class="sla ' + d.slaClass + '">' + d.sla + "</span></td>" +
-      '<td class="right"><a class="btn btn-primary btn-sm" href="../dispute-detail.html">Open case</a></td></tr>').join("");
-  });
-</script>
 </body>
 </html>

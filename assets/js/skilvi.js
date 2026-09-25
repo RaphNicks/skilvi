@@ -528,8 +528,8 @@
       });
     }
 
-    /* Admin: generic table actions */
-    if (page === "admin") {
+    /* Admin: fake table actions — skipped when the PHP API owns the console. */
+    if (page === "admin" && !window.SkApi) {
       $$("[data-act]").forEach((b) => b.addEventListener("click", () => {
         const act = b.getAttribute("data-act");
         const name = b.getAttribute("data-name") || "item";

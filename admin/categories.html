@@ -67,22 +67,5 @@
   </div>
 </div>
 <script src="../assets/js/skilvi.js?v=19"></script>
-<script>
-  document.addEventListener("DOMContentLoaded", () => {
-    const I = SkIconSvg;
-    const icons = { code: I.code, pen: I.pen, wrench: I.wrench, briefcase: I.briefcase, heart: I.heart };
-    $("#catTree").innerHTML = MOCK.categories.map((c) =>
-      '<div class="queue-card mb-2"><div class="qc-head">' +
-      '<h3><span class="row" style="gap:9px">' + icons[c.icon] + c.name + "</span></h3>" +
-      '<span class="row" style="gap:10px"><span class="tag">' + c.workers + " workers</span><span class=\"tag\">" + c.mode + "</span></span></div>" +
-      c.subs.map((s) =>
-        '<div class="queue-row"><span class="cell-sub" style="width:220px;flex:none;font-weight:500;color:var(--ink-2)">' + s + "</span>" +
-        '<span class="cell-sub" style="flex:1">slug: ' + s.toLowerCase().replace(/[^a-z0-9]+/g, "-") + "</span>" +
-        '<span class="st st-green">Active</span>' +
-        '<button class="btn btn-secondary btn-sm" data-toast="Sub-category ' + s + ' — edit form (production build)" type="button">Edit</button> ' +
-        '<button class="btn btn-ghost btn-sm" data-act="archive" data-name="' + s + '" type="button">Archive</button></div>').join("") +
-      "</div>").join("");
-  });
-</script>
 </body>
 </html>

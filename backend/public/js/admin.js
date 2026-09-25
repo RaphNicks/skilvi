@@ -66,21 +66,20 @@
       $$(".wd-ok").forEach((b) => b.addEventListener("click", () => act("/api/admin/withdrawals/" + encodeURIComponent(b.dataset.id) + "/action", { action: "approve" }, "Approved.")));
       $$(".wd-no").forEach((b) => b.addEventListener("click", () => act("/api/admin/withdrawals/" + encodeURIComponent(b.dataset.id) + "/action", { action: "reject" }, "Held — funds returned.")));
     }
-    const signupHost = document.querySelectorAll(".grid.grid-2")[1];
-    const box = signupHost && signupHost.querySelector(".queue-card");
-    if (box) {
-      box.innerHTML = (d.signups || []).slice(0, 6).map((s) =>
+    if ($("#gmxSignups")) {
+      $("#gmxSignups").innerHTML = (d.signups || []).slice(0, 6).map((s) =>
         '<div class="queue-row"><span class="avatar sm ' + esc(s.tone) + '">' + esc(s.initials) + "</span>" +
         '<div class="qr-main"><div class="qr-t">' + esc(s.name) + '</div><div class="qr-s">' + esc(s.sub) + "</div></div>" +
         '<span class="st st-royal">' + esc(s.when) + "</span></div>"
       ).join("") || '<p class="tiny faint">No recent signups.</p>';
     }
-    const needs = document.querySelector(".card.card-pad.mt-3 .stack");
-    if (needs && d.needs) {
-      needs.innerHTML = d.needs.map((n) =>
-        '<div class="row spread" style="gap:12px;flex-wrap:wrap"><span class="st ' + esc(n.chip) + '">' + esc(n.label) + "</span>" +
-        '<span class="small">' + esc(n.text) + '</span><a class="link" style="font-size:13px" href="' + esc(n.href) + '">Open →</a></div>'
-      ).join("");
+    if ($("#gmxNeeds")) {
+      $("#gmxNeeds").innerHTML = (d.needs || []).length
+        ? d.needs.map((n) =>
+          '<div class="row spread" style="gap:12px;flex-wrap:wrap"><span class="st ' + esc(n.chip) + '">' + esc(n.label) + "</span>" +
+          '<span class="small">' + esc(n.text) + '</span><a class="link" style="font-size:13px" href="' + esc(n.href) + '">Open →</a></div>'
+        ).join("")
+        : '<p class="tiny faint">Nothing needs you right now.</p>';
     }
   }
 
@@ -320,6 +319,15 @@
           '<td><span class="st ' + esc(p.chip) + '">' + esc(p.stateLabel) + "</span></td></tr>"
         ).join("") || emptyRow(7, "No payments.");
       }
+      const paid = list.filter((p) => p.status === "succeeded" || p.status === "paid");
+      const fail = list.filter((p) => p.status === "failed");
+      const ref = list.filter((p) => p.status === "refunded");
+      const other = list.filter((p) => paid.indexOf(p) < 0 && fail.indexOf(p) < 0 && ref.indexOf(p) < 0);
+      if ($("#pPaid")) $("#pPaid").textContent = String(paid.length);
+      if ($("#pPaidSub")) $("#pPaidSub").textContent = paid.length ? "paid in the ledger" : "none yet";
+      if ($("#pFail")) $("#pFail").textContent = String(fail.length);
+      if ($("#pRef")) $("#pRef").textContent = String(ref.length);
+      if ($("#pOther")) $("#pOther").textContent = String(other.length);
     };
     ["#pState", "#pMethod", "#pSearch"].forEach((s) => { const el = $(s); if (el) { el.addEventListener("change", load); el.addEventListener("input", load); } });
     await load();
@@ -362,6 +370,10 @@
     }
     const tag = document.querySelector(".ph-actions .tag");
     if (tag) tag.textContent = open.length + " open";
+    if ($("#dOpen")) $("#dOpen").textContent = String(open.length);
+    if ($("#dTotal")) $("#dTotal").textContent = String(list.length);
+    if ($("#dDone")) $("#dDone").textContent = String(list.length - open.length);
+    if ($("#dFrozen")) $("#dFrozen").textContent = open.length ? "escrow frozen on open cases" : "none open";
   }
 
   async function verifications() {

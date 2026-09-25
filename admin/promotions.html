@@ -53,14 +53,14 @@
           <h1 class="ph-title">Promotions</h1>
           <p class="ph-sub">Active paid placements. Trust rules are hard-coded: every slot is labelled “Promoted”, capped at 3 per page, and never affects organic ranking.</p>
         </div>
-        <div class="ph-actions"><span class="tag tag-royal">4 active · 2 paused</span></div>
+        <div class="ph-actions"><span class="tag tag-royal" id="pmTag">Live</span></div>
       </div>
 
       <div class="kpi-grid mb-3" style="grid-template-columns:repeat(4,1fr)" id="pmKpis">
-        <div class="kpi"><div class="k-label">Active promotions</div><div class="k-value">4</div><div class="k-sub">₦12,500 in-flight</div></div>
-        <div class="kpi"><div class="k-label">Revenue (7d)</div><div class="k-value">₦27,500</div><div class="k-sub">11 purchases</div></div>
-        <div class="kpi"><div class="k-label">Promoted impressions (7d)</div><div class="k-value">48.2k</div><div class="k-sub">3.1% of search views</div></div>
-        <div class="kpi"><div class="k-label">Promoted → order conversion</div><div class="k-value">4.8%</div><div class="k-sub">organic baseline 3.9%</div></div>
+        <div class="kpi"><div class="k-label">Active promotions</div><div class="k-value" id="pmActive">—</div><div class="k-sub">from the ledger</div></div>
+        <div class="kpi"><div class="k-label">Paused</div><div class="k-value" id="pmPaused">—</div><div class="k-sub">from the ledger</div></div>
+        <div class="kpi"><div class="k-label">Revenue booked</div><div class="k-value" id="pmRev">—</div><div class="k-sub">paid placements</div></div>
+        <div class="kpi"><div class="k-label">Total rows</div><div class="k-value" id="pmTotal">—</div><div class="k-sub">in the database</div></div>
       </div>
 
       <div class="table-wrap">
@@ -75,10 +75,5 @@
   </div>
 </div>
 <script src="../assets/js/skilvi.js?v=19"></script>
-<script>
-  document.addEventListener("DOMContentLoaded", () => {
-    $("#pmNote").innerHTML = SkIconSvg.shield + "<span><b>Automatic safety switches:</b> promotions pause instantly when the worker's account is suspended or banned, when a service is archived, or when the promoted service no longer matches the searched category. No revenue is refunded for policy pauses — it's stated in the purchase terms.</span>";
-  });
-</script>
 </body>
 </html>
