@@ -104,19 +104,22 @@
           '<td><span class="st ' + esc(u.chip) + '">' + esc(u.stateLabel) + "</span></td>" +
           '<td class="right nowrap">' +
           '<a class="btn btn-secondary btn-sm" href="user.html?id=' + u.id + '">Edit</a> ' +
-          (u.status === "banned"
-            ? '<button class="btn btn-primary btn-sm u-act" data-id="' + u.id + '" data-act="unban" type="button">Unban</button>'
-            : (u.status === "deleted"
-              ? ""
-              : '<button class="btn btn-danger btn-sm u-act" data-id="' + u.id + '" data-act="ban" type="button">Ban</button>')) +
+          (u.status === "deleted" || /admin/i.test(u.role) ? "" :
+            (u.status === "banned"
+              ? '<button class="btn btn-primary btn-sm u-act" data-id="' + u.id + '" data-act="unban" type="button">Unban</button>'
+              : '<button class="btn btn-danger btn-sm u-act" data-id="' + u.id + '" data-act="ban" type="button">Ban</button> ' +
+                '<button class="btn btn-ghost btn-sm u-act" data-id="' + u.id + '" data-act="delete" type="button" style="color:var(--red)">Delete</button>')) +
           "</td></tr>"
         ).join("") || emptyRow(7, "No users match.");
         $$(".u-act").forEach((b) => b.addEventListener("click", () => {
           let reason = "Reactivated by staff.";
-          if (b.dataset.act === "ban") {
-            reason = prompt("Reason for the ban (the email cannot sign up again):") || "";
+          if (b.dataset.act === "ban" || b.dataset.act === "delete") {
+            reason = prompt(b.dataset.act === "delete"
+              ? "Reason for the audit log:"
+              : "Reason for the ban (the email cannot sign up again):") || "";
             if (reason.trim().length < 8) { toast("Need a short reason.", "error"); return; }
           }
+          if (b.dataset.act === "delete" && !confirm("Delete this account and all profile details? That email cannot sign up again.")) return;
           act("/api/admin/users/" + b.dataset.id + "/action", { action: b.dataset.act, reason }, "Updated.");
         }));
       }

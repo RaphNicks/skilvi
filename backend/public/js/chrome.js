@@ -230,6 +230,7 @@
   }
 
   async function run() {
+    const onAdmin = (location.pathname || "").indexOf("/admin/") !== -1;
     let me = null;
     try {
       me = await api("/api/me");
@@ -239,13 +240,16 @@
     if (!me) {
       if (tabHasToken() && window.SkApi && window.SkApi.setTabToken) window.SkApi.setTabToken("");
       const f = file();
-      if (WORKER_ONLY.indexOf(f) !== -1 || CLIENT_ONLY.indexOf(f) !== -1 || SHARED.indexOf(f) !== -1) {
+      if (onAdmin || WORKER_ONLY.indexOf(f) !== -1 || CLIENT_ONLY.indexOf(f) !== -1 || SHARED.indexOf(f) !== -1) {
         location.replace("/login.html?next=" + encodeURIComponent(location.pathname + location.search));
       }
       return;
     }
-    if ((location.pathname || "").indexOf("/admin/") !== -1) {
-      applySide(me);
+    if (onAdmin) {
+      if (!isAdmin(me)) {
+        location.replace(home(me));
+        return;
+      }
       setHeader(me);
       paint(me);
       return;
