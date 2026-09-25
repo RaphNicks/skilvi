@@ -993,7 +993,9 @@ html[data-theme="dark"] .st-gray { background: #243044; color: #A8B4C5; }
 html[data-theme="dark"] .input::placeholder,
 html[data-theme="dark"] .textarea::placeholder { color: #7B8798; }
 html[data-theme="dark"] .topbar .brand-logo,
-html[data-theme="dark"] .shell:not(.admin) .brand-logo {
+html[data-theme="dark"] .lp-nav .lp-logo img,
+html[data-theme="dark"] .shell:not(.admin) .brand-logo,
+html[data-theme="dark"] main .brand-logo {
   filter: brightness(0) invert(1);
 }
 html[data-theme="dark"] .alert-warn { color: #F3D19A; border-color: #6B5420; }
