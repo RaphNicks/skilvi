@@ -956,12 +956,15 @@ details.acc .acc-body { padding: 0 16px 14px; font-size: 13.5px; color: var(--in
 
 /* ---------- Display mode (system default; light unchanged) ---------- */
 .theme-switch { flex: none; }
-.mobile-nav .theme-switch-line {
+.theme-switch svg { width: 18px; height: 18px; display: block; }
+.mobile-nav .theme-switch-line,
+.lp-menu-in .theme-switch-line {
   display: flex; align-items: center; gap: 8px; width: 100%;
-  padding: 10px 4px; margin-top: 4px; border: 0; background: none;
-  font-size: 15px; font-weight: 500; color: var(--ink-2); text-align: left;
+  padding: 10px 6px; margin: 4px 0; border: 0; background: none;
+  font-size: 15px; font-weight: 500; color: var(--heading); text-align: left; cursor: pointer;
 }
-.mobile-nav .theme-switch-line svg { width: 18px; height: 18px; }
+.mobile-nav .theme-switch-line svg,
+.lp-menu-in .theme-switch-line svg { width: 18px; height: 18px; }
 .side-foot .theme-switch { margin: 0 10px 8px; }
 
 html[data-theme="dark"] {
