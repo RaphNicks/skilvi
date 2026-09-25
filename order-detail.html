@@ -46,7 +46,7 @@
     <div>
       <div class="row" style="gap:12px;flex-wrap:wrap">
         <h1 class="ph-title" style="font-size:21px">Order</h1>
-        <span class="st st-teal" id="orderStateChip">Delivered · awaiting your approval</span>
+        <span class="st st-gray" id="orderStateChip">—</span>
       </div>
       <p class="ph-sub">Open an order from your dashboard to see its details.</p>
     </div>
@@ -62,18 +62,10 @@
       <!-- Timeline -->
       <div class="card card-pad">
         <h3 style="font-size:14px">Order timeline</h3>
-        <div class="timeline mt-2">
-          <div class="tl-item done"><span class="tl-dot"></span><div class="tl-t">Order created</div><div class="tl-s">Created when you pay.</div></div>
-          <div class="tl-item done"><span class="tl-dot"></span><div class="tl-t">Payment verified — held in escrow</div><div class="tl-s">Held by Skilvi until you approve.</div></div>
-          <div class="tl-item done"><span class="tl-dot"></span><div class="tl-t">Work started</div><div class="tl-s">The worker marks the order as started.</div></div>
-          <div class="tl-item done"><span class="tl-dot"></span><div class="tl-t">Delivered for approval</div><div class="tl-s">The worker submits work for your approval.</div></div>
-          <div class="tl-item current"><span class="tl-dot"></span><div class="tl-t">Awaiting client approval</div><div class="tl-s">Payment releases 5 business days after delivery if you do not respond.</div></div>
-          <div class="tl-item"><span class="tl-dot"></span><div class="tl-t">Completed &amp; settled</div><div class="tl-s">Worker share after 10% commission · Skilvi fee</div></div>
-        </div>
+        <div class="timeline mt-2" id="odTimeline"></div>
       </div>
 
-      <!-- Deliverables -->
-      <div class="card card-pad">
+      <div class="card card-pad" id="odDeliverables" hidden>
         <div class="row spread mb-2">
           <h3 style="font-size:14px">Delivered work</h3>
           <span class="st st-gray">Revision 0 of 2 used</span>
@@ -92,7 +84,17 @@
       </div>
 
       <!-- Action panel: varies by state (demo switch below) -->
-      <div class="card card-pad order-state-block" data-state="delivered">
+      <div class="card card-pad order-state-block" data-state="awaiting_payment" style="display:none">
+        <div class="action-panel" style="border:0;margin:0;padding:0">
+          <div class="ap-title">Payment needed</div>
+          <p class="small muted mb-2">Nothing is in escrow yet. Pay now so the worker can start — Skilvi holds the money until you approve the work.</p>
+          <div class="row" style="gap:8px">
+            <a class="btn btn-primary" id="odPayNow" href="checkout.html">Pay now</a>
+            <button class="btn btn-secondary" type="button" id="odCancelUnpaid">Cancel order</button>
+          </div>
+        </div>
+      </div>
+      <div class="card card-pad order-state-block" data-state="delivered" style="display:none">
         <div class="action-panel" style="border:0;margin:0;padding:0">
           <div class="ap-title">Your decision</div>
           <p class="small muted mb-2">Approve to release escrow, or request a revision.</p>
@@ -148,22 +150,9 @@
         <hr class="divider mt-2 mb-2">
         <div class="kv"><span class="k">Worker</span><span class="v">—</span></div>
         <div class="kv"><span class="k">Client</span><span class="v">—</span></div>
-        <div class="kv"><span class="k">Escrow</span><span class="v"><span class="st st-teal" style="padding:1px 8px">Held</span></span></div>
+        <div class="kv"><span class="k">Escrow</span><span class="v">—</span></div>
         <div class="kv"><span class="k">On release</span><span class="v">—</span></div>
-        <div class="escrow-note mt-2" id="odEscrow"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 5 6v6c0 4.4 3 7.4 7 9 4-1.6 7-4.6 7-9V6l-7-3Z"/><path d="m9 12 2 2 4-4"/></svg><span><b>Escrow status:</b> Held by Skilvi until you approve, auto-released 5 business days after delivery, or resolved via dispute.</span></div>
-      </div>
-
-      <!-- Prototype demo control -->
-      <div class="card card-pad" style="border-style:dashed">
-        <h3 style="font-size:13px">Prototype demo</h3>
-        <p class="tiny faint mt-1">Preview how this page looks in each order state:</p>
-        <select class="select mt-1" id="stateDemo">
-          <option value="delivered" selected>Delivered · awaiting approval</option>
-          <option value="paid">Paid · worker to start</option>
-          <option value="in_progress">In progress</option>
-          <option value="completed">Completed · review prompt</option>
-          <option value="disputed">In dispute</option>
-        </select>
+        <div class="escrow-note mt-2" id="odEscrow"><span><b>Escrow status:</b> —</span></div>
       </div>
     </aside>
   </div>

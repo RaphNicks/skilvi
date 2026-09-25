@@ -157,6 +157,52 @@
     });
   }
 
+  function paintTimeline(o) {
+    const host = $("#odTimeline");
+    if (!host) return;
+    const ui = o.ui_status || "";
+    const doneThrough = {
+      awaiting_payment: 0,
+      paid: 1,
+      in_progress: 2,
+      delivered: 3,
+      completed: 5,
+      cancelled: 0,
+      disputed: 2,
+    }[ui];
+    const currentAt = {
+      awaiting_payment: 1,
+      paid: 2,
+      in_progress: 3,
+      delivered: 4,
+      completed: -1,
+      cancelled: -1,
+      disputed: -1,
+    }[ui];
+    const steps = [
+      ["Order created", "The order was opened."],
+      ["Payment verified — held in escrow", ui === "awaiting_payment" ? "Not paid yet. Pay to fund escrow." : "Held by Skilvi until you approve."],
+      ["Work started", "The worker marks the order as started."],
+      ["Delivered for approval", "The worker submits work for your approval."],
+      ["Awaiting client approval", "Payment releases 5 business days after delivery if you do not respond."],
+      ["Completed & settled", "Worker share after 10% commission · Skilvi fee"],
+    ];
+    if (ui === "cancelled") {
+      steps.push(["Cancelled", o.escrow === "Refunded" ? "Escrow refunded." : "Order closed without payment."]);
+    }
+    if (ui === "disputed") {
+      steps.push(["In dispute", "Escrow is frozen until Skilvi decides."]);
+    }
+    host.innerHTML = steps.map((s, i) => {
+      let cls = "tl-item";
+      if (ui === "cancelled" && i === steps.length - 1) cls += " current";
+      else if (ui === "disputed" && i === steps.length - 1) cls += " current";
+      else if (i === currentAt) cls += " current";
+      else if (typeof doneThrough === "number" && i <= doneThrough && i !== currentAt) cls += " done";
+      return '<div class="' + cls + '"><span class="tl-dot"></span><div class="tl-t">' + s[0] + '</div><div class="tl-s">' + s[1] + "</div></div>";
+    }).join("");
+  }
+
   async function orderDetail() {
     const id = params.get("id") || params.get("order") || "";
     if (!id) return;
@@ -187,11 +233,34 @@
     if (kvs[2]) kvs[2].innerHTML = '<span class="st ' + esc(o.chip) + '" style="padding:1px 8px">' + esc(o.escrow) + "</span>";
     if (kvs[3]) kvs[3].textContent = o.worker_net + " worker · " + o.fee_label + " Skilvi";
     if ($("#odEscrow")) {
-      $("#odEscrow").innerHTML = (I.shield || "") + "<span><b>Escrow status:</b> " + esc(o.amount_label) + " " + (o.escrow === "Released" ? "released to the worker." : "held by Skilvi until you approve.") + "</span>";
+      let note = "Nothing is in escrow yet. Pay to fund this order.";
+      if (o.escrow === "Held") note = esc(o.amount_label) + " held by Skilvi until you approve.";
+      else if (o.escrow === "Released") note = esc(o.amount_label) + " released to the worker.";
+      else if (o.escrow === "Refunded") note = "Escrow was refunded.";
+      else if (o.escrow === "Frozen") note = esc(o.amount_label) + " frozen while this order is in dispute.";
+      else if (o.escrow === "Unpaid") note = "Unpaid — " + esc(o.amount_label) + " is not in escrow yet.";
+      $("#odEscrow").innerHTML = (I.shield || "") + "<span><b>Escrow status:</b> " + note + "</span>";
     }
     const demo = $("#stateDemo");
     if (demo && demo.closest(".card")) demo.closest(".card").style.display = "none";
+    paintTimeline(o);
     setStateBlocks(o.ui_status);
+    const deliv = $("#odDeliverables");
+    if (deliv) {
+      const hasDelivery = o.ui_status === "delivered" || o.ui_status === "completed";
+      deliv.hidden = !hasDelivery;
+      if (hasDelivery) {
+        $$(".deliverable", deliv).forEach((el) => { el.style.display = "none"; });
+        let noteEl = $("#odDelivNote");
+        if (!noteEl) {
+          noteEl = document.createElement("p");
+          noteEl.id = "odDelivNote";
+          noteEl.className = "small muted";
+          deliv.appendChild(noteEl);
+        }
+        noteEl.textContent = o.note || "The worker marked this delivered. No files were attached.";
+      }
+    }
 
     const msgBtn = document.querySelector('.ph-actions a[href="messages.html"]');
     if (msgBtn) {
@@ -216,6 +285,21 @@
       if (link) link.href = "dispute-detail.html?id=" + encodeURIComponent(o.dispute.id);
     }
     const a = o.actions || {};
+    if (a.pay && o.checkout_url) {
+      const pay = $("#odPayNow");
+      if (pay) pay.href = o.checkout_url;
+      toast("This order still needs payment before work can start.", "error");
+    } else if (o.ui_status === "awaiting_payment" && o.viewer && o.viewer.is_worker) {
+      const box = document.querySelector('[data-state="awaiting_payment"] .action-panel');
+      if (box) {
+        const t = box.querySelector(".ap-title");
+        const p = box.querySelector("p");
+        if (t) t.textContent = "Waiting on payment";
+        if (p) p.textContent = "The client has not funded escrow yet. They will be asked to pay each time they open this order.";
+        const row = box.querySelector(".row");
+        if (row) row.innerHTML = '<a class="btn btn-secondary" href="' + (o.conversation_id ? "messages.html?id=" + o.conversation_id : "messages.html") + '">Message the client</a>';
+      }
+    }
     const workerPanel = o.viewer && o.viewer.is_worker && (a.start || a.submit);
     if (workerPanel) {
       const host = document.querySelector('.order-state-block[data-state="' + o.ui_status + '"] .row') || $("#orderActions");
@@ -265,6 +349,17 @@
       }
     }
     if (a.cancel) {
+      const unpaidCancel = $("#odCancelUnpaid");
+      if (unpaidCancel) {
+        unpaidCancel.addEventListener("click", async (e) => {
+          e.preventDefault();
+          try {
+            await api("/api/orders/" + encodeURIComponent(o.id) + "/cancel", { body: {} });
+            toast("Order cancelled.", "success");
+            location.reload();
+          } catch (err) { toast(err.message, "error"); }
+        });
+      }
       const btn = document.querySelector('[data-state="paid"] .btn-danger');
       if (btn) {
         btn.removeAttribute("data-msg");
