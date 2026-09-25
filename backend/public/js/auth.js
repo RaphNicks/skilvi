@@ -63,14 +63,20 @@
     credFields(login).forEach((el) => { el.disabled = mode !== "login"; });
     credFields(reg).forEach((el) => { el.disabled = mode !== "register"; });
   }
+  function stayTop() {
+    window.scrollTo(0, 0);
+    requestAnimationFrame(function () { window.scrollTo(0, 0); });
+  }
   function switchTab(mode) {
     applyTab(mode);
     const hash = hashFor(mode);
     // Must assign location.hash (not replaceState) so CSS :target updates.
     // Sign Up lands on #regForm; without this, :target keeps the register form stuck.
     if (location.hash !== hash) location.hash = hash;
+    stayTop();
   }
 
+  if ("scrollRestoration" in history) history.scrollRestoration = "manual";
   document.querySelectorAll(".auth-tab").forEach((tab) => {
     tab.addEventListener("click", (e) => {
       e.preventDefault();
@@ -78,7 +84,12 @@
     });
   });
   applyTab(modeFromHash());
-  window.addEventListener("hashchange", () => applyTab(modeFromHash()));
+  stayTop();
+  window.addEventListener("hashchange", () => {
+    applyTab(modeFromHash());
+    stayTop();
+  });
+  window.addEventListener("load", stayTop);
 
   const readOtp = bindOtpBoxes(document.getElementById("otpBoxes"));
 

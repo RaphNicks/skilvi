@@ -149,7 +149,7 @@ View::partial('head', ['title' => 'Log in — Skilvi', 'description' => 'Log in 
 
 <?php View::partial('footer_public'); ?>
 <script src="/js/geo.js?v=1"></script>
-<script src="/js/auth.js?v=41"></script>
+<script src="/js/auth.js?v=42"></script>
 <script>
   document.addEventListener("DOMContentLoaded", () => {
     if (window.SkGeo) {
