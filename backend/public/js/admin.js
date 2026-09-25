@@ -276,7 +276,11 @@
         }
       });
     }
-    await paint();
+    try {
+      await paint();
+    } catch (err) {
+      if (!gate(err)) toast(err.message || "Could not load this user.", "error");
+    }
   }
 
   async function orders() {
@@ -517,6 +521,7 @@
       try {
         if (file === "index.html" || file === "" || file === "admin") await dash();
         else if (file === "users.html") await users();
+        else if (file === "user.html") await userEditor();
         else if (file === "orders.html") await orders();
         else if (file === "payments.html") await payments();
         else if (file === "withdrawals.html") await withdrawals();
