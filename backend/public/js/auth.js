@@ -50,11 +50,18 @@
   function modeFromHash() {
     return location.hash === "#regForm" ? "register" : "login";
   }
+  function credFields(form) {
+    return form ? form.querySelectorAll('input[type="email"], input[type="password"]') : [];
+  }
   function applyTab(mode) {
     document.querySelectorAll(".auth-tab").forEach((t) => t.classList.toggle("active", t.getAttribute("data-mode") === mode));
     document.querySelectorAll("#authStepMain .tab-panel").forEach((p) =>
       p.classList.toggle("active", p.getAttribute("data-panel") === mode)
     );
+    const login = document.getElementById("loginForm");
+    const reg = document.getElementById("regForm");
+    credFields(login).forEach((el) => { el.disabled = mode !== "login"; });
+    credFields(reg).forEach((el) => { el.disabled = mode !== "register"; });
   }
   function switchTab(mode) {
     applyTab(mode);
@@ -99,6 +106,12 @@
 
   const regForm = document.getElementById("regForm");
   if (regForm) {
+    const regPass = document.getElementById("regPass");
+    if (regPass) {
+      const unlock = () => regPass.removeAttribute("readonly");
+      regPass.addEventListener("focus", unlock);
+      regPass.addEventListener("pointerdown", unlock);
+    }
     const joinRadios = regForm.querySelectorAll('input[name="join_as"]');
     const dobEl = document.getElementById("regDob");
     function joinAs() {
@@ -126,7 +139,7 @@
             full_name: fd.get("full_name"),
             phone: fd.get("phone"),
             email: fd.get("email"),
-            password: fd.get("password"),
+            password: fd.get("new_password") || fd.get("password"),
             join_as: as,
             country: fd.get("country"),
             state: fd.get("state"),

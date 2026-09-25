@@ -26,7 +26,20 @@ View::partial('head', ['title' => 'Log in — Skilvi', 'description' => 'Log in 
         <a class="tab auth-tab" data-mode="register" href="#regForm">Create account</a>
       </div>
 
-      <form id="regForm" class="tab-panel" data-panel="register" autocomplete="on">
+      <form id="loginForm" class="tab-panel active" data-panel="login" autocomplete="on">
+        <div class="field mb-2">
+          <label for="loginEmail">Email <span class="req" aria-hidden="true">*</span></label>
+          <input class="input" id="loginEmail" name="identifier" type="email" inputmode="email" autocomplete="username" autocapitalize="off" spellcheck="false" placeholder="you@example.com" required>
+        </div>
+        <div class="field mb-3">
+          <label for="loginPass">Password</label>
+          <input class="input" id="loginPass" name="password" type="password" autocomplete="current-password" placeholder="Your password" required>
+          <span class="hint" style="text-align:right"><a class="link" href="/forgot-password.html" style="font-size:12px">Forgot password?</a></span>
+        </div>
+        <button class="btn btn-primary btn-block btn-lg" type="submit">Continue</button>
+      </form>
+
+      <form id="regForm" class="tab-panel" data-panel="register" autocomplete="off">
         <style>
           #regDobWrap { display: none; }
           #regForm:has(#joinAs_w:checked) #regDobWrap,
@@ -50,7 +63,7 @@ View::partial('head', ['title' => 'Log in — Skilvi', 'description' => 'Log in 
         </div>
         <div class="field mb-2">
           <label for="regEmail">Email <span class="req" aria-hidden="true">*</span></label>
-          <input class="input" id="regEmail" name="email" type="email" inputmode="email" autocomplete="email" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="you@example.com" required>
+          <input class="input" id="regEmail" name="email" type="email" inputmode="email" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="you@example.com" required>
         </div>
         <div class="field mb-2">
           <label for="regPhone">Phone <span class="faint" style="font-weight:500">(optional)</span></label>
@@ -100,26 +113,13 @@ View::partial('head', ['title' => 'Log in — Skilvi', 'description' => 'Log in 
         </div>
         <div class="field mb-2">
           <label for="regPass">Password <span class="req" aria-hidden="true">*</span></label>
-          <input class="input" id="regPass" name="password" type="password" autocomplete="new-password" placeholder="At least 8 characters" required minlength="8">
+          <input class="input" id="regPass" name="new_password" type="password" autocomplete="new-password" placeholder="At least 8 characters" required minlength="8" readonly>
         </div>
         <label class="check-row" style="padding:0">
           <input type="checkbox" name="terms" required style="accent-color:var(--royal-600);width:15px;height:15px">
           <span class="small" style="color:var(--ink-2)">I agree to the <a href="/terms.html">Terms of Service</a> and <a href="/privacy.html">Privacy Policy</a>.</span>
         </label>
         <button class="btn btn-primary btn-block btn-lg mt-3" type="submit">Create free account</button>
-      </form>
-
-      <form id="loginForm" class="tab-panel active" data-panel="login" autocomplete="on">
-        <div class="field mb-2">
-          <label for="loginEmail">Email <span class="req" aria-hidden="true">*</span></label>
-          <input class="input" id="loginEmail" name="identifier" type="email" inputmode="email" autocomplete="username email" autocapitalize="off" spellcheck="false" placeholder="you@example.com" required>
-        </div>
-        <div class="field mb-3">
-          <label>Password</label>
-          <input class="input" name="password" type="password" placeholder="Your password" required>
-          <span class="hint" style="text-align:right"><a class="link" href="/forgot-password.html" style="font-size:12px">Forgot password?</a></span>
-        </div>
-        <button class="btn btn-primary btn-block btn-lg" type="submit">Continue</button>
       </form>
     </div>
 
@@ -149,7 +149,7 @@ View::partial('head', ['title' => 'Log in — Skilvi', 'description' => 'Log in 
 
 <?php View::partial('footer_public'); ?>
 <script src="/js/geo.js?v=1"></script>
-<script src="/js/auth.js?v=40"></script>
+<script src="/js/auth.js?v=41"></script>
 <script>
   document.addEventListener("DOMContentLoaded", () => {
     if (window.SkGeo) {
