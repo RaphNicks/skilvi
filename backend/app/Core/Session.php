@@ -7,41 +7,71 @@ final class Session
 {
     public static function start(): void
     {
-        if (session_status() === PHP_SESSION_ACTIVE) {
+        $cfg = Config::get('session') ?? [];
+        $name = (string) ($cfg['name'] ?? 'skilvi_sid');
+        $life = max(3600, (int) ($cfg['lifetime'] ?? 30 * 86400));
+        $secure = (bool) ($cfg['secure'] ?? false);
+
+        if (session_status() === PHP_SESSION_ACTIVE && session_name() === $name) {
+            if (empty($_SESSION['csrf'])) {
+                $_SESSION['csrf'] = bin2hex(random_bytes(32));
+            }
+            self::emitCsrf($life, $secure);
             return;
         }
-        $cfg = Config::get('session');
+        if (session_status() === PHP_SESSION_ACTIVE) {
+            session_write_close();
+        }
+
+        $save = dirname(__DIR__, 2) . '/storage/sessions';
+        if (!is_dir($save)) {
+            @mkdir($save, 0775, true);
+        }
+        if (is_dir($save) && is_writable($save)) {
+            session_save_path($save);
+        }
+        @ini_set('session.gc_maxlifetime', (string) $life);
+        @ini_set('session.use_strict_mode', '1');
+        @ini_set('session.use_only_cookies', '1');
+        @ini_set('session.use_trans_sid', '0');
+        @ini_set('session.cookie_httponly', '1');
+        @ini_set('session.cookie_samesite', 'Lax');
+
         if (!headers_sent()) {
+            session_name($name);
             session_set_cookie_params([
-                'lifetime' => $cfg['lifetime'],
+                'lifetime' => $life,
                 'path'     => '/',
                 'domain'   => '',
-                'secure'   => (bool) $cfg['secure'],
+                'secure'   => $secure,
                 'httponly' => true,
                 'samesite' => 'Lax',
             ]);
-            session_name($cfg['name']);
         }
-        if (PHP_SAPI === 'cli') {
-            if (!headers_sent()) {
-                @ini_set('session.use_cookies', '0');
-            }
+        if (PHP_SAPI === 'cli' && !headers_sent()) {
+            @ini_set('session.use_cookies', '0');
         }
         if (session_status() !== PHP_SESSION_ACTIVE) {
-            @session_start();
+            session_start();
         }
         if (empty($_SESSION['csrf'])) {
             $_SESSION['csrf'] = bin2hex(random_bytes(32));
         }
-        if (!headers_sent()) {
-            setcookie('skilvi_csrf', (string) $_SESSION['csrf'], [
-                'expires'  => time() + (int) $cfg['lifetime'],
-                'path'     => '/',
-                'secure'   => (bool) $cfg['secure'],
-                'httponly' => false,
-                'samesite' => 'Lax',
-            ]);
+        self::emitCsrf($life, $secure);
+    }
+
+    private static function emitCsrf(int $life, bool $secure): void
+    {
+        if (headers_sent()) {
+            return;
         }
+        setcookie('skilvi_csrf', (string) ($_SESSION['csrf'] ?? ''), [
+            'expires'  => time() + $life,
+            'path'     => '/',
+            'secure'   => $secure,
+            'httponly' => false,
+            'samesite' => 'Lax',
+        ]);
     }
 
     public static function get(string $key, mixed $default = null): mixed
@@ -77,13 +107,23 @@ final class Session
         return $id === null ? null : (int) $id;
     }
 
+    /** Drop the signed-in user without killing CSRF / pending OTP. */
+    public static function forgetUser(): void
+    {
+        unset($_SESSION['user_id'], $_SESSION['login_at']);
+    }
+
     public static function login(int $userId): void
     {
         if (session_status() === PHP_SESSION_ACTIVE && !headers_sent()) {
             session_regenerate_id(true);
         }
+        self::forgetUser();
         self::set('user_id', $userId);
         self::set('login_at', time());
+        self::remove('pending_login_id');
+        self::remove('pending_register');
+        self::clearClaim();
     }
 
     public static function logout(): void
@@ -91,12 +131,20 @@ final class Session
         $_SESSION = [];
         if (!headers_sent() && ini_get('session.use_cookies')) {
             $p = session_get_cookie_params();
-            setcookie(session_name(), '', time() - 42000, $p['path'], $p['domain'] ?? '', $p['secure'], $p['httponly']);
+            setcookie(session_name(), '', [
+                'expires'  => time() - 42000,
+                'path'     => $p['path'] ?: '/',
+                'domain'   => $p['domain'] ?? '',
+                'secure'   => (bool) $p['secure'],
+                'httponly' => (bool) $p['httponly'],
+                'samesite' => 'Lax',
+            ]);
             setcookie('skilvi_csrf', '', time() - 42000, '/');
         }
         if (session_status() === PHP_SESSION_ACTIVE) {
             session_destroy();
         }
+        self::start();
     }
 
     public static function claim(string $phone, string $purpose): void

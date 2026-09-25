@@ -80,6 +80,8 @@ final class AuthService
         if ($user['status'] !== 'active') {
             throw new AppError('suspended', 'This account is not active. Contact support.', 403);
         }
+        // Always bind the next OTP to THIS account — never keep a previous login.
+        Session::forgetUser();
         $dest = (string) ($user['email'] ?: $user['phone']);
         if ($dest === '' || str_starts_with($dest, 'e:')) {
             $dest = (string) $user['email'];
@@ -94,9 +96,6 @@ final class AuthService
 
     public static function verify(string $code, string $purpose, string $ip): array
     {
-        if ($purpose === 'login' && Session::userId()) {
-            return self::establish((int) Session::userId());
-        }
         $claim = Session::get('otp_claim');
         if (!is_array($claim) || ($claim['purpose'] ?? '') !== $purpose) {
             throw new AppError('otp_session', 'Start this step again — your session expired.', 401);

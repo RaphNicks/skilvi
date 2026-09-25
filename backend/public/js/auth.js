@@ -6,6 +6,18 @@
   }
   const { api, busy, toast, bindOtpBoxes } = window.SkApi;
 
+  function safeDest(serverRedirect) {
+    const home = serverRedirect || "/client-dashboard.html";
+    const next = new URLSearchParams(location.search).get("next") || "";
+    if (!next.startsWith("/") || next.startsWith("//") || next.includes("://") || next.includes("\\")) {
+      return home;
+    }
+    if (next.indexOf("/admin") === 0 && String(home).indexOf("/admin") !== 0) {
+      return home;
+    }
+    return next;
+  }
+
   function showOtp(data, purpose) {
     const main = document.getElementById("authStepMain");
     const otp = document.getElementById("authStepOtp");
@@ -135,9 +147,7 @@
         const purpose = (purposeEl && purposeEl.value) || "login";
         const data = await api("/api/auth/verify", { body: { code, purpose } });
         if (status) status.textContent = "You're in — opening your dashboard…";
-        const next = new URLSearchParams(location.search).get("next");
-        const dest = next || (data && data.redirect) || "/client-dashboard.html";
-        window.location.replace(dest);
+        window.location.replace(safeDest(data && data.redirect));
       } catch (err) {
         verifying = false;
         busy(btn, false);
