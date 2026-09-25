@@ -38,9 +38,16 @@
     });
   }
 
+  function initials(name) {
+    const p = String(name || "").trim().split(/\s+/);
+    if (!p[0]) return "?";
+    return (p[0][0] + (p[1] ? p[1][0] : "")).toUpperCase();
+  }
+
   function showVa(pay) {
-    const box = document.querySelector(".alert.alert-info");
+    const box = $("#coPayHint") || document.querySelector(".alert.alert-info");
     if (!box || !pay.virtual_account) return;
+    box.hidden = false;
     const va = pay.virtual_account;
     box.innerHTML = "<span><b>Instant transfer instructions:</b> Pay <b>" + esc(va.amount_label) + "</b> to <b>" +
       esc(va.account_name) + "</b> · " + esc(va.bank) + " <span class=\"mono\">" + esc(va.account_number) +
@@ -88,14 +95,35 @@
     $$(".sc-price, #payBtn").forEach((el) => {
       if (el.id === "payBtn") el.textContent = "Pay " + o.amount_label;
     });
-    const nameEls = document.querySelectorAll(".bold");
-    if (nameEls[0] && o.worker_name) {
-      const badge = nameEls[0].querySelector(".badge-verified");
-      nameEls[0].childNodes[0].textContent = o.worker_name + " ";
-      if (!badge) { /* keep */ }
+    const av = $("#coAvatar");
+    if (av) {
+      av.textContent = initials(o.worker_name);
+      av.className = "avatar " + (o.worker_tone || "a1");
     }
-    const kvs = $$(".card .kv .v");
-    if (kvs[0]) kvs[0].textContent = o.title;
+    const nameEl = $("#coWorkerName");
+    if (nameEl) {
+      const badge = $("#coVerified");
+      nameEl.childNodes[0].textContent = (o.worker_name || "Worker") + " ";
+      if (badge) badge.hidden = !o.worker_verified;
+    }
+    const meta = $("#coWorkerMeta");
+    if (meta) {
+      const bits = [];
+      if (o.worker_reviews) bits.push((o.worker_rating ? o.worker_rating.toFixed(1) : "—") + " · " + o.worker_reviews + " review" + (o.worker_reviews === 1 ? "" : "s"));
+      if (o.worker_jobs) bits.push(o.worker_jobs + " orders");
+      if (o.worker_reply) bits.push("replies " + o.worker_reply);
+      meta.textContent = bits.join(" · ");
+    }
+    const prof = $("#coProfile");
+    if (prof) {
+      prof.href = o.worker_code ? "worker-profile.html?id=" + encodeURIComponent(o.worker_code) : "search.html";
+    }
+    if ($("#coService")) $("#coService").textContent = o.title || "—";
+    if ($("#coNextNotify") && o.worker_name) {
+      const first = String(o.worker_name).trim().split(/\s+/)[0];
+      $("#coNextNotify").textContent = first + " is notified & starts";
+    }
+    if ($("#coPkgPrice")) $("#coPkgPrice").textContent = o.amount_label || "—";
     const payBtn = $("#payBtn");
     if (o.status !== "pending_payment") {
       if (payBtn) {

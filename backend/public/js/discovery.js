@@ -386,6 +386,8 @@
     if ($("#hireBtn")) $("#hireBtn").href = "checkout.html?service=" + encodeURIComponent(s.id);
     const wlink = $('a[href="worker-profile.html"]');
     if (wlink && s.worker) wlink.href = "worker-profile.html?id=" + encodeURIComponent(s.worker.id);
+    const badge = $("#svcBadge");
+    if (badge) badge.hidden = !(s.worker && s.worker.verified);
   }
 
   async function hydrateSaved() {

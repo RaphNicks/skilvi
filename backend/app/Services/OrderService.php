@@ -436,7 +436,9 @@ final class OrderService
             "SELECT o.*,
                     cu.full_name AS client_name, wu.full_name AS worker_name,
                     wp.tone AS worker_tone, wp.rating_avg AS worker_rating, wp.public_code AS worker_code,
-                    cp.tone AS client_tone, wp.verified AS worker_verified
+                    wp.verified AS worker_verified, wp.orders_completed AS worker_jobs, wp.reply AS worker_reply,
+                    wp.review_count AS worker_reviews,
+                    cp.tone AS client_tone
              FROM orders o
              JOIN users cu ON cu.id = o.client_id
              JOIN users wu ON wu.id = o.worker_id
@@ -473,6 +475,10 @@ final class OrderService
             'worker_code'   => $o['worker_code'] ?? null,
             'worker_tone'   => $o['worker_tone'] ?: 'a1',
             'worker_rating' => (float) ($o['worker_rating'] ?? 0),
+            'worker_reviews'=> (int) ($o['worker_reviews'] ?? 0),
+            'worker_jobs'   => (int) ($o['worker_jobs'] ?? 0),
+            'worker_reply'  => $o['worker_reply'] ?? null,
+            'worker_verified' => (int) ($o['worker_verified'] ?? 0) === 1,
             'client_tone'   => $o['client_tone'] ?: 'a2',
             'date'          => date('M j, Y', strtotime($o['created_at']) ?: time()),
             'started_at'    => $o['started_at'] ?? null,

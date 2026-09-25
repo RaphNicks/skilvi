@@ -64,7 +64,7 @@ final class PagesController
             'worker-wallet.html'     => '/js/worker.js?v=33',
             'worker-services.html'   => '/js/worker.js?v=34',
             'worker-service-form.html' => '/js/worker.js?v=33',
-            'checkout.html'          => '/js/pay.js?v=32',
+            'checkout.html'          => '/js/pay.js?v=35',
             'payment-success.html'   => '/js/pay.js?v=32',
             'verification.html'      => '/js/pay.js?v=32',
             'promotion.html'         => '/js/pay.js?v=32',
