@@ -22,6 +22,11 @@ final class PaymentController
         ]));
     }
 
+    public static function latest(Request $req, array $params = []): void
+    {
+        Response::json(PaymentService::latest(Auth::id()));
+    }
+
     public static function status(Request $req, array $params = []): void
     {
         Response::json(PaymentService::status(Auth::id(), $params['id'] ?? ''));

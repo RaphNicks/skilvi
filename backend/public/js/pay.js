@@ -161,16 +161,34 @@
     }
   }
 
+  function setKv(label, value) {
+    const want = String(label || "").trim().toLowerCase();
+    $$(".kv").forEach((row) => {
+      const k = ((row.querySelector(".k") || {}).textContent || "").trim().toLowerCase();
+      if (k !== want) return;
+      const v = row.querySelector(".v");
+      if (v) v.textContent = value == null || value === "" ? "—" : String(value);
+    });
+  }
+
   async function successPage() {
-    const id = params.get("id") || params.get("pay") || "";
-    if (!id) return;
-    const p = await api("/api/payments/" + encodeURIComponent(id));
+    let id = params.get("id") || params.get("pay") || "";
+    let p;
+    if (id) p = await api("/api/payments/" + encodeURIComponent(id));
+    else p = await api("/api/payments/latest");
     const o = p.order || {};
+    const worker = o.worker_name || "—";
+    setKv("Order", o.id || "—");
+    setKv("Service", o.title || "—");
+    setKv("Worker", worker);
+    setKv("Amount paid", p.amount_label || "—");
+    setKv("Payment method", p.method_label || "Paystack");
+    setKv("Provider reference", p.provider_ref || p.id || "—");
+    setKv("Paid at", p.paid_at || "—");
+    setKv("Escrow status", p.escrow_label || "—");
     if ($("#psOrder")) $("#psOrder").textContent = o.id || "—";
     if ($("#psService")) $("#psService").textContent = o.title || "—";
-    if ($("#psWorker")) {
-      $("#psWorker").textContent = o.worker_name || "—";
-    }
+    if ($("#psWorker")) $("#psWorker").textContent = worker;
     if ($("#psAmount")) $("#psAmount").textContent = p.amount_label || "—";
     if ($("#psMethod")) $("#psMethod").textContent = p.method_label || "Paystack";
     if ($("#psRef")) $("#psRef").textContent = p.provider_ref || p.id || "—";

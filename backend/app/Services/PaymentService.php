@@ -100,6 +100,19 @@ final class PaymentService
         return self::payload($row, $order);
     }
 
+    public static function latest(int $userId): array
+    {
+        $row = Db::fetch(
+            "SELECT * FROM payments WHERE user_id = ? AND status = 'succeeded' ORDER BY id DESC LIMIT 1",
+            [$userId]
+        );
+        if ($row === null) {
+            throw new AppError('not_found', 'No payment found.', 404);
+        }
+        $order = $row['order_id'] ? self::orderRow((int) $row['order_id']) : null;
+        return self::payload($row, $order);
+    }
+
     /** @return array{filename:string,body:string} */
     public static function receiptPdf(int $userId, string $key): array
     {
@@ -229,15 +242,35 @@ final class PaymentService
         return $row;
     }
 
+    /** @param array<string,mixed> $order */
+    private static function orderTitle(array $order): string
+    {
+        $dummy = '/website development|landing pages to full sites|chinedu/i';
+        $title = trim((string) ($order['title'] ?? ''));
+        if ($title !== '' && !preg_match($dummy, $title)) {
+            return $title;
+        }
+        foreach (['job_title', 'service_title'] as $k) {
+            $alt = trim((string) ($order[$k] ?? ''));
+            if ($alt !== '' && !preg_match($dummy, $alt)) {
+                return $alt;
+            }
+        }
+        return $title !== '' ? $title : 'Order';
+    }
+
     private static function orderRow(int $id): ?array
     {
         return Db::fetch(
             "SELECT o.*, wu.full_name AS worker_name, cu.full_name AS client_name,
-                    wp.verified AS worker_verified
+                    wp.verified AS worker_verified,
+                    j.title AS job_title, s.title AS service_title
              FROM orders o
              JOIN users wu ON wu.id = o.worker_id
              JOIN users cu ON cu.id = o.client_id
              LEFT JOIN profiles wp ON wp.user_id = wu.id
+             LEFT JOIN jobs j ON j.id = o.job_id
+             LEFT JOIN services s ON s.id = o.service_id
              WHERE o.id = ?",
             [$id]
         );
@@ -274,7 +307,7 @@ final class PaymentService
             'dev_simulate'    => Config::isDev() && $row['status'] === 'initiated',
             'order'           => $order ? [
                 'id'              => $order['code'],
-                'title'           => $order['title'],
+                'title'           => self::orderTitle($order),
                 'status'          => $order['status'],
                 'worker_name'     => $order['worker_name'] ?? null,
                 'client_name'     => $order['client_name'] ?? null,

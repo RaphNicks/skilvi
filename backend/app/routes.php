@@ -149,6 +149,7 @@ Router::post('/api/services/{id}/pause', [\App\Controllers\WorkerController::cla
 
 Router::post('/api/orders/from-service', [PaymentController::class, 'fromService']);
 Router::post('/api/payments/initiate', [PaymentController::class, 'initiate']);
+Router::get('/api/payments/latest', [PaymentController::class, 'latest']);
 Router::get('/api/payments/{id}/receipt.pdf', [PaymentController::class, 'receipt']);
 Router::get('/api/payments/{id}/receipt', [PaymentController::class, 'receipt']);
 Router::get('/api/payments/{id}', [PaymentController::class, 'status']);

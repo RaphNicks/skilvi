@@ -77,7 +77,7 @@
             <div class="timeline mt-2">
               <div class="tl-item done"><span class="tl-dot"></span><div class="tl-t">You paid into escrow</div><div class="tl-s">Verified automatically in 4 seconds via the payment provider webhook.</div></div>
               <div class="tl-item current"><span class="tl-dot"></span><div class="tl-t">The worker starts the work</div><div class="tl-s">They get a notification and mark the order as started — you'll see it on the order timeline.</div></div>
-              <div class="tl-item"><span class="tl-dot"></span><div class="tl-t">Work delivered for your approval</div><div class="tl-s">Standard package: 10 days delivery, 2 revision rounds included.</div></div>
+              <div class="tl-item"><span class="tl-dot"></span><div class="tl-t">Work delivered for your approval</div><div class="tl-s">The worker submits the job. You approve to release escrow, or request a revision.</div></div>
               <div class="tl-item"><span class="tl-dot"></span><div class="tl-t">You approve → payment released</div><div class="tl-s">Or auto-released 5 business days after delivery if you don't respond. Disputes freeze funds at any point.</div></div>
             </div>
             <div class="row mt-3" style="gap:8px;flex-wrap:wrap">
@@ -90,7 +90,7 @@
 
         <!-- Sidebar -->
         <aside class="stack" style="gap:16px">
-          <div class="card card-pad">
+          <div class="card card-pad" id="psProtect" hidden>
             <h3 style="font-size:14px">Protect your order</h3>
             <div class="stack mt-2" style="gap:10px" id="psTips"></div>
           </div>
