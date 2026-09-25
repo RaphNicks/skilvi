@@ -84,6 +84,8 @@ final class Db
         }
         $sql = str_ireplace('INSERT OR IGNORE INTO', 'INSERT IGNORE INTO', $sql);
         $sql = str_ireplace('INSERT OR REPLACE INTO', 'REPLACE INTO', $sql);
+        // SQLite MAX(0, x) is MySQL GREATEST(0, x). Bare MAX() is an aggregate on MariaDB.
+        $sql = preg_replace('/\bMAX\s*\(\s*0\s*,/i', 'GREATEST(0,', $sql) ?? $sql;
         $sql = str_ireplace('COLLATE NOCASE', '', $sql);
         $sql = preg_replace('/INTO settings\s*\(\s*key\s*,\s*value\s*\)/i', 'INTO settings (`key`, `value`)', $sql) ?? $sql;
         $sql = preg_replace('/SELECT key, value FROM settings/i', 'SELECT `key`, `value` FROM settings', $sql) ?? $sql;
