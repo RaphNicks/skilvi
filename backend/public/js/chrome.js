@@ -180,25 +180,60 @@
     if (window.SkTheme && window.SkTheme.mount) window.SkTheme.mount();
   }
 
+  function markPublicNav() {
+    const file = (location.pathname.split("/").pop() || "index.html").replace(/^\//, "") || "index.html";
+    const map = {
+      "search.html": "search.html",
+      "worker-profile.html": "search.html",
+      "service-detail.html": "search.html",
+      "category.html": "category.html",
+      "jobs.html": "jobs.html",
+      "job-detail.html": "jobs.html",
+      "post-job.html": "jobs.html",
+      "login.html": "login.html",
+      "forgot-password.html": "login.html",
+    };
+    const want = map[file] || "";
+    document.querySelectorAll(".lp-nav-mid a, .lp-menu-in a").forEach((a) => {
+      const href = ((a.getAttribute("href") || "").split("#")[0] || "").replace(/^\//, "");
+      const on = want !== "" && href === want;
+      a.classList.toggle("active", on);
+    });
+    document.querySelectorAll(".lp-signin").forEach((a) => {
+      a.classList.toggle("active", want === "login.html");
+    });
+  }
+
   function setHeader(me) {
     const dash = home(me);
-    const topact = document.querySelector(".topact");
-    if (topact) {
-      topact.innerHTML =
-        '<a class="btn btn-ghost" href="' + dash + '">Dashboard</a>' +
-        '<a class="btn btn-primary" href="/logout.html">Sign out</a>';
+    const right = document.querySelector(".lp-nav-right") || document.querySelector(".topact");
+    if (right) {
+      Array.from(right.querySelectorAll("a")).forEach((a) => a.remove());
+      const sign = document.createElement("a");
+      sign.className = "lp-signin";
+      sign.href = dash;
+      sign.textContent = "Dashboard";
+      const out = document.createElement("a");
+      out.className = "lp-btn lp-btn-solid lp-btn-sm";
+      out.href = "/logout.html";
+      out.textContent = "Sign out";
+      right.appendChild(sign);
+      right.appendChild(out);
     }
-    const mob = document.querySelector("#mobileNav");
+    const mob = document.querySelector(".lp-menu-in") || document.querySelector("#mobileNav");
     if (mob) {
-      Array.from(mob.querySelectorAll('a[href*="login"]')).forEach((a) => a.remove());
-      if (!mob.querySelector('a[href="/logout.html"]')) {
+      Array.from(mob.querySelectorAll('a[href*="login"], a[href*="logout"], a.lp-btn')).forEach((a) => a.remove());
+      if (!mob.querySelector('a[href="' + dash + '"]')) {
         const d = document.createElement("a");
         d.href = dash;
         d.textContent = "Dashboard";
+        mob.appendChild(d);
+      }
+      if (!mob.querySelector('a[href="/logout.html"]')) {
         const o = document.createElement("a");
+        o.className = "lp-btn lp-btn-solid lp-btn-sm";
         o.href = "/logout.html";
         o.textContent = "Sign out";
-        mob.appendChild(d);
         mob.appendChild(o);
       }
     }
@@ -244,6 +279,8 @@
       if (onAdmin || WORKER_ONLY.indexOf(f) !== -1 || CLIENT_ONLY.indexOf(f) !== -1 || SHARED.indexOf(f) !== -1) {
         location.replace("/login.html?next=" + encodeURIComponent(location.pathname + location.search));
       }
+      markPublicNav();
+      if (window.SkTheme && window.SkTheme.mount) window.SkTheme.mount();
       return;
     }
     if (onAdmin) {
@@ -253,6 +290,7 @@
       }
       setHeader(me);
       paint(me);
+      markPublicNav();
       if (window.SkTheme && window.SkTheme.mount) window.SkTheme.mount();
       return;
     }
@@ -260,6 +298,7 @@
     applySide(me);
     setHeader(me);
     paint(me);
+    markPublicNav();
     if (window.SkTheme && window.SkTheme.mount) window.SkTheme.mount();
     paintBadges();
     bindDashTabs(me);

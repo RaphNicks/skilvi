@@ -43,13 +43,14 @@ final class PagesController
 
     private static function inject(string $html, string $rel): string
     {
-        $html = preg_replace('/skilvi\\.css\\?v=\\d+/', 'skilvi.css?v=26', $html) ?? $html;
-        $html = preg_replace('/landing\\.css\\?v=\\d+/', 'landing.css?v=26', $html) ?? $html;
+        $html = preg_replace('/skilvi\\.css\\?v=\\d+/', 'skilvi.css?v=27', $html) ?? $html;
+        $html = preg_replace('/landing\\.css\\?v=\\d+/', 'landing.css?v=27', $html) ?? $html;
+        $html = preg_replace('/skilvi\\.js\\?v=\\d+/', 'skilvi.js?v=22', $html) ?? $html;
         $boot = '<script>(function(){try{var p=localStorage.getItem("skilvi_theme")||"system";var dark=p==="dark"||(p!=="light"&&window.matchMedia("(prefers-color-scheme: dark)").matches);document.documentElement.setAttribute("data-theme",dark?"dark":"light");document.documentElement.setAttribute("data-theme-pref",p);}catch(e){}})();</script>';
         if (str_contains($html, '<head>')) {
             $html = preg_replace('/<head>/i', '<head>' . $boot, $html, 1) ?? $html;
         }
-        $extra = '<script src="/js/theme.js?v=2"></script><script src="/js/api.js?v=39"></script><script src="/js/chrome.js?v=42"></script><script src="/js/geo.js?v=1"></script>';
+        $extra = '<script src="/js/theme.js?v=2"></script><script src="/js/api.js?v=39"></script><script src="/js/chrome.js?v=43"></script><script src="/js/geo.js?v=1"></script>';
         $pageScripts = [
             'index.html'             => '/js/discovery.js?v=31',
             'jobs.html'              => '/js/discovery.js?v=31',

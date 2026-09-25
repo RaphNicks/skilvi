@@ -72,10 +72,9 @@
     '<a class="brand" href="' + href + '"><img class="brand-logo" src="assets/img/skilvi-logo-word.png" alt="Skilvi"></a>';
 
   const PUBLIC_NAV = [
-    { label: "Find Work", href: "jobs.html", key: "jobs" },
     { label: "Find Talent", href: "search.html", key: "search" },
-    // { label: "Learn", href: "index.html#learn", key: "learn" },
-    { label: "Categories", href: "category.html", key: "category" }
+    { label: "Categories", href: "category.html", key: "category" },
+    { label: "Find Work", href: "jobs.html", key: "jobs" }
   ];
 
   const WORKER_NAV = [
@@ -144,24 +143,22 @@
   function renderPublicHeader(active) {
     const nav = PUBLIC_NAV.map((n) =>
       '<a href="' + n.href + '"' + (n.key === active ? ' class="active"' : "") + ">" + n.label + "</a>").join("");
-    const mnav = PUBLIC_NAV.map((n) =>
-      '<a href="' + n.href + '"' + (n.key === active ? ' class="active"' : "") + ">" + n.label + "</a>").join("");
     const el = $("#site-header");
     if (!el) return;
-    el.className = "topbar";
+    el.className = "lp-nav";
     el.innerHTML =
-      '<input type="checkbox" id="navCheck" class="nav-check" aria-hidden="true">' +
-      '<div class="container topbar-in">' +
-      '<a class="brand" href="index.html"><img class="brand-logo" src="assets/img/skilvi-logo-word.png" alt="Skilvi"></a>' +
-      '<nav class="mainnav">' + nav + "</nav>" +
-      '<div class="topact">' +
-      '<a class="btn btn-ghost" href="login.html">Sign In</a>' +
-      '<a class="btn btn-primary" href="login.html#regForm">Sign Up</a>' +
+      '<div class="lp-wrap lp-nav-in">' +
+      '<a class="lp-logo" href="index.html" aria-label="Skilvi home"><img src="assets/img/skilvi-logo-word.png" alt="Skilvi"></a>' +
+      '<nav class="lp-nav-mid" aria-label="Primary">' + nav + "</nav>" +
+      '<div class="lp-nav-right">' +
+      '<a class="lp-signin" href="login.html">Sign In</a>' +
+      '<a class="lp-btn lp-btn-solid lp-btn-sm" href="login.html#regForm">Sign Up</a>' +
       "</div>" +
-      '<label class="icon-btn nav-toggle" for="navCheck" aria-label="Menu">' + I.menu + "</label>" +
+      '<label class="lp-burger" for="lpMenu" aria-label="Menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg></label>' +
       "</div>" +
-      '<div class="mobile-nav" id="mobileNav">' + mnav +
-      '<a href="login.html">Sign In</a><a href="login.html#regForm">Sign Up</a></div>';
+      '<input type="checkbox" id="lpMenu" class="lp-menu-check">' +
+      '<div class="lp-menu"><div class="lp-menu-in">' + nav +
+      '<a href="login.html">Sign In</a><a class="lp-btn lp-btn-solid lp-btn-sm" href="login.html#regForm">Sign Up — it\'s free</a></div></div>';
   }
 
   function renderFooter() {
