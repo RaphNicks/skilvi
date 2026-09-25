@@ -25,10 +25,9 @@ final class Auth
     {
         if (!self::$resolved) {
             self::$resolved = true;
+            // Tab token only. The cookie is shared across tabs and must not
+            // impersonate another account on refresh.
             self::$id = self::idFromBearer();
-            if (self::$id === null) {
-                self::$id = Session::userId();
-            }
         }
         return self::$id;
     }

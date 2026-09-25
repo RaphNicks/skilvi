@@ -21,6 +21,9 @@
       location.href = "/login.html?next=" + encodeURIComponent(location.pathname + location.search);
       return true;
     }
+    if (err && err.status === 403 && /needs a worker account/i.test(err.message || "")) {
+      return true;
+    }
     return false;
   }
 

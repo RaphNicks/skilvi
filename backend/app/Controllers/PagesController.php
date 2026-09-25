@@ -43,7 +43,7 @@ final class PagesController
 
     private static function inject(string $html, string $rel): string
     {
-        $extra = '<script src="/js/api.js?v=38"></script><script src="/js/chrome.js?v=38"></script>';
+        $extra = '<script src="/js/api.js?v=39"></script><script src="/js/chrome.js?v=39"></script>';
         $pageScripts = [
             'index.html'             => '/js/discovery.js?v=31',
             'jobs.html'              => '/js/discovery.js?v=31',
@@ -60,10 +60,10 @@ final class PagesController
             'review.html'            => '/js/client.js?v=31',
             'worker-jobs.html'       => '/js/client.js?v=31',
             'worker-orders.html'     => '/js/client.js?v=31',
-            'worker-dashboard.html'  => '/js/worker.js?v=32',
-            'worker-wallet.html'     => '/js/worker.js?v=32',
-            'worker-services.html'   => '/js/worker.js?v=32',
-            'worker-service-form.html' => '/js/worker.js?v=32',
+            'worker-dashboard.html'  => '/js/worker.js?v=33',
+            'worker-wallet.html'     => '/js/worker.js?v=33',
+            'worker-services.html'   => '/js/worker.js?v=33',
+            'worker-service-form.html' => '/js/worker.js?v=33',
             'checkout.html'          => '/js/pay.js?v=32',
             'payment-success.html'   => '/js/pay.js?v=32',
             'verification.html'      => '/js/pay.js?v=32',

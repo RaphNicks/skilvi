@@ -72,6 +72,11 @@
     return '<a class="side-item' + (active ? " active" : "") + '" href="' + href + '">' + ico + "<span>" + label + "</span></a>";
   }
 
+  function tabHasToken() {
+    if (window.SkApi && window.SkApi.tabToken) return !!window.SkApi.tabToken();
+    try { return !!sessionStorage.getItem("skilvi_auth"); } catch (e) { return false; }
+  }
+
   const SHELL_KEY = "skilvi_shell";
   function rememberShell(want) {
     try { sessionStorage.setItem(SHELL_KEY, want); } catch (e) { /* private mode */ }
@@ -142,12 +147,12 @@
 
   function gate(me) {
     const f = file();
-    if (WORKER_ONLY.indexOf(f) !== -1 && !isWorker(me) && isClient(me)) {
-      location.replace("/client-dashboard.html");
+    if (WORKER_ONLY.indexOf(f) !== -1 && !isWorker(me)) {
+      location.replace(home(me));
       return true;
     }
-    if (CLIENT_ONLY.indexOf(f) !== -1 && !isClient(me) && isWorker(me)) {
-      location.replace("/worker-dashboard.html");
+    if (CLIENT_ONLY.indexOf(f) !== -1 && !isClient(me)) {
+      location.replace(home(me));
       return true;
     }
     return false;
@@ -231,7 +236,14 @@
     } catch (e) {
       me = null;
     }
-    if (!me) return;
+    if (!me) {
+      if (tabHasToken() && window.SkApi && window.SkApi.setTabToken) window.SkApi.setTabToken("");
+      const f = file();
+      if (WORKER_ONLY.indexOf(f) !== -1 || CLIENT_ONLY.indexOf(f) !== -1 || SHARED.indexOf(f) !== -1) {
+        location.replace("/login.html?next=" + encodeURIComponent(location.pathname + location.search));
+      }
+      return;
+    }
     if ((location.pathname || "").indexOf("/admin/") !== -1) {
       applySide(me);
       setHeader(me);
