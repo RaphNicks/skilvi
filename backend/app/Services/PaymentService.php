@@ -51,6 +51,7 @@ final class PaymentService
                 [$orderId]
             );
             if ($existing) {
+                $existing = self::ensurePaystackSession($existing, $userId);
                 $out = self::payload($existing, self::orderRow($orderId));
                 if ($idem !== '') {
                     \App\Core\Idempotency::put($userId, $idem, $out);
@@ -82,6 +83,7 @@ final class PaymentService
             [$code, $userId, $orderId, $purpose, $ref, $amount, $method, json_encode($meta), $now, $now]
         );
         $row = Db::fetch('SELECT * FROM payments WHERE code = ?', [$code]);
+        $row = self::ensurePaystackSession($row, $userId);
         $order = $orderId ? self::orderRow($orderId) : null;
         $out = self::payload($row, $order);
         if ($idem !== '') {
@@ -161,13 +163,47 @@ final class PaymentService
                 'channel'   => $row['method'],
             ],
         ]);
-        $sig = hash_hmac('sha512', $body, (string) Config::get('paystack.webhook'));
+        $sig = hash_hmac('sha512', $body, self::hmacSecret());
         return self::webhookPaystack($body, $sig);
+    }
+
+    public static function verifyWithPaystack(int $userId, string $key): array
+    {
+        $row = self::row($key);
+        if ((int) $row['user_id'] !== $userId) {
+            throw new AppError('forbidden', 'This payment is not yours.', 403);
+        }
+        $order = $row['order_id'] ? self::orderRow((int) $row['order_id']) : null;
+        if ($row['status'] === 'succeeded' || $row['status'] === 'failed') {
+            return self::payload($row, $order);
+        }
+        if (self::secret() === '') {
+            throw new AppError('config', 'Paystack is not configured on this server.', 503);
+        }
+        $ref = (string) ($row['provider_ref'] ?: $row['code']);
+        $res = self::paystack('GET', '/transaction/verify/' . rawurlencode($ref));
+        $data = is_array($res['data'] ?? null) ? $res['data'] : [];
+        $status = (string) ($data['status'] ?? '');
+        $claimed = (int) ($data['amount'] ?? 0);
+        if ($status === 'success' && $claimed === (int) $row['amount_kobo']) {
+            self::succeed($row, (string) json_encode($res));
+            $row = self::row($key);
+            $order = $row['order_id'] ? self::orderRow((int) $row['order_id']) : null;
+            return self::payload($row, $order);
+        }
+        if (in_array($status, ['failed', 'abandoned'], true)) {
+            Db::run(
+                "UPDATE payments SET status='failed', raw_json=?, updated_at=? WHERE id=? AND status='initiated'",
+                [json_encode($res), now_iso(), $row['id']]
+            );
+            $row = self::row($key);
+        }
+        return self::payload($row, $order);
     }
 
     public static function webhookPaystack(string $raw, ?string $signature): array
     {
-        $secret = (string) Config::get('paystack.webhook');
+        $secret = self::hmacSecret();
         $expected = hash_hmac('sha512', $raw, $secret);
         if (!$signature || !hash_equals($expected, $signature)) {
             throw new AppError('forbidden', 'Invalid webhook signature.', 403);
@@ -304,7 +340,8 @@ final class PaymentService
             'provider_ref'    => $row['provider_ref'],
             'paid_at'         => $paidLabel,
             'escrow_label'    => $escrow,
-            'dev_simulate'    => Config::isDev() && $row['status'] === 'initiated',
+            'authorization_url'=> self::meta($row)['authorization_url'] ?? null,
+            'dev_simulate'    => Config::isDev() && self::secret() === '' && $row['status'] === 'initiated',
             'order'           => $order ? [
                 'id'              => $order['code'],
                 'title'           => self::orderTitle($order),
@@ -316,6 +353,141 @@ final class PaymentService
             'success_url'     => '/payment-success.html?id=' . rawurlencode($row['code']),
         ];
         return $out;
+    }
+
+    /** @param array<string,mixed> $row */
+    private static function meta(array $row): array
+    {
+        $raw = json_decode((string) ($row['raw_json'] ?? ''), true);
+        return is_array($raw) ? $raw : [];
+    }
+
+    private static function secret(): string
+    {
+        return trim((string) Config::get('paystack.secret', ''));
+    }
+
+    private static function hmacSecret(): string
+    {
+        $hook = trim((string) Config::get('paystack.webhook', ''));
+        if ($hook !== '') {
+            return $hook;
+        }
+        $secret = self::secret();
+        return $secret !== '' ? $secret : 'skilvi-dev-webhook';
+    }
+
+    private static function publicOrigin(): string
+    {
+        $u = trim((string) Config::get('app_url', ''));
+        if ($u !== '') {
+            return rtrim($u, '/');
+        }
+        $fwd = strtolower((string) ($_SERVER['HTTP_X_FORWARDED_PROTO'] ?? ''));
+        $https = $fwd === 'https'
+            || (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off');
+        $host = (string) ($_SERVER['HTTP_HOST'] ?? '127.0.0.1:8080');
+        return ($https ? 'https://' : 'http://') . $host;
+    }
+
+    /** @param array<string,mixed> $row @return array<string,mixed> */
+    private static function ensurePaystackSession(array $row, int $userId): array
+    {
+        if (($row['status'] ?? '') !== 'initiated' || self::secret() === '') {
+            return $row;
+        }
+        $meta = self::meta($row);
+        if (!empty($meta['authorization_url'])) {
+            return $row;
+        }
+        $user = Db::fetch('SELECT email, full_name FROM users WHERE id = ?', [$userId]);
+        $email = trim((string) ($user['email'] ?? ''));
+        if ($email === '' || !str_contains($email, '@')) {
+            throw new AppError('invalid', 'Add an email to your account before paying.', 422);
+        }
+        $code = (string) $row['code'];
+        $callback = self::publicOrigin() . '/payment-success.html?id=' . rawurlencode($code);
+        $res = self::paystack('POST', '/transaction/initialize', [
+            'email'        => $email,
+            'amount'       => (int) $row['amount_kobo'],
+            'reference'    => (string) ($row['provider_ref'] ?: $code),
+            'callback_url' => $callback,
+            'metadata'     => [
+                'payment_code' => $code,
+                'purpose'      => $row['purpose'],
+                'order_id'     => $row['order_id'],
+            ],
+        ]);
+        $data = is_array($res['data'] ?? null) ? $res['data'] : [];
+        $url = (string) ($data['authorization_url'] ?? '');
+        if ($url === '') {
+            throw new AppError('paystack', 'Paystack did not return a checkout URL.', 502);
+        }
+        $meta['authorization_url'] = $url;
+        $meta['access_code'] = $data['access_code'] ?? null;
+        $now = now_iso();
+        Db::run(
+            'UPDATE payments SET raw_json = ?, updated_at = ? WHERE id = ?',
+            [json_encode($meta), $now, $row['id']]
+        );
+        $fresh = Db::fetch('SELECT * FROM payments WHERE id = ?', [$row['id']]);
+        return $fresh ?: $row;
+    }
+
+    /** @param array<string,mixed>|null $json */
+    private static function paystack(string $method, string $path, ?array $json = null): array
+    {
+        $secret = self::secret();
+        if ($secret === '') {
+            throw new AppError('config', 'Paystack is not configured on this server.', 503);
+        }
+        $url = 'https://api.paystack.co' . $path;
+        $payload = $json !== null ? json_encode($json) : null;
+        $raw = '';
+        $http = 0;
+        if (function_exists('curl_init')) {
+            $ch = curl_init($url);
+            $headers = [
+                'Authorization: Bearer ' . $secret,
+                'Content-Type: application/json',
+                'Accept: application/json',
+            ];
+            $opts = [
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_CUSTOMREQUEST  => $method,
+                CURLOPT_HTTPHEADER     => $headers,
+                CURLOPT_TIMEOUT        => 25,
+            ];
+            if ($payload !== null) {
+                $opts[CURLOPT_POSTFIELDS] = $payload;
+            }
+            curl_setopt_array($ch, $opts);
+            $raw = (string) curl_exec($ch);
+            $http = (int) curl_getinfo($ch, CURLINFO_HTTP_CODE);
+            $err = curl_error($ch);
+            curl_close($ch);
+            if ($raw === '' && $err !== '') {
+                throw new AppError('paystack', 'Could not reach Paystack. Check this machine can access the internet.', 502);
+            }
+        } else {
+            $hdr = "Authorization: Bearer {$secret}\r\nContent-Type: application/json\r\nAccept: application/json\r\n";
+            $ctx = stream_context_create([
+                'http' => [
+                    'method'  => $method,
+                    'header'  => $hdr,
+                    'content' => $payload ?? '',
+                    'timeout' => 25,
+                    'ignore_errors' => true,
+                ],
+            ]);
+            $raw = (string) file_get_contents($url, false, $ctx);
+        }
+        $decoded = json_decode($raw, true);
+        if (!is_array($decoded) || empty($decoded['status'])) {
+            $msg = is_array($decoded) ? (string) ($decoded['message'] ?? 'Paystack request failed.') : 'Paystack request failed.';
+            throw new AppError('paystack', $msg, $http >= 400 ? $http : 502);
+        }
+        return $decoded;
     }
 
     private static function nextCode(): string

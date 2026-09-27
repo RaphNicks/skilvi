@@ -155,6 +155,7 @@ Router::get('/api/payments/{id}/receipt', [PaymentController::class, 'receipt'])
 Router::get('/api/payments/{id}', [PaymentController::class, 'status']);
 Router::get('/api/payments/{id}/status', [PaymentController::class, 'status']);
 Router::post('/api/payments/{id}/simulate', [PaymentController::class, 'simulate']);
+Router::post('/api/payments/{id}/verify', [PaymentController::class, 'verify']);
 Router::post('/api/webhooks/paystack', [PaymentController::class, 'paystack']);
 Router::post('/api/webhooks/flutterwave', [PaymentController::class, 'flutterwave']);
 Router::get('/api/verification/status', [PaymentController::class, 'verificationStatus']);

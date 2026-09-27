@@ -43,6 +43,11 @@ final class PaymentController
         Response::json(PaymentService::simulate(Auth::id(), $params['id'] ?? '', $req->str('result', 'success')));
     }
 
+    public static function verify(Request $req, array $params = []): void
+    {
+        Response::json(PaymentService::verifyWithPaystack(Auth::id(), $params['id'] ?? ''));
+    }
+
     public static function fromService(Request $req, array $params = []): void
     {
         $uid = Auth::requireRole('client');

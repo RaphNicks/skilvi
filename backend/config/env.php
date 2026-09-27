@@ -25,6 +25,7 @@ return [
     'app_env'  => $env,
     'app_name' => 'Skilvi',
     'app_key'  => $e('APP_KEY'),
+    'app_url'  => rtrim($e('APP_URL'), '/'),
     'frontend_root' => $frontend,
 
     'db' => [
@@ -90,7 +91,7 @@ return [
     'paystack' => [
         'secret'  => $e('PAYSTACK_SECRET'),
         'public'  => $e('PAYSTACK_PUBLIC'),
-        'webhook' => $e('PAYSTACK_WEBHOOK', 'skilvi-dev-webhook'),
+        'webhook' => $e('PAYSTACK_WEBHOOK'),
     ],
 
     'fees' => [

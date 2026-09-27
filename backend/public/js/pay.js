@@ -138,14 +138,14 @@
         currentPay = await api("/api/payments/initiate", {
           body: { purpose: "order", order_id: o.id, method: "paystack" },
         });
+        if (currentPay.authorization_url) {
+          location.href = currentPay.authorization_url;
+          return;
+        }
         if (currentPay.dev_simulate) {
           toast("Paystack (dev): confirming payment.", "success");
           await api("/api/payments/" + encodeURIComponent(currentPay.id) + "/simulate", { body: { result: "success" } });
           location.href = currentPay.success_url;
-          return;
-        }
-        if (currentPay.authorization_url) {
-          location.href = currentPay.authorization_url;
           return;
         }
         toast("Waiting for Paystack to confirm…", "success");
@@ -172,10 +172,13 @@
   }
 
   async function successPage() {
-    let id = params.get("id") || params.get("pay") || "";
+    let id = params.get("id") || params.get("pay") || params.get("reference") || params.get("trxref") || "";
     let p;
     if (id) p = await api("/api/payments/" + encodeURIComponent(id));
     else p = await api("/api/payments/latest");
+    if (p && p.status === "initiated") {
+      p = await api("/api/payments/" + encodeURIComponent(p.id) + "/verify", { body: {} });
+    }
     const o = p.order || {};
     const worker = o.worker_name || "—";
     setKv("Order", o.id || "—");
@@ -264,7 +267,11 @@
       busy(btn, true);
       try {
         if (st.status !== "pending" && st.status !== "approved") {
-          const pay = await api("/api/payments/initiate", { body: { purpose: "verification", method: "transfer" } });
+          const pay = await api("/api/payments/initiate", { body: { purpose: "verification", method: "paystack" } });
+          if (pay.authorization_url) {
+            location.href = pay.authorization_url;
+            return;
+          }
           if (pay.dev_simulate) {
             await api("/api/payments/" + encodeURIComponent(pay.id) + "/simulate", { body: { result: "success" } });
           } else {
@@ -307,7 +314,11 @@
       const plan = active && /5,000/.test(active.textContent) ? "category" : "search";
       busy(btn, true);
       try {
-        const pay = await api("/api/promotions/" + plan + "/purchase", { body: { method: "transfer", plan } });
+        const pay = await api("/api/promotions/" + plan + "/purchase", { body: { method: "paystack", plan } });
+        if (pay.authorization_url) {
+          location.href = pay.authorization_url;
+          return;
+        }
         if (pay.dev_simulate) {
           await api("/api/payments/" + encodeURIComponent(pay.id) + "/simulate", { body: { result: "success" } });
         }
