@@ -133,12 +133,14 @@ final class PaymentService
             ['Provider reference', (string) ($p['provider_ref'] ?: $p['id'])],
             ['Paid at', $when !== '' ? $when : '—'],
             ['Escrow status', (string) ($p['escrow_label'] ?? '—')],
-            ['Paid to', 'Skilvi Technologies Ltd (escrow)'],
+            ['Paid to', 'Skilvi (escrow)'],
         ];
+        $logo = rtrim((string) Config::get('frontend_root'), '/\\') . '/assets/img/skilvi-logo-word.png';
         $body = \App\Core\SimplePdf::receipt(
             'Payment receipt',
             $rows,
-            'Skilvi Technologies Ltd holds this amount in escrow until the client approves the work, or a dispute is resolved. This is a payment receipt, not a tax invoice. Built in Nigeria.'
+            'Skilvi holds this amount in escrow until the client approves the work, or a dispute is resolved. This is a payment receipt, not a tax invoice. Built in Nigeria.',
+            is_file($logo) ? $logo : null
         );
         $name = preg_replace('/[^A-Za-z0-9._-]/', '_', (string) $p['id']) . '-receipt.pdf';
         return ['filename' => $name, 'body' => $body];
