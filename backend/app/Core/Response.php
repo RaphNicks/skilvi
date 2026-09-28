@@ -64,7 +64,9 @@ final class Response
 
     public static function redirect(string $to, int $status = 302): never
     {
-        if (!str_starts_with($to, '/') || str_starts_with($to, '//')) {
+        $internal = str_starts_with($to, '/') && !str_starts_with($to, '//');
+        $google = (bool) preg_match('#^https://accounts\\.google\\.com/#', $to);
+        if (!$internal && !$google) {
             $to = '/';
         }
         self::send($status, ['Location' => $to], '');
