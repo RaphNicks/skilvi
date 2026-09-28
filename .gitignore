@@ -7,3 +7,5 @@ backend/storage/.app_key
 backend/.env
 backend/storage/geo/cities.csv.gz
 backend/storage/geo/cities.csv
+/assets/cms/*
+!/assets/cms/.gitkeep

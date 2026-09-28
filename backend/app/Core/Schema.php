@@ -209,6 +209,15 @@ final class Schema
         if (!Db::fetch("SELECT key FROM settings WHERE key='maintenance'")) {
             Db::run("INSERT INTO settings (key, value) VALUES ('maintenance', '0')");
         }
+        self::execSql(
+            'CREATE TABLE IF NOT EXISTS cms_content (
+                k TEXT NOT NULL PRIMARY KEY,
+                kind TEXT NOT NULL DEFAULT \'text\',
+                body TEXT NOT NULL,
+                updated_at TEXT NOT NULL,
+                updated_by INTEGER
+            )'
+        );
     }
 
     private static function execSql(string $sql): void

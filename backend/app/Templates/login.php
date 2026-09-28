@@ -9,7 +9,7 @@ View::partial('head', ['title' => 'Log in — Skilvi', 'description' => 'Log in 
 <main class="container page-pad" style="max-width:480px">
   <div class="center" style="margin-bottom:18px">
     <a class="brand" href="/index.html" style="justify-content:center"><img class="brand-logo" id="lgMark" src="/assets/img/skilvi-logo-word.png" alt="Skilvi"></a>
-    <p class="small faint mt-1">Email login, Naira-ready, escrow-protected.</p>
+    <p class="small faint mt-1" data-cms="login.tag">Email login, Naira-ready, escrow-protected.</p>
   </div>
 
   <div class="card card-pad">

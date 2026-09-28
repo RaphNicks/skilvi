@@ -8,8 +8,8 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
   <link rel="icon" href="assets/img/skilvi-favicon.png?v=2" type="image/png">
   <link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png?v=2">
-  <title>Skilvi — Hire trusted talent for any job in Nigeria</title>
-  <meta name="description" content="Skilvi is Nigeria's marketplace for hiring trusted professionals — digital skills and hands-on trades. Post a job, compare verified talent, and pay safely through escrow.">
+  <title data-cms="landing.meta_title">Skilvi — Hire trusted talent for any job in Nigeria</title>
+  <meta name="description" content="Skilvi is Nigeria's marketplace for hiring trusted professionals — digital skills and hands-on trades. Post a job, compare verified talent, and pay safely through escrow." data-cms="landing.meta_desc">
   <link rel="stylesheet" href="assets/css/skilvi.css?v=21">
   <link rel="stylesheet" href="assets/css/landing.css?v=25">
 </head>
@@ -20,14 +20,14 @@
   <div class="lp-wrap lp-nav-in">
     <a class="lp-logo" href="index.html" aria-label="Skilvi home"><img src="assets/img/skilvi-logo-word.png" alt="Skilvi — Discover. Learn. Earn."></a>
     <nav class="lp-nav-mid" aria-label="Primary">
-      <a href="search.html">Find Talent</a>
-      <a href="category.html">Categories</a>
-      <a href="jobs.html">Find Work</a>
+      <a href="search.html" data-cms="nav.talent">Find Talent</a>
+      <a href="category.html" data-cms="nav.categories">Categories</a>
+      <a href="jobs.html" data-cms="nav.work">Find Work</a>
       <!-- <a href="#learn">Learn</a>  (learning section paused — restore with the courses block) -->
     </nav>
     <div class="lp-nav-right">
       <button type="button" class="icon-btn theme-switch" data-theme-switch aria-label="Display mode" title="Display: System — click to change"></button>
-      <a class="lp-signin" href="login.html">Sign In</a>
+      <a class="lp-signin" href="login.html" data-cms="nav.signin">Sign In</a>
       <a class="lp-btn lp-btn-solid lp-btn-sm" href="login.html#regForm">Sign Up</a>
     </div>
     <label class="lp-burger" for="lpMenu" aria-label="Menu">
@@ -37,11 +37,11 @@
   <input type="checkbox" id="lpMenu" class="lp-menu-check">
   <div class="lp-menu">
     <div class="lp-menu-in">
-      <a href="jobs.html">Find Work</a>
-      <a href="search.html">Find Talent</a>
-      <a href="category.html">Categories</a>
+      <a href="jobs.html" data-cms="nav.work">Find Work</a>
+      <a href="search.html" data-cms="nav.talent">Find Talent</a>
+      <a href="category.html" data-cms="nav.categories">Categories</a>
       <!-- <a href="#learn">Learn</a>  (learning section paused) -->
-      <a href="login.html">Sign In</a>
+      <a href="login.html" data-cms="nav.signin">Sign In</a>
       <a class="lp-btn lp-btn-solid lp-btn-sm" href="login.html#regForm">Sign Up — it's free</a>
     </div>
   </div>
@@ -53,20 +53,20 @@
   <video class="lp-hero-video" src="assets/video/hero-office.mp4" poster="assets/video/hero-office-poster.jpg" autoplay muted loop playsinline preload="auto" aria-hidden="true"></video>
   <div class="lp-wrap lp-hero-in">
     <div>
-      <p class="lp-eyebrow">Nigeria's #1 marketplace to hire skilled work</p>
-      <h1 class="lp-h1">Hire trusted talent.<br>Get it done right.</h1>
-      <p class="lp-sub">Post a job and get matched with verified professionals — from web developers to master plumbers. You pay Skilvi first; your money is only released when the work is done to your standard.</p>
+      <p class="lp-eyebrow" data-cms="landing.hero.eyebrow">Nigeria's #1 marketplace to hire skilled work</p>
+      <h1 class="lp-h1" data-cms="landing.hero.h1">Hire trusted talent.<br>Get it done right.</h1>
+      <p class="lp-sub" data-cms="landing.hero.sub">Post a job and get matched with verified professionals — from web developers to master plumbers. You pay Skilvi first; your money is only released when the work is done to your standard.</p>
 
       <form class="lp-search" id="heroSearch" action="search.html" method="get" role="search">
         <div class="lp-search-box">
           <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
-          <input type="search" name="q" placeholder="What do you need done? e.g. website, plumber, logo…" aria-label="What do you need done?">
+          <input type="search" name="q" placeholder="What do you need done? e.g. website, plumber, logo…" aria-label="What do you need done?" data-cms="landing.hero.placeholder">
         </div>
-        <button class="lp-btn lp-btn-solid" type="submit">Find talent</button>
+        <button class="lp-btn lp-btn-solid" type="submit" data-cms="landing.hero.search_btn">Find talent</button>
       </form>
 
       <div class="lp-popular">
-        <b>Popular:</b>
+        <b data-cms="landing.hero.popular_label">Popular:</b>
         <a href="search.html?q=Web%20Development">Web Development</a>
         <a href="search.html?q=Graphic%20Design">Graphic Design</a>
         <a href="search.html?q=Plumbing">Plumbing</a>
@@ -74,7 +74,7 @@
         <a href="search.html?q=UI/UX">UI/UX Design</a>
       </div>
 
-      <a class="lp-hero-alt" href="#earn">I have a skill — start earning on Skilvi <span aria-hidden="true">↓</span></a>
+      <a class="lp-hero-alt" href="#earn"><span data-cms="landing.hero.alt">I have a skill — start earning on Skilvi</span> <span aria-hidden="true">↓</span></a>
     </div>
 
   </div>
@@ -83,7 +83,7 @@
 <!-- ================= TRUSTED ================= -->
 <section class="lp-trusted">
   <div class="lp-wrap">
-    <p>Trusted by teams, businesses and homes across Nigeria</p>
+    <p data-cms="landing.trusted">Trusted by teams, businesses and homes across Nigeria</p>
     <div class="lp-logos">
       <span class="lp-logo-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v10M8.5 9.5h5a2 2 0 1 1 0 4h-5"/></svg>NairaPay</span>
       <span class="lp-logo-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 12h16M12 4v16"/></svg>ChopMarket</span>
@@ -103,8 +103,8 @@
 <section class="lp-sec">
   <div class="lp-wrap">
     <div class="lp-center">
-      <h2 class="lp-h2">Jobs get posted. Talent shows up.</h2>
-      <p class="lp-h2-sub">Real work posted by clients like you — matched with trusted professionals in days, not weeks.</p>
+      <h2 class="lp-h2" data-cms="landing.jobs.h2">Jobs get posted. Talent shows up.</h2>
+      <p class="lp-h2-sub" data-cms="landing.jobs.sub">Real work posted by clients like you — matched with trusted professionals in days, not weeks.</p>
     </div>
 
     <div class="lp-opp-grid"><p class="tiny faint">No open jobs yet. Post one to get started.</p></div>
@@ -113,9 +113,9 @@
 <!-- ================= STATS ================= -->
 <section style="padding: 26px 0 10px">
   <div class="lp-wrap lp-stats">
-    <div class="lp-stat"><div class="n">12,000+</div><div class="l">Verified professionals</div></div>
-    <div class="lp-stat"><div class="n">₦4.2B</div><div class="l">Paid out safely in escrow</div></div>
-    <div class="lp-stat"><div class="n">8,500+</div><div class="l">Jobs completed for clients</div></div>
+    <div class="lp-stat"><div class="n" data-cms="landing.stat1.n">12,000+</div><div class="l" data-cms="landing.stat1.l">Verified professionals</div></div>
+    <div class="lp-stat"><div class="n" data-cms="landing.stat2.n">₦4.2B</div><div class="l" data-cms="landing.stat2.l">Paid out safely in escrow</div></div>
+    <div class="lp-stat"><div class="n" data-cms="landing.stat3.n">8,500+</div><div class="l" data-cms="landing.stat3.l">Jobs completed for clients</div></div>
   </div>
 </section>
 
@@ -123,8 +123,8 @@
 <section class="lp-sec lp-pop">
   <div class="lp-wrap">
     <div class="lp-sec-head">
-      <h2 class="lp-h2">Browse by what you need done</h2>
-      <a class="lp-btn lp-btn-outline lp-btn-sm" href="category.html">All categories</a>
+      <h2 class="lp-h2" data-cms="landing.cats.h2">Browse by what you need done</h2>
+      <a class="lp-btn lp-btn-outline lp-btn-sm" href="category.html" data-cms="landing.cats.btn">All categories</a>
     </div>
     <div class="lp-pop-grid">
       <a class="lp-card" href="category.html?c=design" style="text-decoration:none">
@@ -156,8 +156,8 @@
 <section class="lp-sec" style="padding-top:0">
   <div class="lp-wrap">
     <div class="lp-center">
-      <h2 class="lp-h2">What do you need done?</h2>
-      <p class="lp-h2-sub" style="max-width:460px;margin-left:auto;margin-right:auto">From code to carpentry — browse by trade and see who's available near you.</p>
+      <h2 class="lp-h2" data-cms="landing.skills.h2">What do you need done?</h2>
+      <p class="lp-h2-sub" style="max-width:460px;margin-left:auto;margin-right:auto" data-cms="landing.skills.sub">From code to carpentry — browse by trade and see who's available near you.</p>
     </div>
     <div class="lp-skill-grid">
       <a class="lp-skill" href="search.html?q=Web%20Development"><span class="s-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m8 8-4 4 4 4m8-8 4 4-4 4m-3-10-2 12"/></svg></span><h3>Web Development</h3><span class="cnt">486 jobs</span></a>
@@ -170,7 +170,7 @@
       <a class="lp-skill" href="search.html?q=Video%20Editing"><span class="s-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="13" height="12" rx="2"/><path d="m16 10 5-3v10l-5-3"/></svg></span><h3>Video Editing</h3><span class="cnt">121 jobs</span></a>
     </div>
     <div class="lp-center" style="margin-top:44px">
-      <a class="lp-btn lp-btn-solid" href="category.html">Browse All Categories</a>
+      <a class="lp-btn lp-btn-solid" href="category.html" data-cms="landing.skills.btn">Browse All Categories</a>
     </div>
   </div>
 </section>
@@ -179,8 +179,8 @@
 <section class="lp-sec">
   <div class="lp-wrap">
     <div class="lp-center">
-      <h2 class="lp-h2">Find skilled people</h2>
-      <p class="lp-h2-sub">Verified profiles, real reviews, and a payment method that protects both sides.</p>
+      <h2 class="lp-h2" data-cms="landing.workers.h2">Find skilled people</h2>
+      <p class="lp-h2-sub" data-cms="landing.workers.sub">Verified profiles, real reviews, and a payment method that protects both sides.</p>
     </div>
     <div class="lp-worker-grid"><p class="tiny faint">No worker profiles to show yet.</p></div>
 </section>
@@ -237,27 +237,27 @@ uncomment to restore.
 <section class="lp-sec" id="how">
   <div class="lp-wrap">
     <div class="lp-how-head">
-      <h2 class="lp-h2">Hire with confidence</h2>
-      <p>Built so clients can trust the process: every professional is reachable, every payment is escrow-protected, and disputes are handled by real people.</p>
+      <h2 class="lp-h2" data-cms="landing.how.h2">Hire with confidence</h2>
+      <p data-cms="landing.how.sub">Built so clients can trust the process: every professional is reachable, every payment is escrow-protected, and disputes are handled by real people.</p>
     </div>
     <div class="lp-how-grid">
       <article class="lp-how">
         <span class="num">1</span>
-        <h3>Post your job</h3>
-        <p>Describe the work, set your budget and timeline. Posting is free — verified professionals see it the moment it goes live.</p>
-        <a class="lp-btn lp-btn-outline lp-btn-sm" href="post-job.html">Post a Job</a>
+        <h3 data-cms="landing.how1.t">Post your job</h3>
+        <p data-cms="landing.how1.p">Describe the work, set your budget and timeline. Posting is free — verified professionals see it the moment it goes live.</p>
+        <a class="lp-btn lp-btn-outline lp-btn-sm" href="post-job.html" data-cms="landing.how1.btn">Post a Job</a>
       </article>
       <article class="lp-how featured">
         <span class="num">2</span>
-        <h3>Compare &amp; choose</h3>
-        <p>Review verified profiles, ratings and portfolios, and chat before you commit. You hire the right person — not a gamble.</p>
-        <a class="lp-btn lp-btn-solid lp-btn-sm" href="search.html">Browse Talent</a>
+        <h3 data-cms="landing.how2.t">Compare &amp; choose</h3>
+        <p data-cms="landing.how2.p">Review verified profiles, ratings and portfolios, and chat before you commit. You hire the right person — not a gamble.</p>
+        <a class="lp-btn lp-btn-solid lp-btn-sm" href="search.html" data-cms="landing.how2.btn">Browse Talent</a>
       </article>
       <article class="lp-how">
         <span class="num">3</span>
-        <h3>Money released on completion</h3>
-        <p>You pay Skilvi first and funds stay in escrow until the work meets your standard. Disputes are handled by real people.</p>
-        <a class="lp-btn lp-btn-outline lp-btn-sm" href="help.html#faq-escrow">How escrow works</a>
+        <h3 data-cms="landing.how3.t">Money released on completion</h3>
+        <p data-cms="landing.how3.p">You pay Skilvi first and funds stay in escrow until the work meets your standard. Disputes are handled by real people.</p>
+        <a class="lp-btn lp-btn-outline lp-btn-sm" href="help.html#faq-escrow" data-cms="landing.how3.btn">How escrow works</a>
       </article>
     </div>
   </div>
@@ -270,16 +270,16 @@ uncomment to restore.
       <img class="lp-split-photo" src="assets/img/earn-worker.jpg" alt="">
     </div>
     <div>
-      <h2 class="lp-h2">Earn from what<br>you already know.</h2>
-      <p class="lp-sub">You don't need to be a “tech person” to earn here. Plumbers, electricians, designers and developers are all paid the same way — safely, through escrow, straight to a Nigerian bank account.</p>
+      <h2 class="lp-h2" data-cms="landing.earn.h2">Earn from what<br>you already know.</h2>
+      <p class="lp-sub" data-cms="landing.earn.sub">You don't need to be a “tech person” to earn here. Plumbers, electricians, designers and developers are all paid the same way — safely, through escrow, straight to a Nigerian bank account.</p>
       <ul class="lp-checks">
-        <li><span class="ck"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5 9-9"/></svg></span>Create your free profile in minutes</li>
-        <li><span class="ck"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5 9-9"/></svg></span>Get paid safely through escrow</li>
-        <li><span class="ck"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5 9-9"/></svg></span>Withdraw to your bank in 1 business day</li>
+        <li><span class="ck"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5 9-9"/></svg></span><span data-cms="landing.earn.c1">Create your free profile in minutes</span></li>
+        <li><span class="ck"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5 9-9"/></svg></span><span data-cms="landing.earn.c2">Get paid safely through escrow</span></li>
+        <li><span class="ck"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5 9-9"/></svg></span><span data-cms="landing.earn.c3">Withdraw to your bank in 1 business day</span></li>
       </ul>
       <div style="display:flex;gap:14px;flex-wrap:wrap">
-        <a class="lp-btn lp-btn-solid" href="login.html#regForm">Become a worker</a>
-        <a class="lp-btn lp-btn-outline" href="#how">How it works</a>
+        <a class="lp-btn lp-btn-solid" href="login.html#regForm" data-cms="landing.earn.cta">Become a worker</a>
+        <a class="lp-btn lp-btn-outline" href="#how" data-cms="landing.earn.how">How it works</a>
       </div>
     </div>
   </div>
@@ -288,14 +288,14 @@ uncomment to restore.
 <!-- ================= NEWSLETTER ================= -->
 <section class="lp-news">
   <div class="lp-wrap">
-    <h2 class="lp-h2">Get opportunities<br>in your inbox</h2>
-    <p class="lp-h2-sub" style="max-width:440px;margin-left:auto;margin-right:auto">New jobs, fresh talent and marketplace updates. No spam — unsubscribe anytime.</p>
+    <h2 class="lp-h2" data-cms="landing.news.h2">Get opportunities<br>in your inbox</h2>
+    <p class="lp-h2-sub" style="max-width:440px;margin-left:auto;margin-right:auto" data-cms="landing.news.sub">New jobs, fresh talent and marketplace updates. No spam — unsubscribe anytime.</p>
     <form class="lp-news-form" data-toast="You're on the list — check your phone to confirm.">
       <div class="lp-search-box">
         <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>
-        <input type="email" name="email" placeholder="Enter your email address" aria-label="Email address" required>
+        <input type="email" name="email" placeholder="Enter your email address" data-cms="landing.news.placeholder" aria-label="Email address" required>
       </div>
-      <button class="lp-btn lp-btn-solid" type="submit">Subscribe</button>
+      <button class="lp-btn lp-btn-solid" type="submit" data-cms="landing.news.btn">Subscribe</button>
     </form>
   </div>
 </section>
@@ -307,14 +307,14 @@ uncomment to restore.
     <div class="lp-foot-grid">
       <div class="lp-foot-brand">
         <img src="assets/img/skilvi-logo-word.png" alt="Skilvi">
-        <div class="lp-foot-tag">DISCOVER. LEARN. EARN.</div>
-        <p class="lp-foot-desc">The Nigeria-first marketplace for skills and work — digital and hands-on. Every order protected by escrow.</p>
+        <div class="lp-foot-tag" data-cms="footer.tag">DISCOVER. LEARN. EARN.</div>
+        <p class="lp-foot-desc" data-cms="footer.desc">The Nigeria-first marketplace for skills and work — digital and hands-on. Every order protected by escrow.</p>
       </div>
       <div class="lp-foot-col">
         <h4>Marketplace</h4>
         <a href="jobs.html">Find work</a>
         <a href="search.html">Find talent</a>
-        <a href="category.html">Categories</a>
+        <a href="category.html" data-cms="nav.categories">Categories</a>
         <a href="post-job.html">Post a job</a>
       </div>
       <div class="lp-foot-col">
@@ -340,8 +340,8 @@ uncomment to restore.
       </div>
     </div>
     <div class="lp-foot-bottom">
-      <span>© 2026 Skilvi Technologies Ltd. All rights reserved.</span>
-      <span>Made in Nigeria · Payments held securely in escrow</span>
+      <span data-cms="footer.copyright">© 2026 Skilvi Technologies Ltd. All rights reserved.</span>
+      <span data-cms="footer.made">Made in Nigeria · Payments held securely in escrow</span>
     </div>
   </div>
 </footer>

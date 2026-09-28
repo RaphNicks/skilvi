@@ -112,6 +112,12 @@ Router::post('/api/admin/reports/{id}/action', [\App\Controllers\AdminController
 Router::get('/api/admin/analytics', [\App\Controllers\AdminController::class, 'analytics']);
 Router::get('/api/admin/reports.csv', [\App\Controllers\AdminController::class, 'analytics']);
 Router::get('/api/admin/audit', [\App\Controllers\AdminController::class, 'audit']);
+Router::get('/api/admin/cms', [\App\Controllers\CmsController::class, 'adminGet']);
+Router::post('/api/admin/cms', [\App\Controllers\CmsController::class, 'save']);
+Router::post('/api/admin/cms/upload', [\App\Controllers\CmsController::class, 'upload']);
+Router::post('/api/admin/cms/{key}/revert', [\App\Controllers\CmsController::class, 'revert']);
+Router::delete('/api/admin/cms/{key}', [\App\Controllers\CmsController::class, 'revert']);
+
 Router::get('/api/admin/settings', [\App\Controllers\AdminController::class, 'settingsGet']);
 Router::patch('/api/admin/settings', [\App\Controllers\AdminController::class, 'settingsSave']);
 Router::post('/api/admin/settings', [\App\Controllers\AdminController::class, 'settingsSave']);

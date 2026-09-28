@@ -554,6 +554,71 @@
     }
   }
 
+  function cmsField(f) {
+    const custom = f.custom ? '<span class="tiny" style="color:var(--royal-700)">Custom</span>' : '<span class="tiny faint">Default</span>';
+    const revert = f.custom
+      ? '<button class="btn btn-ghost btn-sm cms-revert" type="button" data-key="' + esc(f.key) + '">Revert</button>'
+      : "";
+    if (f.type === "image" || f.type === "video") {
+      const prev = f.type === "image"
+        ? '<img src="' + esc(f.value) + '" alt="" style="max-height:64px;max-width:180px;object-fit:contain;background:var(--bg);border:1px solid var(--line);border-radius:8px">'
+        : (f.value ? '<video src="' + esc(f.value) + '" muted playsinline style="max-height:64px;max-width:180px;background:#10141C;border-radius:8px"></video>' : "");
+      return '<div class="field cms-field" data-key="' + esc(f.key) + '"><label>' + esc(f.label) + " " + custom + "</label>" +
+        '<div class="row" style="gap:10px;align-items:center;flex-wrap:wrap">' + prev +
+        '<input class="input cms-file" type="file" data-key="' + esc(f.key) + '" accept="' + (f.type === "video" ? "video/mp4,video/webm" : "image/jpeg,image/png,image/webp") + '">' +
+        revert + "</div></div>";
+    }
+    const tag = f.type === "textarea" || f.type === "html" ? "textarea" : "input";
+    const body = tag === "textarea"
+      ? '<textarea class="textarea cms-val" data-key="' + esc(f.key) + '" rows="4">' + esc(f.value) + "</textarea>"
+      : '<input class="input cms-val" data-key="' + esc(f.key) + '" value="' + esc(f.value) + '">';
+    return '<div class="field cms-field" data-key="' + esc(f.key) + '"><label>' + esc(f.label) + " " + custom + "</label>" +
+      body + '<div class="row mt-1" style="gap:8px">' +
+      '<button class="btn btn-primary btn-sm cms-save" type="button" data-key="' + esc(f.key) + '">Save</button>' + revert + "</div></div>";
+  }
+
+  async function cms() {
+    const data = await api("/api/admin/cms");
+    const pages = data.pages || [];
+    const tabs = $("#cmsTabs");
+    const root = $("#cmsRoot");
+    if (!root) return;
+    const q = new URLSearchParams(location.search).get("page") || (pages[0] && pages[0].id) || "brand";
+    if (tabs) {
+      tabs.innerHTML = pages.map((p) =>
+        '<a class="chip' + (p.id === q ? " active" : "") + '" href="content.html?page=' + encodeURIComponent(p.id) + '">' + esc(p.label) + "</a>"
+      ).join("");
+    }
+    const page = pages.find((p) => p.id === q) || pages[0];
+    if (!page) {
+      root.innerHTML = '<p class="tiny faint">No content fields.</p>';
+      return;
+    }
+    root.innerHTML = '<div class="card card-pad"><h3 style="font-size:15px">' + esc(page.label) + "</h3>" +
+      '<div class="stack mt-2" style="gap:16px">' + (page.fields || []).map(cmsField).join("") + "</div></div>";
+    $$(".cms-save").forEach((b) => b.addEventListener("click", () => {
+      const key = b.dataset.key;
+      const el = $('.cms-val[data-key="' + key + '"]');
+      act("/api/admin/cms", { key: key, value: el ? el.value : "" }, "Live.");
+    }));
+    $$(".cms-revert").forEach((b) => b.addEventListener("click", () => {
+      act("/api/admin/cms/" + encodeURIComponent(b.dataset.key) + "/revert", {}, "Restored the original.");
+    }));
+    $$(".cms-file").forEach((inp) => inp.addEventListener("change", async () => {
+      if (!inp.files || !inp.files[0]) return;
+      const fd = new FormData();
+      fd.append("file", inp.files[0]);
+      fd.append("key", inp.dataset.key);
+      try {
+        await api("/api/admin/cms/upload", { body: fd });
+        toast("Live.", "success");
+        location.reload();
+      } catch (err) {
+        if (!gate(err)) toast(err.message, "error");
+      }
+    }));
+  }
+
   async function support() {
     const list = await api("/api/admin/support");
     if ($("#tList")) {
@@ -591,6 +656,7 @@
         else if (file === "reports.html") await reports();
         else if (file === "audit-log.html") await audit();
         else if (file === "settings.html") await settings();
+        else if (file === "content.html") await cms();
         else if (file === "support.html") await support();
       } catch (err) {
         if (!gate(err)) toast(err.message || "Could not load the console.", "error");
