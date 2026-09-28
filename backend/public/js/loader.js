@@ -2,6 +2,9 @@
 (function () {
   "use strict";
   var KEY = "skilvi_nav";
+  /* Test only: extra wait after the overlay is up so you can see it. Set to 0 when done. */
+  var TEST_NAV_MS = 2500;
+  var pendingGo = false;
 
   function box() {
     return document.getElementById("skLoader");
@@ -29,6 +32,7 @@
     }
   }
   function hide() {
+    if (pendingGo) return;
     try { sessionStorage.removeItem(KEY); } catch (e) { /* private mode */ }
     document.documentElement.classList.remove("sk-loading");
     var el = box();
@@ -60,21 +64,33 @@
     var a = e.target && e.target.closest && e.target.closest("a[href]");
     return internalLink(a) ? a : null;
   }
+  function go(href) {
+    pendingGo = true;
+    show();
+    window.setTimeout(function () {
+      location.href = href;
+    }, TEST_NAV_MS);
+  }
 
-  /* Cover immediately on press. Do not preventDefault — the next page
-     must start loading in the background while this overlay stays up. */
+  /* Cover immediately on press. */
   document.addEventListener("pointerdown", function (e) {
     if (e.button !== 0) return;
     if (linkFromEvent(e)) show();
   }, true);
   document.addEventListener("click", function (e) {
     if (e.button !== 0) return;
-    if (linkFromEvent(e)) show();
+    var a = linkFromEvent(e);
+    if (!a) return;
+    e.preventDefault();
+    go(a.href);
   }, true);
   document.addEventListener("keydown", function (e) {
     if (e.key !== "Enter") return;
     if (e.metaKey || e.ctrlKey || e.altKey) return;
-    if (internalLink(document.activeElement)) show();
+    var a = document.activeElement;
+    if (!internalLink(a)) return;
+    e.preventDefault();
+    go(a.href);
   }, true);
 
   window.addEventListener("pageshow", function (e) {
