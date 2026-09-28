@@ -18,5 +18,5 @@
   <link rel="apple-touch-icon" href="/assets/img/apple-touch-icon.png?v=2">
   <title><?= e($title) ?></title>
   <meta name="description" content="<?= e($description) ?>">
-  <link rel="stylesheet" href="/assets/css/skilvi.css?v=34">
+  <link rel="stylesheet" href="/assets/css/skilvi.css?v=36">
 </head>

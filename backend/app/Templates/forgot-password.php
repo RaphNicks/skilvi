@@ -44,6 +44,6 @@ View::partial('head', ['title' => 'Reset password — Skilvi', 'description' => 
 </main>
 
 <?php View::partial('footer_public'); ?>
-<script src="/js/auth.js"></script>
+<script src="/js/auth.js?v=44"></script>
 </body>
 </html>

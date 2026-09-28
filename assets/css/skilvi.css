@@ -1047,3 +1047,45 @@ html[data-theme="dark"] .alert-info { color: var(--royal-300); }
 html[data-theme="dark"] .site-banner.is-promo { color: #7DCDC4; border-color: #1E4A46; }
 html[data-theme="dark"] .site-banner.is-warn { color: #F3D19A; border-color: #6B5420; }
 html[data-theme="dark"] .site-banner.is-urgent { background: #070910; border-color: #070910; }
+
+/* ---------- Auth: email slide + signup steps ---------- */
+.auth-email-check,
+.reg-step-radio,
+.auth-choice-check {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+  width: 0;
+  height: 0;
+}
+.auth-email-slide {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.28s ease;
+}
+.auth-email-check:checked ~ .auth-email-slide { grid-template-rows: 1fr; }
+.auth-email-in { overflow: hidden; min-height: 0; }
+.auth-email-check:checked ~ .auth-email-slide .auth-email-in { padding-top: 16px; }
+.auth-email-check:checked + .btn-secondary {
+  border-color: var(--royal-600);
+  color: var(--royal-800);
+}
+.auth-step-h { font-size: 18px; font-family: var(--font-body); font-weight: 650; }
+.auth-choices { display: grid; gap: 8px; }
+.auth-choice {
+  display: block;
+  border: 1px solid var(--line-2);
+  border-radius: var(--r-md);
+  padding: 12px 14px;
+  background: var(--surface);
+  cursor: pointer;
+}
+.auth-choice:hover { border-color: var(--royal-400); }
+.auth-choice-t { display: block; font-size: 14px; font-weight: 600; color: var(--heading); }
+.auth-choice-d { display: block; margin-top: 3px; font-size: 13px; color: var(--ink-3); line-height: 1.4; }
+.auth-choice-check:checked + .auth-choice {
+  border-color: var(--royal-600);
+  background: var(--royal-50);
+}
+.auth-choice-check:focus-visible + .auth-choice { outline: 2px solid var(--royal-400); outline-offset: 2px; }
+label.btn { cursor: pointer; }

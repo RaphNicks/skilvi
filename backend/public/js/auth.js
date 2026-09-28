@@ -127,19 +127,87 @@
     const dobEl = document.getElementById("regDob");
     function joinAs() {
       const el = regForm.querySelector('input[name="join_as"]:checked');
-      return (el && el.value) || "client";
+      return (el && el.value) || "";
     }
     function syncDob() {
-      const worker = joinAs() !== "client";
+      const worker = joinAs() !== "client" && joinAs() !== "";
       if (dobEl) {
         dobEl.required = worker;
         if (!worker) dobEl.value = "";
       }
     }
+    function setRegStep(id) {
+      const el = document.getElementById(id);
+      if (el) el.checked = true;
+    }
+    function regStep() {
+      const el = regForm.querySelector('input[name="reg_step"]:checked');
+      return (el && el.value) || "method";
+    }
+    function validEmailPass() {
+      const email = (document.getElementById("regEmail") || {}).value || "";
+      const pass = (document.getElementById("regPass") || {}).value || "";
+      if (!email.trim() || !email.includes("@")) {
+        toast("Enter your email.", "error");
+        const em = document.getElementById("regEmail");
+        if (em) em.focus();
+        return false;
+      }
+      if (pass.length < 8) {
+        toast("Password must be at least 8 characters.", "error");
+        const pw = document.getElementById("regPass");
+        if (pw) { pw.removeAttribute("readonly"); pw.focus(); }
+        return false;
+      }
+      return true;
+    }
     joinRadios.forEach((r) => r.addEventListener("change", syncDob));
     syncDob();
+    regForm.addEventListener("click", (e) => {
+      const next = e.target && e.target.closest && e.target.closest("[data-reg-next]");
+      const back = e.target && e.target.closest && e.target.closest("[data-reg-back]");
+      if (next) {
+        const to = next.getAttribute("data-reg-next");
+        if (to === "join") {
+          e.preventDefault();
+          if (!validEmailPass()) return;
+          const open = document.getElementById("regEmailOpen");
+          if (open) open.checked = true;
+          setRegStep("regStepJoin");
+          stayTop();
+          return;
+        }
+        if (to === "details") {
+          e.preventDefault();
+          if (!joinAs()) {
+            toast("Choose Worker, Client, or Both.", "error");
+            return;
+          }
+          setRegStep("regStepDetails");
+          stayTop();
+        }
+      }
+      if (back) stayTop();
+    });
     regForm.addEventListener("submit", async (e) => {
       e.preventDefault();
+      const step = regStep();
+      if (step === "method") {
+        if (validEmailPass()) {
+          setRegStep("regStepJoin");
+          stayTop();
+        }
+        return;
+      }
+      if (step === "join") {
+        if (!joinAs()) {
+          toast("Choose Worker, Client, or Both.", "error");
+          return;
+        }
+        setRegStep("regStepDetails");
+        stayTop();
+        return;
+      }
       const btn = regForm.querySelector('[type="submit"]');
       busy(btn, true);
       try {
@@ -282,19 +350,50 @@
     const dobEl = document.getElementById("cpDob");
     function joinAs() {
       const el = completeForm.querySelector('input[name="join_as"]:checked');
-      return (el && el.value) || "client";
+      return (el && el.value) || "";
     }
     function syncDob() {
-      const worker = joinAs() !== "client";
+      const worker = joinAs() !== "client" && joinAs() !== "";
       if (dobEl) {
         dobEl.required = worker;
         if (!worker) dobEl.value = "";
       }
     }
+    function cpStep() {
+      const el = completeForm.querySelector('input[name="cp_step"]:checked');
+      return (el && el.value) || "join";
+    }
     completeForm.querySelectorAll('input[name="join_as"]').forEach((r) => r.addEventListener("change", syncDob));
     syncDob();
+    completeForm.addEventListener("click", (e) => {
+      const next = e.target && e.target.closest && e.target.closest("[data-cp-next]");
+      if (next) {
+        e.preventDefault();
+        if (!joinAs()) {
+          toast("Choose Worker, Client, or Both.", "error");
+          return;
+        }
+        const det = document.getElementById("cpStepDetails");
+        if (det) det.checked = true;
+        stayTop();
+      }
+    });
     completeForm.addEventListener("submit", async (e) => {
       e.preventDefault();
+      if (cpStep() !== "details") {
+        if (!joinAs()) {
+          toast("Choose Worker, Client, or Both.", "error");
+          return;
+        }
+        const det = document.getElementById("cpStepDetails");
+        if (det) det.checked = true;
+        stayTop();
+        return;
+      }
+      if (!joinAs()) {
+        toast("Choose Worker, Client, or Both.", "error");
+        return;
+      }
       const btn = completeForm.querySelector('[type="submit"]');
       busy(btn, true);
       try {
