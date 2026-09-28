@@ -132,10 +132,11 @@ ul { margin: 0; padding: 0; list-style: none; }
 .btn-block { width: 100%; }
 #skLoader {
   display: none; position: fixed; inset: 0; z-index: 99999;
-  align-items: center; justify-content: center; background: #0B0E1A;
+  align-items: center; justify-content: center; background: var(--bg);
 }
-#skLoader video { width: min(240px, 56vw); height: auto; display: block; }
-html.sk-loading { background: #0B0E1A; }
+html[data-theme="dark"] #skLoader { background: var(--bg); }
+#skLoader video { width: min(420px, 86vw); height: auto; display: block; }
+html.sk-loading { background: var(--bg); }
 html.sk-loading body { visibility: hidden; }
 html.sk-loading #skLoader { visibility: visible; display: flex; }
 .btn-google {
