@@ -2,8 +2,6 @@
 (function () {
   "use strict";
   var KEY = "skilvi_nav";
-  /* TEMP loader test — set to 0 immediately after. Holds the overlay after the page is ready. */
-  var TEST_HOLD_MS = 2500;
 
   function box() {
     return document.getElementById("skLoader");
@@ -34,6 +32,10 @@
     if (el) el.setAttribute("aria-hidden", "true");
     var v = vid();
     if (v) v.pause();
+  }
+  function reveal() {
+    if (!isOn()) return;
+    hide();
   }
   function internalLink(a) {
     if (!a || a.tagName !== "A") return false;
@@ -66,12 +68,12 @@
   window.addEventListener("pageshow", function (e) {
     if (e.persisted) hide();
   });
-  function hideAfterLoad() {
-    if (TEST_HOLD_MS > 0) setTimeout(hide, TEST_HOLD_MS);
-    else hide();
+  /* Hide as soon as this document can display — not after hero videos / leftover assets. */
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", reveal);
+  } else {
+    reveal();
   }
-  if (document.readyState === "complete") hideAfterLoad();
-  else window.addEventListener("load", hideAfterLoad);
-  window.setTimeout(function () { if (isOn()) hide(); }, 12000 + TEST_HOLD_MS);
+  window.setTimeout(function () { if (isOn()) hide(); }, 8000);
   window.SkLoader = { show: show, hide: hide };
 })();
