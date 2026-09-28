@@ -9,6 +9,7 @@ $act = static function (bool $on): string {
     return $on ? ' class="active"' : '';
 };
 ?>
+<?php \App\Core\View::partial('loader'); ?>
 <header class="lp-nav">
   <div class="lp-wrap lp-nav-in">
     <a class="lp-logo" href="/index.html" aria-label="Skilvi home"><img src="/assets/img/skilvi-logo-word.png" alt="Skilvi — Discover. Learn. Earn."></a>

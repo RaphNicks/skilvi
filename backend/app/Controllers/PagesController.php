@@ -43,14 +43,19 @@ final class PagesController
 
     private static function inject(string $html, string $rel): string
     {
-        $html = preg_replace('/skilvi\\.css\\?v=\\d+/', 'skilvi.css?v=31', $html) ?? $html;
+        $html = preg_replace('/skilvi\\.css\\?v=\\d+/', 'skilvi.css?v=32', $html) ?? $html;
         $html = preg_replace('/landing\\.css\\?v=\\d+/', 'landing.css?v=28', $html) ?? $html;
         $html = preg_replace('/skilvi\\.js\\?v=\\d+/', 'skilvi.js?v=22', $html) ?? $html;
-        $boot = '<script>(function(){try{var p=localStorage.getItem("skilvi_theme")||"system";var dark=p==="dark"||(p!=="light"&&window.matchMedia("(prefers-color-scheme: dark)").matches);document.documentElement.setAttribute("data-theme",dark?"dark":"light");document.documentElement.setAttribute("data-theme-pref",p);}catch(e){}})();</script>';
+        $boot = '<script>(function(){try{var p=localStorage.getItem("skilvi_theme")||"system";var dark=p==="dark"||(p!=="light"&&window.matchMedia("(prefers-color-scheme: dark)").matches);document.documentElement.setAttribute("data-theme",dark?"dark":"light");document.documentElement.setAttribute("data-theme-pref",p);}catch(e){}})();</script>'
+            . '<style id="skLoaderCss">html.sk-loading{background:#0B0E1A}html.sk-loading body{visibility:hidden}html.sk-loading #skLoader{visibility:visible;display:flex}#skLoader{display:none;position:fixed;inset:0;z-index:99999;align-items:center;justify-content:center;background:#0B0E1A}#skLoader video{width:min(240px,56vw);height:auto;display:block}</style>'
+            . '<script>(function(){try{if(sessionStorage.getItem("skilvi_nav")==="1")document.documentElement.classList.add("sk-loading")}catch(e){}})();</script>'
+            . '<link rel="preload" href="/assets/video/skilvi-loader.mp4" as="video" type="video/mp4">';
         if (str_contains($html, '<head>')) {
             $html = preg_replace('/<head>/i', '<head>' . $boot, $html, 1) ?? $html;
         }
-        $extra = '<script src="/js/theme.js?v=2"></script><script src="/js/api.js?v=39"></script><script src="/js/chrome.js?v=44"></script><script src="/js/geo.js?v=1"></script>';
+        $overlay = '<div id="skLoader" aria-hidden="true" role="status" aria-label="Loading"><video src="/assets/video/skilvi-loader.mp4" muted loop playsinline autoplay preload="auto"></video></div>';
+        $html = preg_replace('/<body([^>]*)>/i', '<body$1>' . $overlay, $html, 1) ?? $html;
+        $extra = '<script src="/js/loader.js?v=1"></script><script src="/js/theme.js?v=2"></script><script src="/js/api.js?v=39"></script><script src="/js/chrome.js?v=44"></script><script src="/js/geo.js?v=1"></script>';
         $pageScripts = [
             'index.html'             => '/js/discovery.js?v=31',
             'jobs.html'              => '/js/discovery.js?v=31',

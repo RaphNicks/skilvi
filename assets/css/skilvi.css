@@ -130,6 +130,14 @@ ul { margin: 0; padding: 0; list-style: none; }
 .btn-sm { padding: 6px 12px; font-size: 13px; }
 .btn-lg { padding: 12px 22px; font-size: 15px; }
 .btn-block { width: 100%; }
+#skLoader {
+  display: none; position: fixed; inset: 0; z-index: 99999;
+  align-items: center; justify-content: center; background: #0B0E1A;
+}
+#skLoader video { width: min(240px, 56vw); height: auto; display: block; }
+html.sk-loading { background: #0B0E1A; }
+html.sk-loading body { visibility: hidden; }
+html.sk-loading #skLoader { visibility: visible; display: flex; }
 .btn-google {
   display: flex; align-items: center; justify-content: center; gap: 10px;
   background: var(--surface); border: 1px solid var(--line-2); color: var(--heading);
