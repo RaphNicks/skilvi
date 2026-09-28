@@ -17,5 +17,11 @@ try {
     if (str_starts_with($path, '/api/')) {
         App\Core\Response::error('server', 'Something went wrong. Try again.', 500);
     }
-    throw $e;
+    while (ob_get_level() > 0) {
+        ob_end_clean();
+    }
+    http_response_code(500);
+    header('Content-Type: text/plain; charset=utf-8');
+    echo $e->getMessage() . "\n" . $e->getFile() . ':' . $e->getLine();
+    exit;
 }

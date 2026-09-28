@@ -10,7 +10,13 @@ final class View
         extract($data, EXTR_SKIP);
         ob_start();
         require dirname(__DIR__) . '/Templates/' . $template . '.php';
-        return (string) ob_get_clean();
+        $html = (string) ob_get_clean();
+        try {
+            $html = \App\Services\CmsService::apply($html);
+        } catch (\Throwable $e) {
+            error_log('SKILVI CMS ' . $e->getMessage());
+        }
+        return $html;
     }
 
     public static function partial(string $name, array $data = []): void

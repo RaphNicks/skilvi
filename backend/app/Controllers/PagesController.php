@@ -111,9 +111,16 @@ final class PagesController
             $extra .= '<script src="' . $pageScripts[$rel] . '"></script>';
         }
         if (str_contains($html, '</body>')) {
-            return str_replace('</body>', $extra . "\n</body>", $html);
+            $html = str_replace('</body>', $extra . "\n</body>", $html);
+        } else {
+            $html .= $extra;
         }
-        return $html . $extra;
+        try {
+            $html = \App\Services\CmsService::apply($html);
+        } catch (\Throwable $e) {
+            error_log('SKILVI CMS ' . $e->getMessage());
+        }
+        return $html;
     }
 
     private static function notFound(): never
