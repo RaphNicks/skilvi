@@ -128,6 +128,9 @@ final class PagesController
         $root = (string) Config::get('frontend_root');
         $file = $root . '/404.html';
         $html = is_file($file) ? (string) file_get_contents($file) : '<h1>Not found</h1>';
+        if (is_file($file)) {
+            $html = self::inject($html, '404.html');
+        }
         Response::notFound($html);
     }
 }
