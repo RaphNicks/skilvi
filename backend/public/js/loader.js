@@ -17,7 +17,10 @@
     try { sessionStorage.setItem(KEY, "1"); } catch (e) { /* private mode */ }
     document.documentElement.classList.add("sk-loading");
     var el = box();
-    if (el) el.setAttribute("aria-hidden", "false");
+    if (el) {
+      el.setAttribute("aria-hidden", "false");
+      void el.offsetWidth;
+    }
     var v = vid();
     if (v) {
       try { v.currentTime = 0; } catch (e) { /* ignore */ }
@@ -51,24 +54,33 @@
     if (u.pathname === location.pathname && u.search === location.search) return false;
     return true;
   }
-
-  document.addEventListener("click", function (e) {
-    if (e.defaultPrevented || e.button !== 0) return;
-    if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+  function linkFromEvent(e) {
+    if (!e || e.defaultPrevented) return null;
+    if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return null;
     var a = e.target && e.target.closest && e.target.closest("a[href]");
-    if (!internalLink(a)) return;
-    e.preventDefault();
-    show();
-    var href = a.href;
-    requestAnimationFrame(function () {
-      location.href = href;
-    });
+    return internalLink(a) ? a : null;
+  }
+
+  /* Cover immediately on press. Do not preventDefault — the next page
+     must start loading in the background while this overlay stays up. */
+  document.addEventListener("pointerdown", function (e) {
+    if (e.button !== 0) return;
+    if (linkFromEvent(e)) show();
+  }, true);
+  document.addEventListener("click", function (e) {
+    if (e.button !== 0) return;
+    if (linkFromEvent(e)) show();
+  }, true);
+  document.addEventListener("keydown", function (e) {
+    if (e.key !== "Enter") return;
+    if (e.metaKey || e.ctrlKey || e.altKey) return;
+    if (internalLink(document.activeElement)) show();
   }, true);
 
   window.addEventListener("pageshow", function (e) {
     if (e.persisted) hide();
   });
-  /* Hide as soon as this document can display — not after hero videos / leftover assets. */
+  /* Hide as soon as this document can display — not after leftover media. */
   if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", reveal);
   } else {

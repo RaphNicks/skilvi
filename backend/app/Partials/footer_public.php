@@ -12,7 +12,7 @@
     <div class="footer-bottom"><span>© 2026 Skilvi Technologies Ltd. All rights reserved.</span><span>Built in Nigeria · Payments held securely in escrow</span></div>
   </div>
 </footer>
-<script src="/js/loader.js?v=3"></script>
+<script src="/js/loader.js?v=4"></script>
 <script src="/js/theme.js?v=3"></script>
 <script src="/assets/js/skilvi.js?v=22"></script>
 <script src="/js/api.js?v=39"></script>
