@@ -1,6 +1,6 @@
 (function () {
   "use strict";
-  const { api, busy, toast } = window.SkApi || {};
+  const { api, busy, toast, dialog } = window.SkApi || {};
   if (!api) return;
 
   function $(s, r) { return (r || document).querySelector(s); }
@@ -109,7 +109,16 @@
           toast("Use at least 8 characters.", "error");
           return;
         }
-        const current = window.prompt("Current password?");
+        const current = dialog
+          ? await dialog.prompt({
+              title: "Confirm it's you",
+              body: "Enter your current password to save the new one.",
+              label: "Current password",
+              input: "password",
+              placeholder: "Current password",
+              ok: "Update password",
+            })
+          : "";
         if (!current) return;
         const btn = $("#savePassword");
         busy(btn, true);
@@ -158,7 +167,15 @@
       });
 
       $("#btnDelete") && $("#btnDelete").addEventListener("click", async () => {
-        if (!window.confirm("Request account deletion? We process this within 30 days, after any open escrow settles.")) return;
+        const okDel = dialog
+          ? await dialog.confirm({
+              title: "Delete your account?",
+              body: "We process this within 30 days, after any open escrow settles.",
+              ok: "Request deletion",
+              danger: true,
+            })
+          : false;
+        if (!okDel) return;
         const btn = $("#btnDelete");
         busy(btn, true);
         try {
@@ -187,7 +204,15 @@
       });
 
       $("#btnDeactivate") && $("#btnDeactivate").addEventListener("click", async () => {
-        if (!window.confirm("Deactivate this account? Your profile hides and you cannot take new orders until you log in and we restore it.")) return;
+        const okOff = dialog
+          ? await dialog.confirm({
+              title: "Deactivate this account?",
+              body: "Your profile hides and you cannot take new orders until you log in and we restore it.",
+              ok: "Deactivate",
+              danger: true,
+            })
+          : false;
+        if (!okOff) return;
         const btn = $("#btnDeactivate");
         busy(btn, true);
         try {

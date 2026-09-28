@@ -1,7 +1,12 @@
 (function () {
   "use strict";
   const api = (window.SkApi && window.SkApi.api) || (async (p) => (await fetch(p)).json().then((b) => b.data));
-  const toast = (window.SkApi && window.SkApi.toast) || (window.Sk && window.Sk.toast) || ((m) => alert(m));
+  const toast = (window.SkApi && window.SkApi.toast) || (window.Sk && window.Sk.toast) || ((m) => { console.warn(m); });
+  const dialog = (window.SkApi && window.SkApi.dialog) || {
+    confirm: async () => false,
+    prompt: async () => null,
+    alert: async () => {},
+  };
   const $ = (s, r) => (r || document).querySelector(s);
   const $$ = (s, r) => Array.from((r || document).querySelectorAll(s));
   const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
@@ -111,15 +116,23 @@
                 '<button class="btn btn-ghost btn-sm u-act" data-id="' + u.id + '" data-act="delete" type="button" style="color:var(--red)">Delete</button>')) +
           "</td></tr>"
         ).join("") || emptyRow(7, "No users match.");
-        $$(".u-act").forEach((b) => b.addEventListener("click", () => {
+        $$(".u-act").forEach((b) => b.addEventListener("click", async () => {
           let reason = "Reactivated by staff.";
           if (b.dataset.act === "ban" || b.dataset.act === "delete") {
-            reason = prompt(b.dataset.act === "delete"
-              ? "Reason for the audit log:"
-              : "Reason for the ban (the email cannot sign up again):") || "";
-            if (reason.trim().length < 8) { toast("Need a short reason.", "error"); return; }
+            const del = b.dataset.act === "delete";
+            reason = await dialog.prompt({
+              title: del ? "Delete this account?" : "Ban this user?",
+              body: del
+                ? "This wipes the profile. That email cannot sign up again. Write a short reason for the audit log."
+                : "That email cannot sign up again. Write a short reason for the audit log.",
+              label: "Reason",
+              placeholder: "At least 8 characters",
+              ok: del ? "Delete account" : "Ban",
+              danger: true,
+              minLength: 8,
+            });
+            if (!reason) return;
           }
-          if (b.dataset.act === "delete" && !confirm("Delete this account and all profile details? That email cannot sign up again.")) return;
           act("/api/admin/users/" + b.dataset.id + "/action", { action: b.dataset.act, reason }, "Updated.");
         }));
       }
@@ -303,7 +316,15 @@
         toast("Write a short reason first.", "error");
         return;
       }
-      if (confirmMsg && !confirm(confirmMsg)) return;
+      if (confirmMsg) {
+        const ok = await dialog.confirm({
+          title: "Delete this account?",
+          body: confirmMsg,
+          ok: "Delete account",
+          danger: true,
+        });
+        if (!ok) return;
+      }
       try {
         await api("/api/admin/users/" + encodeURIComponent(id) + "/action", { body: { action, reason: reason || "Reactivated by staff." } });
         if (action === "delete") {
@@ -341,8 +362,17 @@
           (o.can_release ? '<button class="btn btn-danger btn-sm o-rel" data-id="' + esc(o.id) + '" type="button">Force release</button>' : "—") +
           "</td></tr>"
         ).join("") || emptyRow(6, "No orders.");
-        $$(".o-rel").forEach((b) => b.addEventListener("click", () => {
-          const reason = prompt("Reason for force-release (audited):") || "";
+        $$(".o-rel").forEach((b) => b.addEventListener("click", async () => {
+          const reason = await dialog.prompt({
+            title: "Force-release escrow?",
+            body: "This pays the worker now. It is written to the audit log.",
+            label: "Reason",
+            placeholder: "Why is this being released?",
+            ok: "Release funds",
+            danger: true,
+            minLength: 8,
+          });
+          if (!reason) return;
           act("/api/admin/orders/" + encodeURIComponent(b.dataset.id) + "/action", { action: "release", reason }, "Released.");
         }));
       }
@@ -438,8 +468,17 @@
           "</td></tr>"
       ).join("") || emptyRow(6, "Queue is empty.");
       $$(".v-ok").forEach((b) => b.addEventListener("click", () => act("/api/admin/verifications/" + b.dataset.id + "/action", { action: "approve" }, "Badge is live. Identity only — not a skill certificate.")));
-      $$(".v-no").forEach((b) => b.addEventListener("click", () => {
-        const reason = prompt("Reject reason:") || "Documents unclear — please resubmit";
+      $$(".v-no").forEach((b) => b.addEventListener("click", async () => {
+        const reason = await dialog.prompt({
+          title: "Reject verification?",
+          body: "The worker will see this reason. Identity only — this is not a skill call.",
+          label: "Reason",
+          value: "Documents unclear — please resubmit",
+          ok: "Reject",
+          danger: true,
+          minLength: 8,
+        });
+        if (!reason) return;
         act("/api/admin/verifications/" + b.dataset.id + "/action", { action: "reject", reason }, "Rejected.");
       }));
     }

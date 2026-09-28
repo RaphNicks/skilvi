@@ -86,8 +86,145 @@
       window.Sk.toast(msg, type);
       return;
     }
-    alert(msg);
+    let wrap = document.querySelector(".toast-wrap");
+    if (!wrap) {
+      wrap = document.createElement("div");
+      wrap.className = "toast-wrap";
+      document.body.appendChild(wrap);
+    }
+    const t = document.createElement("div");
+    t.className = "toast" + (type ? " " + type : "");
+    t.textContent = String(msg || "");
+    wrap.appendChild(t);
+    setTimeout(() => { t.style.opacity = "0"; t.style.transition = "opacity .3s"; setTimeout(() => t.remove(), 320); }, 3400);
   }
+
+  const XICO = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg>';
+
+  let dialogBusy = null;
+  function dialogRoot() {
+    let root = document.getElementById("skDialog");
+    if (root) return root;
+    root = document.createElement("div");
+    root.id = "skDialog";
+    root.className = "modal-backdrop sk-dialog";
+    root.setAttribute("role", "dialog");
+    root.setAttribute("aria-modal", "true");
+    root.setAttribute("aria-labelledby", "skDialogTitle");
+    root.innerHTML =
+      '<div class="modal" role="document">' +
+        '<div class="modal-head"><div><div class="sk-dialog-kicker">Skilvi</div><h3 id="skDialogTitle"></h3></div>' +
+        '<button type="button" class="icon-btn" data-sk-dialog-cancel aria-label="Close">' + XICO + "</button></div>" +
+        '<div class="modal-body"><p class="small muted" id="skDialogBody"></p>' +
+        '<div class="field mt-2" id="skDialogField" hidden><label id="skDialogLabel">Reason</label>' +
+        '<input class="input" id="skDialogInput" autocomplete="off">' +
+        '<textarea class="textarea" id="skDialogText" rows="3" hidden></textarea></div></div>' +
+        '<div class="modal-foot">' +
+        '<button type="button" class="btn btn-secondary" data-sk-dialog-cancel id="skDialogCancel">Cancel</button>' +
+        '<button type="button" class="btn btn-primary" id="skDialogOk">OK</button></div></div>';
+    document.body.appendChild(root);
+    return root;
+  }
+
+  function closeDialog(root) {
+    root.classList.remove("open");
+    document.documentElement.classList.remove("sk-dialog-lock");
+  }
+
+  function openDialog(opts) {
+    opts = opts || {};
+    const root = dialogRoot();
+    const title = root.querySelector("#skDialogTitle");
+    const body = root.querySelector("#skDialogBody");
+    const field = root.querySelector("#skDialogField");
+    const label = root.querySelector("#skDialogLabel");
+    const input = root.querySelector("#skDialogInput");
+    const area = root.querySelector("#skDialogText");
+    const okBtn = root.querySelector("#skDialogOk");
+    const cancelBtn = root.querySelector("#skDialogCancel");
+    const kind = opts.kind || "confirm";
+    const inputType = opts.input || (kind === "prompt" ? "textarea" : "");
+    title.textContent = opts.title || "Skilvi";
+    body.textContent = opts.body || "";
+    body.hidden = !opts.body;
+    field.hidden = kind !== "prompt";
+    cancelBtn.hidden = kind === "alert";
+    okBtn.textContent = opts.ok || (kind === "alert" ? "OK" : kind === "prompt" ? "Continue" : "Confirm");
+    okBtn.className = "btn " + (opts.danger ? "btn-solid-danger" : "btn-primary");
+    label.textContent = opts.label || "Reason";
+    input.hidden = inputType !== "text" && inputType !== "password";
+    area.hidden = inputType !== "textarea";
+    input.type = inputType === "password" ? "password" : "text";
+    input.value = inputType === "textarea" ? "" : (opts.value || "");
+    area.value = inputType === "textarea" ? (opts.value || "") : "";
+    input.placeholder = opts.placeholder || "";
+    area.placeholder = opts.placeholder || "";
+    root.classList.add("open");
+    document.documentElement.classList.add("sk-dialog-lock");
+    const focusEl = kind === "prompt" ? (inputType === "textarea" ? area : input) : okBtn;
+    setTimeout(() => { try { focusEl.focus(); } catch (e) {} }, 30);
+
+    return new Promise((resolve) => {
+      if (dialogBusy) {
+        try { dialogBusy(kind === "prompt" ? null : false); } catch (e) {}
+      }
+      const done = (val) => {
+        root.removeEventListener("click", onClick);
+        document.removeEventListener("keydown", onKey, true);
+        dialogBusy = null;
+        closeDialog(root);
+        resolve(val);
+      };
+      dialogBusy = done;
+      const submit = () => {
+        if (kind !== "prompt") {
+          done(true);
+          return;
+        }
+        const raw = ((inputType === "textarea" ? area.value : input.value) || "").trim();
+        const min = Number(opts.minLength || 0);
+        if (min && raw.length < min) {
+          toast("Need at least " + min + " characters.", "error");
+          return;
+        }
+        if (!raw && opts.required !== false) {
+          toast("Fill this in to continue.", "error");
+          return;
+        }
+        done(raw);
+      };
+      const onClick = (e) => {
+        if (e.target === root || (e.target.closest && e.target.closest("[data-sk-dialog-cancel]"))) {
+          e.preventDefault();
+          done(kind === "prompt" ? null : false);
+          return;
+        }
+        if (e.target === okBtn || (e.target.closest && e.target.closest("#skDialogOk"))) {
+          e.preventDefault();
+          submit();
+        }
+      };
+      const onKey = (e) => {
+        if (!root.classList.contains("open")) return;
+        if (e.key === "Escape") {
+          e.preventDefault();
+          done(kind === "prompt" ? null : false);
+        }
+        if (e.key === "Enter" && kind === "prompt" && inputType !== "textarea") {
+          e.preventDefault();
+          submit();
+        }
+      };
+      root.addEventListener("click", onClick);
+      document.addEventListener("keydown", onKey, true);
+    });
+  }
+
+  const dialog = {
+    confirm(opts) { return openDialog(Object.assign({ kind: "confirm" }, opts)); },
+    prompt(opts) { return openDialog(Object.assign({ kind: "prompt" }, opts)); },
+    alert(opts) { return openDialog(Object.assign({ kind: "alert" }, typeof opts === "string" ? { body: opts } : opts)); },
+  };
 
   function bindOtpBoxes(root) {
     const boxes = Array.from((root || document).querySelectorAll(".otp-box"));
@@ -254,5 +391,5 @@
     if (e.target && e.target.tagName === "FORM") clearFieldErrors(e.target);
   }, true);
 
-  window.SkApi = { api, csrf, busy, toast, bindOtpBoxes, refreshBadges, showFieldErrors, clearFieldErrors, setTabToken, tabToken };
+  window.SkApi = { api, csrf, busy, toast, dialog, bindOtpBoxes, refreshBadges, showFieldErrors, clearFieldErrors, setTabToken, tabToken };
 })();

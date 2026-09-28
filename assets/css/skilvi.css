@@ -829,6 +829,16 @@ table.table { width: 100%; border-collapse: collapse; font-size: 13.5px; min-wid
 .modal-head h3 { font-size: 15px; font-family: var(--font-body); }
 .modal-body { padding: 20px; }
 .modal-foot { display: flex; justify-content: flex-end; gap: 8px; padding: 14px 20px; border-top: 1px solid var(--line); background: var(--wash); border-radius: 0 0 var(--r-lg) var(--r-lg); }
+.sk-dialog { z-index: 240; }
+.sk-dialog .modal { max-width: 420px; }
+.sk-dialog-kicker {
+  font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase;
+  color: var(--ink-3); margin-bottom: 4px;
+}
+.sk-dialog .modal-head { align-items: flex-start; }
+.sk-dialog .modal-head h3 { font-size: 16px; }
+html.sk-dialog-lock { overflow: hidden; }
+html[data-theme="dark"] .modal-backdrop { background: rgba(7, 9, 16, 0.62); }
 
 /* ---------- Admin extras ---------- */
 .kpi-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 12px; }
