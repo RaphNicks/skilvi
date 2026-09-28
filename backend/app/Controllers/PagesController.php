@@ -43,7 +43,7 @@ final class PagesController
 
     private static function inject(string $html, string $rel): string
     {
-        $html = preg_replace('/skilvi\\.css\\?v=\\d+/', 'skilvi.css?v=34', $html) ?? $html;
+        $html = preg_replace('/skilvi\\.css\\?v=\\d+/', 'skilvi.css?v=35', $html) ?? $html;
         $html = preg_replace('/landing\\.css\\?v=\\d+/', 'landing.css?v=28', $html) ?? $html;
         $html = preg_replace('/skilvi\\.js\\?v=\\d+/', 'skilvi.js?v=22', $html) ?? $html;
         $boot = '<script>(function(){try{var p=localStorage.getItem("skilvi_theme")||"system";var dark=p==="dark"||(p!=="light"&&window.matchMedia("(prefers-color-scheme: dark)").matches);document.documentElement.setAttribute("data-theme",dark?"dark":"light");document.documentElement.setAttribute("data-theme-pref",p);}catch(e){}})();</script>'
@@ -101,7 +101,7 @@ final class PagesController
         if (str_starts_with($rel, 'admin/')) {
             // Do not bounce staff to a client/worker dashboard. Cookie is shared
             // across tabs; this tab's account is the Bearer token in JS.
-            $extra .= '<script src="/js/admin.js?v=45"></script>';
+            $extra .= '<script src="/js/admin.js?v=46"></script>';
         }
         if (in_array($rel, $gated, true) && !Session::userId() && empty($_SERVER['HTTP_AUTHORIZATION']) && empty($_SERVER['HTTP_X_SKILVI_TOKEN'])) {
             Response::redirect('/login.html?next=/' . $rel);

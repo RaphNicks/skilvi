@@ -554,6 +554,29 @@
     }
   }
 
+  function cmsFaqRow(it) {
+    it = it || {};
+    return '<div class="card card-pad cms-faq-row" style="padding:14px 16px">' +
+      '<div class="row spread" style="margin-bottom:8px"><span class="tiny faint">Question</span>' +
+      '<button type="button" class="btn btn-ghost btn-sm cms-faq-del">Remove</button></div>' +
+      '<input type="hidden" class="faq-id" value="' + esc(it.id || "") + '">' +
+      '<div class="field"><label>Question</label><input class="input faq-q" value="' + esc(it.q || "") + '"></div>' +
+      '<div class="field mt-1"><label>Answer</label><textarea class="textarea faq-a" rows="4">' + esc(it.a || "") + "</textarea></div>" +
+      '<div class="field mt-1"><label>Topic card title (optional)</label><input class="input faq-card" value="' + esc(it.card || "") + '"></div>' +
+      '<div class="field mt-1"><label>Topic card line (optional)</label><input class="input faq-teaser" value="' + esc(it.teaser || "") + '">' +
+      '<p class="tiny faint mt-1">If the title is set, this also appears in the topic grid on Help.</p></div></div>';
+  }
+
+  function cmsCollectFaqs(wrap) {
+    return $$(".cms-faq-row", wrap).map((row) => ({
+      id: ($(".faq-id", row) && $(".faq-id", row).value) || "",
+      q: ($(".faq-q", row) && $(".faq-q", row).value) || "",
+      a: ($(".faq-a", row) && $(".faq-a", row).value) || "",
+      card: ($(".faq-card", row) && $(".faq-card", row).value) || "",
+      teaser: ($(".faq-teaser", row) && $(".faq-teaser", row).value) || "",
+    })).filter((x) => String(x.q).trim() && String(x.a).trim());
+  }
+
   function cmsField(f) {
     const custom = f.custom ? '<span class="tiny" style="color:var(--royal-700)">Custom</span>' : '<span class="tiny faint">Default</span>';
     const revert = f.custom
@@ -567,6 +590,28 @@
         '<div class="row" style="gap:10px;align-items:center;flex-wrap:wrap">' + prev +
         '<input class="input cms-file" type="file" data-key="' + esc(f.key) + '" accept="' + (f.type === "video" ? "video/mp4,video/webm" : "image/jpeg,image/png,image/webp") + '">' +
         revert + "</div></div>";
+    }
+    if (f.type === "select") {
+      const opts = f.options || {};
+      const body = '<select class="input cms-val" data-key="' + esc(f.key) + '">' +
+        Object.keys(opts).map((k) => '<option value="' + esc(k) + '"' + (String(f.value) === k ? " selected" : "") + ">" + esc(opts[k]) + "</option>").join("") +
+        "</select>";
+      return '<div class="field cms-field" data-key="' + esc(f.key) + '"><label>' + esc(f.label) + " " + custom + "</label>" +
+        body + '<div class="row mt-1" style="gap:8px">' +
+        '<button class="btn btn-primary btn-sm cms-save" type="button" data-key="' + esc(f.key) + '">Save</button>' + revert + "</div></div>";
+    }
+    if (f.type === "faqs") {
+      let items = [];
+      try { items = JSON.parse(f.value || "[]"); } catch (e) { items = []; }
+      if (!Array.isArray(items) || !items.length) {
+        try { items = JSON.parse(f.default || "[]"); } catch (e2) { items = []; }
+      }
+      return '<div class="field cms-field" data-type="faqs" data-key="' + esc(f.key) + '"><label>' + esc(f.label) + " " + custom + "</label>" +
+        '<p class="tiny faint">Add or remove questions. Save is live on the help page.</p>' +
+        '<div class="stack cms-faq-list mt-2" style="gap:12px">' + items.map(cmsFaqRow).join("") + "</div>" +
+        '<div class="row mt-2" style="gap:8px">' +
+        '<button type="button" class="btn btn-secondary btn-sm cms-faq-add">Add question</button>' +
+        '<button class="btn btn-primary btn-sm cms-save" type="button" data-key="' + esc(f.key) + '">Save</button>' + revert + "</div></div>";
     }
     const tag = f.type === "textarea" || f.type === "html" ? "textarea" : "input";
     const body = tag === "textarea"
@@ -596,8 +641,29 @@
     }
     root.innerHTML = '<div class="card card-pad"><h3 style="font-size:15px">' + esc(page.label) + "</h3>" +
       '<div class="stack mt-2" style="gap:16px">' + (page.fields || []).map(cmsField).join("") + "</div></div>";
+    $$(".cms-faq-add").forEach((b) => b.addEventListener("click", () => {
+      const list = b.closest(".cms-field") && b.closest(".cms-field").querySelector(".cms-faq-list");
+      if (!list) return;
+      list.insertAdjacentHTML("beforeend", cmsFaqRow({}));
+    }));
+    root.addEventListener("click", (e) => {
+      const del = e.target && e.target.closest && e.target.closest(".cms-faq-del");
+      if (!del) return;
+      const row = del.closest(".cms-faq-row");
+      if (row) row.remove();
+    });
     $$(".cms-save").forEach((b) => b.addEventListener("click", () => {
       const key = b.dataset.key;
+      const wrap = b.closest(".cms-field");
+      if (wrap && wrap.getAttribute("data-type") === "faqs") {
+        const items = cmsCollectFaqs(wrap);
+        if (!items.length) {
+          toast("Add at least one question with an answer.", "error");
+          return;
+        }
+        act("/api/admin/cms", { key: key, value: JSON.stringify(items) }, "Live.");
+        return;
+      }
       const el = $('.cms-val[data-key="' + key + '"]');
       act("/api/admin/cms", { key: key, value: el ? el.value : "" }, "Live.");
     }));

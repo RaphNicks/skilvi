@@ -25,6 +25,25 @@ final class CmsSchema
                 ],
             ],
             [
+                'id' => 'banner',
+                'label' => 'Site banner',
+                'fields' => [
+                    self::sel('banner.on', 'Visibility', 'off', [
+                        'off' => 'Hidden',
+                        'on'  => 'Visible on the site',
+                    ]),
+                    self::sel('banner.tone', 'Tone', 'info', [
+                        'info'   => 'Notice',
+                        'promo'  => 'Promo',
+                        'warn'   => 'Warning',
+                        'urgent' => 'Urgent / downtime',
+                    ]),
+                    self::f('banner.text', 'Banner text', 'text', ''),
+                    self::f('banner.link', 'Link (optional)', 'url', ''),
+                    self::f('banner.link_label', 'Link label', 'text', 'Learn more'),
+                ],
+            ],
+            [
                 'id' => 'nav',
                 'label' => 'Navigation & footer',
                 'fields' => [
@@ -144,26 +163,7 @@ final class CmsSchema
                     self::f('help.sub', 'Intro', 'textarea', 'Plain answers about escrow, fees, verification, withdrawals and disputes — the things people actually ask about.'),
                     self::f('help.search_ph', 'Search placeholder', 'text', 'Search help — try “refund” or “verification”…'),
                     self::f('help.faq.h2', 'FAQ heading', 'text', 'Frequently asked'),
-                    self::f('help.faq_escrow.q', 'Escrow question', 'text', 'How does escrow protect me?'),
-                    self::f('help.faq_escrow.a', 'Escrow answer', 'textarea', 'When you hire, you pay Skilvi — not the worker. The money is held and does not move until the work reaches the agreed completion stage. If the client approves (or 5 business days pass without response), the payment is released to the worker. If something goes wrong, either side can open a dispute and Skilvi mediates before any money moves. No one can “run” with your money or your work.'),
-                    self::f('help.faq_fees.q', 'Fees question', 'text', "What are Skilvi's fees?"),
-                    self::f('help.faq_fees.a', 'Fees answer', 'textarea', 'Posting jobs and creating a worker profile are free. On each completed order, Skilvi keeps a 10% commission from the worker\'s side — the client pays exactly the agreed price. Withdrawals are currently free. Verification (₦5,000, one-time, 2 years) and promotion packages are optional and never affect your search ranking.'),
-                    self::f('help.faq_verification.q', 'Verification question', 'text', 'What does the “Verified” badge actually mean?'),
-                    self::f('help.faq_verification.a', 'Verification answer', 'textarea', 'It means Skilvi checked that the person\'s identity and account are real — government ID plus a matching photo. It is not a skill certification: Skilvi does not test or certify your trade. Judge skills by reviews, portfolio and past orders. Verification is a one-time paid feature and is separate from promotion (which only buys visibility and is always labelled “Promoted”).'),
-                    self::f('help.faq_withdrawals.q', 'Withdrawals question', 'text', 'How do I get my money out?'),
-                    self::f('help.faq_withdrawals.a', 'Withdrawals answer', 'textarea', 'When an order is completed, the worker\'s share (90% after commission) lands in their wallet. Withdrawals go to a Nigerian bank account via instant transfer, usually within 1 business day. The minimum is ₦5,000. New bank accounts are verified before the first payout for your safety.'),
-                    self::f('help.faq_disputes.q', 'Disputes question', 'text', "The worker hasn't started / the client isn't responding. What now?"),
-                    self::f('help.faq_disputes.a', 'Disputes answer', 'textarea', 'Message them in the order thread first — keep everything on Skilvi so there\'s a record. If there\'s no response, open a dispute from the order page. Escrow funds are frozen immediately, and Skilvi reviews the full message history. We aim to acknowledge within 1 business day and resolve within 5.'),
-                    self::f('help.faq_onsite.q', 'On-site question', 'text', 'Can I do on-site work (plumbing, tiling, painting…)?'),
-                    self::f('help.faq_onsite.a', 'On-site answer', 'textarea', 'Yes. On-site services require you to declare your service area (states/cities) and state in the package whether travel is included in the price. Clients see both before hiring. For on-site delivery, the client confirms completion in-app after the work is done — keep photos of before/after as evidence; they help in any dispute.'),
-                    self::f('help.faq_payments.q', 'Payments question', 'text', 'Can I pay by bank transfer or USSD?'),
-                    self::f('help.faq_payments.a', 'Payments answer', 'textarea', 'Yes — card, bank transfer (instant) and USSD are all supported in Naira. You\'ll get a confirmation on your phone and in-app as soon as the payment is verified. We confirm payments through the payment provider directly, so no fake screenshots needed.'),
-                    self::f('help.faq_promotion.q', 'Promotion question', 'text', 'What is promotion, and how is it different from verification?'),
-                    self::f('help.faq_promotion.a', 'Promotion answer', 'textarea', 'They do completely different jobs. Verification is a one-time trust signal: we confirm your identity and account are real, and you get the badge. It says nothing about your skill level. Promotion is paid visibility: your service appears in labelled “Promoted” positions in search results or on category pages for a set period (e.g. 7 days). Promoted items are always labelled, capped (max 3 per results page), and never reordered by Skilvi as “better” — promotion is an ad slot, not a quality ranking.'),
-                    self::f('help.faq_reporting.q', 'Reporting question', 'text', 'How do I report a user, review, or message?'),
-                    self::f('help.faq_reporting.a', 'Reporting answer', 'textarea', 'Every public profile, review, message and job has a “Report” option (the flag icon). Pick a reason — scam, fake identity, harassment, off-platform payment solicitation, spam, offensive content — and add details. Reports are anonymous to the reported user. 3+ reports on one account in 30 days automatically raise a risk flag for our team. Confirmed violations follow a published escalation path: warning → suspension → ban, with your withdrawal history reviewed where fraud is involved.'),
-                    self::f('help.faq_starting.q', 'Starting question', 'text', "I'm a worker. What's the fastest path to my first order?"),
-                    self::f('help.faq_starting.a', 'Starting answer', 'textarea', 'Four steps, all free: (1) Complete your profile — photo, bio, skills, at least one portfolio piece. (2) Create one service with 2–3 packages and honest prices (packages with a “most popular” middle tier convert best). (3) Turn on job alerts and apply to 3–5 matching jobs this week with short, specific proposals. (4) Get verified (₦5,000, one-time) — verified profiles get far more hires, especially in trades. Keep your reply time under a few hours; response speed is shown publicly and clients pick fast responders.'),
+                    self::faqs('help.faqs', 'Questions', self::defaultFaqs()),
                     self::f('help.stuck.t', 'Still stuck heading', 'text', 'Still stuck?'),
                     self::f('help.stuck.p', 'Still stuck body', 'textarea', 'Our support team replies in English, Mon–Sat, 8am–8pm WAT.'),
                 ],
@@ -239,6 +239,92 @@ final class CmsSchema
     private static function f(string $key, string $label, string $type, string $default): array
     {
         return ['key' => $key, 'label' => $label, 'type' => $type, 'default' => $default];
+    }
+
+    /** @param array<string,string> $options */
+    private static function sel(string $key, string $label, string $default, array $options): array
+    {
+        return ['key' => $key, 'label' => $label, 'type' => 'select', 'default' => $default, 'options' => $options];
+    }
+
+    /** @param list<array<string,string>> $items */
+    private static function faqs(string $key, string $label, array $items): array
+    {
+        $json = json_encode($items, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+        return ['key' => $key, 'label' => $label, 'type' => 'faqs', 'default' => is_string($json) ? $json : '[]'];
+    }
+
+    /** @return list<array{id:string,q:string,a:string,card?:string,teaser?:string}> */
+    public static function defaultFaqs(): array
+    {
+        return [
+            [
+                'id' => 'escrow',
+                'q' => 'How does escrow protect me?',
+                'a' => 'When you hire, you pay Skilvi — not the worker. The money is held and does not move until the work reaches the agreed completion stage. If the client approves (or 5 business days pass without response), the payment is released to the worker. If something goes wrong, either side can open a dispute and Skilvi mediates before any money moves. No one can “run” with your money or your work.',
+                'card' => 'How escrow works',
+                'teaser' => 'Money held until the work is done.',
+            ],
+            [
+                'id' => 'fees',
+                'q' => "What are Skilvi's fees?",
+                'a' => "Posting jobs and creating a worker profile are free. On each completed order, Skilvi keeps a 10% commission from the worker's side — the client pays exactly the agreed price. Withdrawals are currently free. Verification (₦5,000, one-time, 2 years) and promotion packages are optional and never affect your search ranking.",
+                'card' => 'Fees & pricing',
+                'teaser' => '10% commission, free posting.',
+            ],
+            [
+                'id' => 'verification',
+                'q' => 'What does the “Verified” badge actually mean?',
+                'a' => 'It means Skilvi checked that the person\'s identity and account are real — government ID plus a matching photo. It is <b>not</b> a skill certification: Skilvi does not test or certify your trade. Judge skills by reviews, portfolio and past orders. Verification is a one-time paid feature and is separate from promotion (which only buys visibility and is always labelled “Promoted”).',
+                'card' => 'Getting verified',
+                'teaser' => 'Identity check, one-time ₦5,000.',
+            ],
+            [
+                'id' => 'withdrawals',
+                'q' => 'How do I get my money out?',
+                'a' => 'When an order is completed, the worker\'s share (90% after commission) lands in their wallet. Withdrawals go to a Nigerian bank account via instant transfer, usually within 1 business day. The minimum is ₦5,000. New bank accounts are verified before the first payout for your safety.',
+                'card' => 'Withdrawals',
+                'teaser' => 'Naira to your bank, next business day.',
+            ],
+            [
+                'id' => 'disputes',
+                'q' => "The worker hasn't started / the client isn't responding. What now?",
+                'a' => 'Message them in the order thread first — keep everything on Skilvi so there\'s a record. If there\'s no response, open a dispute from the order page. Escrow funds are frozen immediately, and Skilvi reviews the full message history. We aim to acknowledge within 1 business day and resolve within 5.',
+                'card' => 'Disputes',
+                'teaser' => 'How we mediate, SLAs, outcomes.',
+            ],
+            [
+                'id' => 'onsite',
+                'q' => 'Can I do on-site work (plumbing, tiling, painting…)?',
+                'a' => 'Yes. On-site services require you to declare your service area (states/cities) and state in the package whether travel is included in the price. Clients see both before hiring. For on-site delivery, the client confirms completion in-app after the work is done — keep photos of before/after as evidence; they help in any dispute.',
+            ],
+            [
+                'id' => 'payments',
+                'q' => 'Can I pay by bank transfer or USSD?',
+                'a' => 'Yes — card, bank transfer (instant) and USSD are all supported in Naira. You\'ll get a confirmation on your phone and in-app as soon as the payment is verified. We confirm payments through the payment provider directly, so no fake screenshots needed.',
+            ],
+            [
+                'id' => 'promotion',
+                'q' => 'What is promotion, and how is it different from verification?',
+                'a' => 'They do completely different jobs. <b>Verification</b> is a one-time trust signal: we confirm your identity and account are real, and you get the badge. It says nothing about your skill level. <b>Promotion</b> is paid visibility: your service appears in labelled “Promoted” positions in search results or on category pages for a set period (e.g. 7 days). Promoted items are always labelled, capped (max 3 per results page), and never reordered by Skilvi as “better” — promotion is an ad slot, not a quality ranking.',
+                'card' => 'Promotion',
+                'teaser' => 'Pay for visibility — always labelled.',
+            ],
+            [
+                'id' => 'reporting',
+                'q' => 'How do I report a user, review, or message?',
+                'a' => 'Every public profile, review, message and job has a “Report” option (the flag icon). Pick a reason — scam, fake identity, harassment, off-platform payment solicitation, spam, offensive content — and add details. Reports are anonymous to the reported user. 3+ reports on one account in 30 days automatically raise a risk flag for our team. Confirmed violations follow a published escalation path: warning → suspension → ban, with your withdrawal history reviewed where fraud is involved.',
+                'card' => 'Reporting a user',
+                'teaser' => 'Scams, abuse, off-platform payment.',
+            ],
+            [
+                'id' => 'starting',
+                'q' => "I'm a worker. What's the fastest path to my first order?",
+                'a' => 'Four steps, all free: (1) Complete your profile — photo, bio, skills, at least one portfolio piece. (2) Create one service with 2–3 packages and honest prices (packages with a “most popular” middle tier convert best). (3) Turn on job alerts and apply to 3–5 matching jobs this week with short, specific proposals. (4) Get verified (₦5,000, one-time) — verified profiles get far more hires, especially in trades. Keep your reply time under a few hours; response speed is shown publicly and clients pick fast responders.',
+                'card' => 'Starting as a worker',
+                'teaser' => 'Profile → services → first order.',
+            ],
+        ];
     }
 
     /** @param list<string> $paths */

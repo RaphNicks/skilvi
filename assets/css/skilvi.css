@@ -1030,3 +1030,20 @@ html[data-theme="dark"] .alert-warn { color: #F3D19A; border-color: #6B5420; }
 html[data-theme="dark"] .alert-danger { color: #F0B4B4; border-color: #6B3030; }
 html[data-theme="dark"] .alert-success { color: #A8D4B5; border-color: #2A5A3A; }
 html[data-theme="dark"] .alert-info { color: var(--royal-300); }
+
+/* ---------- Site-wide CMS banner ---------- */
+.site-banner { font-size: 13.5px; line-height: 1.45; border-bottom: 1px solid; }
+.site-banner-in {
+  max-width: 1200px; margin: 0 auto; padding: 10px 20px;
+  display: flex; gap: 12px; align-items: center; justify-content: center; flex-wrap: wrap; text-align: center;
+}
+.site-banner-in p { margin: 0; }
+.site-banner-in a { font-weight: 600; white-space: nowrap; }
+.site-banner.is-info { background: var(--royal-50); color: var(--royal-800); border-color: var(--royal-100); }
+.site-banner.is-promo { background: var(--teal-bg); color: var(--teal); border-color: #C5E8E4; }
+.site-banner.is-warn { background: var(--amber-bg); color: #7C4A03; border-color: #F4DDBB; }
+.site-banner.is-urgent { background: var(--navy-900); color: #fff; border-color: var(--navy-900); }
+.site-banner.is-urgent a { color: #fff; text-decoration: underline; text-underline-offset: 2px; }
+html[data-theme="dark"] .site-banner.is-promo { color: #7DCDC4; border-color: #1E4A46; }
+html[data-theme="dark"] .site-banner.is-warn { color: #F3D19A; border-color: #6B5420; }
+html[data-theme="dark"] .site-banner.is-urgent { background: #070910; border-color: #070910; }
