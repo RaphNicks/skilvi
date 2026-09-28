@@ -272,6 +272,61 @@
     });
   }
 
+  const q = new URLSearchParams(location.search);
+  if (q.get("google") === "error") {
+    toast(q.get("msg") || "Google sign-in failed. Try again.", "error");
+  }
+
+  const completeForm = document.getElementById("completeForm");
+  if (completeForm) {
+    const dobEl = document.getElementById("cpDob");
+    function joinAs() {
+      const el = completeForm.querySelector('input[name="join_as"]:checked');
+      return (el && el.value) || "client";
+    }
+    function syncDob() {
+      const worker = joinAs() !== "client";
+      if (dobEl) {
+        dobEl.required = worker;
+        if (!worker) dobEl.value = "";
+      }
+    }
+    completeForm.querySelectorAll('input[name="join_as"]').forEach((r) => r.addEventListener("change", syncDob));
+    syncDob();
+    completeForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const btn = completeForm.querySelector('[type="submit"]');
+      busy(btn, true);
+      try {
+        const fd = new FormData(completeForm);
+        const as = joinAs();
+        const data = await api("/api/auth/complete-profile", {
+          body: {
+            full_name: fd.get("full_name"),
+            join_as: as,
+            phone: fd.get("phone"),
+            country: fd.get("country"),
+            state: fd.get("state"),
+            city: fd.get("city"),
+            dob: as === "client" ? "" : fd.get("dob"),
+            gender: fd.get("gender"),
+            heard_about: fd.get("heard_about"),
+            terms: completeForm.querySelector('[name="terms"]') && completeForm.querySelector('[name="terms"]').checked,
+          },
+        });
+        if (data && data.token && window.SkApi && window.SkApi.setTabToken) {
+          window.SkApi.setTabToken(data.token);
+        }
+        window.location.replace(safeDest(data && data.redirect));
+      } catch (err) {
+        if (window.SkApi && window.SkApi.showFieldErrors) window.SkApi.showFieldErrors(err, completeForm);
+        toast(err.message, "error");
+      } finally {
+        busy(btn, false);
+      }
+    });
+  }
+
   const fpResend = document.getElementById("fpResend");
   if (fpResend) {
     fpResend.addEventListener("click", async () => {

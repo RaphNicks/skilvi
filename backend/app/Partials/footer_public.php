@@ -15,5 +15,5 @@
 <script src="/js/theme.js?v=3"></script>
 <script src="/assets/js/skilvi.js?v=22"></script>
 <script src="/js/api.js?v=39"></script>
-<script src="/js/chrome.js?v=43"></script>
+<script src="/js/chrome.js?v=44"></script>
 <script src="/js/geo.js?v=1"></script>

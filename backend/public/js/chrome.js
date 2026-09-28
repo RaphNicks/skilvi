@@ -35,7 +35,9 @@
   function isAdmin(me) { return hasRole(me, "admin"); }
   function isBoth(me) { return isWorker(me) && isClient(me); }
 
+  function needsProfile(me) { return !!(me && me.needs_profile); }
   function home(me) {
+    if (needsProfile(me)) return "/complete-profile.html";
     if (isAdmin(me)) return "/admin/index.html";
     if (isClient(me) && !isWorker(me)) return "/client-dashboard.html";
     if (isWorker(me) && !isClient(me)) return "/worker-dashboard.html";
@@ -147,6 +149,14 @@
 
   function gate(me) {
     const f = file();
+    if (needsProfile(me) && f !== "complete-profile.html") {
+      location.replace("/complete-profile.html");
+      return true;
+    }
+    if (!needsProfile(me) && f === "complete-profile.html") {
+      location.replace(home(me));
+      return true;
+    }
     if (WORKER_ONLY.indexOf(f) !== -1 && !isWorker(me)) {
       location.replace(home(me));
       return true;
@@ -276,7 +286,7 @@
     if (!me) {
       if (tabHasToken() && window.SkApi && window.SkApi.setTabToken) window.SkApi.setTabToken("");
       const f = file();
-      if (onAdmin || WORKER_ONLY.indexOf(f) !== -1 || CLIENT_ONLY.indexOf(f) !== -1 || SHARED.indexOf(f) !== -1) {
+      if (onAdmin || WORKER_ONLY.indexOf(f) !== -1 || CLIENT_ONLY.indexOf(f) !== -1 || SHARED.indexOf(f) !== -1 || f === "complete-profile.html") {
         location.replace("/login.html?next=" + encodeURIComponent(location.pathname + location.search));
       }
       markPublicNav();

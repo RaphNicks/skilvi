@@ -11,6 +11,64 @@ use App\Services\AuthService;
 
 final class AuthController
 {
+    public static function googleStart(Request $req, array $params = []): void
+    {
+        try {
+            $url = AuthService::googleStart($req->q('next'));
+            Response::redirect($url);
+        } catch (\Throwable $e) {
+            $msg = $e instanceof \App\AppError ? $e->getMessage() : 'Google sign-in is not available.';
+            Response::redirect('/login.html?google=error&msg=' . rawurlencode($msg));
+        }
+    }
+
+    public static function googleCallback(Request $req, array $params = []): void
+    {
+        $err = $req->q('error');
+        if ($err !== '') {
+            Response::redirect('/login.html?google=error&msg=' . rawurlencode('Google sign-in was cancelled.'));
+        }
+        try {
+            $out = AuthService::googleFinish($req->q('code'), $req->q('state'), $req->ip());
+            Response::html(View::render('google_done', [
+                'token' => (string) ($out['token'] ?? ''),
+                'next'  => (string) ($out['redirect'] ?? '/complete-profile.html'),
+            ]));
+        } catch (\Throwable $e) {
+            $msg = $e instanceof \App\AppError ? $e->getMessage() : 'Google sign-in failed. Try again.';
+            Response::redirect('/login.html?google=error&msg=' . rawurlencode($msg));
+        }
+    }
+
+    public static function completePage(Request $req, array $params = []): void
+    {
+        $me = null;
+        if (Session::userId()) {
+            try {
+                $me = AuthService::me();
+            } catch (\Throwable $e) {
+                $me = null;
+            }
+        }
+        Response::html(View::render('complete-profile', ['me' => $me]));
+    }
+
+    public static function completeProfile(Request $req, array $params = []): void
+    {
+        Response::json(AuthService::completeProfile(\App\Core\Auth::id(), [
+            'full_name'   => $req->str('full_name'),
+            'join_as'     => $req->str('join_as'),
+            'phone'       => $req->str('phone'),
+            'country'     => $req->str('country'),
+            'state'       => $req->str('state'),
+            'city'        => $req->str('city'),
+            'dob'         => $req->str('dob'),
+            'gender'      => $req->str('gender'),
+            'heard_about' => $req->str('heard_about'),
+            'terms'       => $req->bool('terms') || $req->str('terms') === '1' || $req->str('terms') === 'on',
+        ]));
+    }
+
     public static function loginPage(Request $req, array $params = []): void
     {
         $me = null;

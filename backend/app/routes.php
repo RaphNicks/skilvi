@@ -15,6 +15,11 @@ Router::get('/logout', [AuthController::class, 'logoutPage']);
 Router::get('/logout.html', [AuthController::class, 'logoutPage']);
 Router::get('/forgot-password', [AuthController::class, 'forgotPage']);
 Router::get('/forgot-password.html', [AuthController::class, 'forgotPage']);
+Router::get('/complete-profile', [AuthController::class, 'completePage']);
+Router::get('/complete-profile.html', [AuthController::class, 'completePage']);
+Router::get('/api/auth/google/start', [AuthController::class, 'googleStart']);
+Router::get('/api/auth/google/callback', [AuthController::class, 'googleCallback']);
+Router::post('/api/auth/complete-profile', [AuthController::class, 'completeProfile']);
 
 Router::get('/api/geo/countries', [\App\Controllers\GeoController::class, 'countries']);
 Router::get('/api/geo/states', [\App\Controllers\GeoController::class, 'states']);

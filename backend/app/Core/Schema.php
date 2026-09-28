@@ -24,6 +24,9 @@ final class Schema
     public static function migrate(): void
     {
         $adds = [
+            'users' => [
+                'google_id TEXT',
+            ],
             'profiles' => [
                 'public_code TEXT',
                 "tone TEXT DEFAULT 'a1'",

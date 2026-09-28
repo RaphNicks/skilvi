@@ -433,8 +433,199 @@ final class AuthService
         return ['deactivated' => true];
     }
 
+    public static function googleStart(string $next = ''): string
+    {
+        $state = bin2hex(random_bytes(16));
+        Session::set('google_oauth', [
+            'state' => $state,
+            'next'  => self::safeNext($next),
+            'at'    => time(),
+        ]);
+        return GoogleAuthService::authorizeUrl($state);
+    }
+
+    /** @return array{token:string,redirect:string,user:array<string,mixed>} */
+    public static function googleFinish(string $code, string $state, string $ip): array
+    {
+        $sess = Session::get('google_oauth');
+        Session::remove('google_oauth');
+        if (!is_array($sess) || !hash_equals((string) ($sess['state'] ?? ''), $state)) {
+            throw new AppError('google', 'Google sign-in expired. Try again.', 401);
+        }
+        if ((time() - (int) ($sess['at'] ?? 0)) > 600) {
+            throw new AppError('google', 'Google sign-in expired. Try again.', 401);
+        }
+        $rl = RateLimit::hit('google:ip:' . $ip, 20, 3600);
+        if (!$rl['ok']) {
+            throw new AppError('rate_limited', 'Too many Google sign-in attempts. Try later.', 429);
+        }
+        $g = GoogleAuthService::userFromCode($code);
+        if (User::isBlocked($g['email'])) {
+            throw new AppError('blocked', 'This email cannot be used to open an account.', 403);
+        }
+        $user = User::findByGoogleId($g['sub']);
+        if ($user === null) {
+            $user = User::findByEmail($g['email']);
+            if ($user !== null) {
+                if ($user['status'] !== 'active') {
+                    $msg = $user['status'] === 'banned'
+                        ? 'This account is banned and cannot be used.'
+                        : 'This account is not active. Contact support.';
+                    throw new AppError('suspended', $msg, 403);
+                }
+                User::setGoogleId((int) $user['id'], $g['sub'], true);
+                $user = User::find((int) $user['id']);
+            }
+        }
+        if ($user === null) {
+            $id = User::create([
+                'full_name'         => $g['name'],
+                'email'             => $g['email'],
+                'phone'             => '',
+                'password_hash'     => password_hash(bin2hex(random_bytes(32)), PASSWORD_DEFAULT),
+                'roles'             => 'pending',
+                'google_id'         => $g['sub'],
+                'email_verified_at' => now_iso(),
+            ]);
+            $user = User::find($id);
+        }
+        if ($user === null) {
+            throw new AppError('google', 'Could not open your account. Try again.', 500);
+        }
+        if ($user['status'] !== 'active') {
+            $msg = $user['status'] === 'banned'
+                ? 'This account is banned and cannot be used.'
+                : 'This account is not active. Contact support.';
+            throw new AppError('suspended', $msg, 403);
+        }
+        Session::forgetUser();
+        $out = self::establish((int) $user['id']);
+        $next = self::safeNext((string) ($sess['next'] ?? ''));
+        if (!empty($out['user']['needs_profile'])) {
+            if ($next !== '') {
+                Session::set('google_next', $next);
+            }
+            $out['redirect'] = '/complete-profile.html';
+        } elseif ($next !== '') {
+            $out['redirect'] = $next;
+        }
+        return $out;
+    }
+
+    public static function completeProfile(int $userId, array $in): array
+    {
+        $user = User::find($userId);
+        if ($user === null) {
+            throw new AppError('unauth', 'Log in to continue.', 401);
+        }
+        $fields = [];
+        $name = trim((string) ($in['full_name'] ?? $user['full_name'] ?? ''));
+        if (mb_strlen($name) < 2) {
+            $fields['full_name'] = 'Enter your full name.';
+        }
+        $joinAs = (string) ($in['join_as'] ?? '');
+        $roles = self::rolesFromJoin($joinAs);
+        if ($roles === '') {
+            $fields['join_as'] = 'Choose Worker, Client, or Both.';
+        }
+        $countryIn = trim((string) ($in['country'] ?? ''));
+        $stateIn = trim((string) ($in['state'] ?? ''));
+        $cityIn = trim((string) ($in['city'] ?? ''));
+        $geo = GeoService::resolve($countryIn, $stateIn, $cityIn);
+        if ($geo['country'] === null) {
+            $fields['country'] = 'Pick your country.';
+        }
+        if ($geo['state'] === null) {
+            $fields['state'] = 'Pick your state / region.';
+        }
+        if ($cityIn === '') {
+            $fields['city'] = 'Pick your city.';
+        }
+        $iso2 = strtoupper((string) ($geo['country']['iso2'] ?? ''));
+        $phoneRaw = trim((string) ($in['phone'] ?? ''));
+        $phone = '';
+        if ($phoneRaw !== '') {
+            if ($iso2 === 'NG' || $iso2 === '') {
+                $phone = normalize_phone($phoneRaw);
+                if ($phone === '') {
+                    $fields['phone'] = 'Use a Nigerian mobile, e.g. 0803 000 0000, or leave it blank.';
+                }
+            } else {
+                $digits = preg_replace('/\D/', '', $phoneRaw) ?? '';
+                if (strlen($digits) < 7 || strlen($digits) > 15) {
+                    $fields['phone'] = 'Enter a working mobile number, or leave it blank.';
+                } else {
+                    $phone = $digits;
+                }
+            }
+        }
+        $dob = trim((string) ($in['dob'] ?? ''));
+        $needsDob = str_contains($roles, 'worker');
+        if ($needsDob) {
+            if ($dob === '' || !preg_match('/^\d{4}-\d{2}-\d{2}$/', $dob)) {
+                $fields['dob'] = 'Enter your date of birth.';
+            } else {
+                $born = \DateTimeImmutable::createFromFormat('Y-m-d', $dob);
+                $cutoff = (new \DateTimeImmutable('today'))->modify('-16 years');
+                $oldest = (new \DateTimeImmutable('today'))->modify('-120 years');
+                if ($born === false || $born > $cutoff) {
+                    $fields['dob'] = 'Workers must be 16 or older.';
+                } elseif ($born < $oldest) {
+                    $fields['dob'] = 'Enter a real date of birth.';
+                }
+            }
+        } else {
+            $dob = '';
+        }
+        $gender = strtolower(trim((string) ($in['gender'] ?? '')));
+        if ($gender !== '' && !in_array($gender, ['female', 'male', 'prefer_not'], true)) {
+            $fields['gender'] = 'Pick one of the listed options, or leave it blank.';
+        }
+        $heard = strtolower(trim((string) ($in['heard_about'] ?? '')));
+        $heardOk = ['google', 'instagram', 'facebook', 'whatsapp', 'tiktok', 'friend', 'youtube', 'other'];
+        if (!in_array($heard, $heardOk, true)) {
+            $fields['heard_about'] = 'Tell us how you heard about Skilvi.';
+        }
+        if (empty($in['terms'])) {
+            $fields['terms'] = 'Agree to the Terms and Privacy Policy to continue.';
+        }
+        if ($fields) {
+            throw new AppError('invalid', 'Please fix the highlighted fields.', 422, $fields);
+        }
+        if ($phone !== '') {
+            $other = User::findByPhone($phone);
+            if ($other && (int) $other['id'] !== $userId) {
+                throw new AppError('phone_taken', 'An account already uses this number.', 409, ['phone' => 'An account already uses this number.']);
+            }
+        }
+        User::updateName($userId, $name);
+        User::updateRoles($userId, $roles);
+        if ($phone !== '') {
+            User::updatePhone($userId, $phone);
+        }
+        Profile::update($userId, [
+            'country'      => (string) ($geo['country']['name'] ?? ''),
+            'country_code' => $iso2,
+            'state'        => (string) ($geo['state']['name'] ?? $stateIn),
+            'city'         => $cityIn,
+            'dob'          => $dob !== '' ? $dob : null,
+            'gender'       => $gender !== '' ? $gender : null,
+            'heard_about'  => $heard,
+        ]);
+        $out = self::establish($userId);
+        $next = self::safeNext((string) Session::get('google_next'));
+        Session::remove('google_next');
+        if ($next !== '' && empty($out['user']['needs_profile'])) {
+            $out['redirect'] = $next;
+        }
+        return $out;
+    }
+
     public static function homeFor(array $me): string
     {
+        if (!empty($me['needs_profile'])) {
+            return '/complete-profile.html';
+        }
         $roles = $me['roles'] ?? [];
         if (in_array('admin', $roles, true)) {
             return '/admin/index.html';
@@ -443,6 +634,18 @@ final class AuthService
             return '/client-dashboard.html';
         }
         return '/worker-dashboard.html';
+    }
+
+    private static function safeNext(string $next): string
+    {
+        $next = trim($next);
+        if ($next === '' || !str_starts_with($next, '/') || str_starts_with($next, '//') || str_contains($next, '://') || str_contains($next, '\\')) {
+            return '';
+        }
+        if (str_starts_with($next, '/admin')) {
+            return '';
+        }
+        return $next;
     }
 
     private static function establish(int $id): array

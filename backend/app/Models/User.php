@@ -22,6 +22,15 @@ final class User
         return Db::fetch('SELECT * FROM users WHERE LOWER(email) = LOWER(?)', [$email]);
     }
 
+    public static function findByGoogleId(string $sub): ?array
+    {
+        $sub = trim($sub);
+        if ($sub === '') {
+            return null;
+        }
+        return Db::fetch('SELECT * FROM users WHERE google_id = ?', [$sub]);
+    }
+
     public static function findByIdentifier(string $raw): ?array
     {
         $raw = trim($raw);
@@ -39,8 +48,8 @@ final class User
     {
         $now = now_iso();
         Db::run(
-            'INSERT INTO users (phone, email, password_hash, full_name, roles, status, phone_verified_at, created_at, updated_at)
-             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)',
+            'INSERT INTO users (phone, email, password_hash, full_name, roles, status, phone_verified_at, email_verified_at, google_id, created_at, updated_at)
+             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
             [
                 (($row['phone'] ?? '') !== '')
                     ? $row['phone']
@@ -51,6 +60,8 @@ final class User
                 $row['roles'],
                 $row['status'] ?? 'active',
                 $row['phone_verified_at'] ?? $now,
+                $row['email_verified_at'] ?? null,
+                $row['google_id'] ?? null,
                 $now,
                 $now,
             ]
@@ -117,6 +128,20 @@ final class User
     public static function updateName(int $id, string $name): void
     {
         Db::run('UPDATE users SET full_name = ?, updated_at = ? WHERE id = ?', [$name, now_iso(), $id]);
+    }
+
+    public static function updateRoles(int $id, string $roles): void
+    {
+        Db::run('UPDATE users SET roles = ?, updated_at = ? WHERE id = ?', [$roles, now_iso(), $id]);
+    }
+
+    public static function setGoogleId(int $id, string $sub, bool $emailVerified = true): void
+    {
+        $now = now_iso();
+        Db::run(
+            'UPDATE users SET google_id = ?, email_verified_at = COALESCE(email_verified_at, ?), updated_at = ? WHERE id = ?',
+            [$sub, $emailVerified ? $now : null, $now, $id]
+        );
     }
 
     public static function setStatus(int $id, string $status): void
@@ -196,6 +221,9 @@ final class User
     {
         $profile = $profile ?? Profile::forUser((int) $user['id']);
         $roles = self::roles($user);
+        $google = trim((string) ($user['google_id'] ?? '')) !== '';
+        $pending = $roles === [] || $roles === ['pending'];
+        $needs = $pending;
         return [
             'id'         => (int) $user['id'],
             'full_name'  => $user['full_name'],
@@ -224,6 +252,8 @@ final class User
             'review_count' => (int) ($profile['review_count'] ?? 0),
             'public_code'=> self::ensurePublicCode((int) $user['id']),
             'member_since' => substr((string) $user['created_at'], 0, 10),
+            'google'     => $google,
+            'needs_profile' => $needs,
         ];
     }
 }

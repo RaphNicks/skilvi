@@ -130,6 +130,19 @@ ul { margin: 0; padding: 0; list-style: none; }
 .btn-sm { padding: 6px 12px; font-size: 13px; }
 .btn-lg { padding: 12px 22px; font-size: 15px; }
 .btn-block { width: 100%; }
+.btn-google {
+  display: flex; align-items: center; justify-content: center; gap: 10px;
+  background: var(--surface); border: 1px solid var(--line-2); color: var(--heading);
+  font-weight: 600; text-decoration: none;
+}
+.btn-google:hover { background: var(--bg); color: var(--heading); border-color: var(--ink-3); }
+.btn-google svg { width: 18px; height: 18px; flex: none; }
+.auth-split {
+  display: flex; align-items: center; gap: 12px; margin: 16px 0 14px;
+  color: var(--ink-3); font-size: 12px; font-weight: 600; letter-spacing: .04em; text-transform: uppercase;
+}
+.auth-split::before, .auth-split::after { content: ""; flex: 1; height: 1px; background: var(--line); }
+.auth-split span { flex: none; }
 .btn[disabled] { opacity: 0.5; cursor: not-allowed; }
 .link { color: var(--royal-600); font-size: 14px; font-weight: 500; background: none; border: 0; padding: 0; }
 .link:hover { text-decoration: underline; }

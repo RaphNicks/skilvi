@@ -94,6 +94,11 @@ return [
         'webhook' => $e('PAYSTACK_WEBHOOK'),
     ],
 
+    'google' => [
+        'client_id'     => $e('GOOGLE_CLIENT_ID'),
+        'client_secret' => $e('GOOGLE_CLIENT_SECRET'),
+    ],
+
     'fees' => [
         'percent' => 10,
         'verification_kobo' => 500000,
