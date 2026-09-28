@@ -39,7 +39,11 @@ final class Response
 
     public static function html(string $html, int $status = 200): never
     {
-        $html = \App\Services\CmsService::apply($html);
+        try {
+            $html = \App\Services\CmsService::apply($html);
+        } catch (\Throwable $e) {
+            error_log('SKILVI CMS ' . $e->getMessage());
+        }
         self::send($status, ['Content-Type' => 'text/html; charset=utf-8', 'Cache-Control' => 'private, no-cache'], $html);
     }
 
@@ -75,7 +79,11 @@ final class Response
 
     public static function notFound(string $html): never
     {
-        $html = \App\Services\CmsService::apply($html);
+        try {
+            $html = \App\Services\CmsService::apply($html);
+        } catch (\Throwable $e) {
+            error_log('SKILVI CMS ' . $e->getMessage());
+        }
         self::send(404, ['Content-Type' => 'text/html; charset=utf-8'], $html);
     }
 

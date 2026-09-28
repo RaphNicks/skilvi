@@ -20,29 +20,29 @@ final class CmsService
         }
         $done = true;
         try {
-        if (Db::isMysql()) {
+            if (Db::isMysql()) {
+                Db::exec(
+                    "CREATE TABLE IF NOT EXISTS cms_content (
+                        k VARCHAR(191) NOT NULL PRIMARY KEY,
+                        kind VARCHAR(32) NOT NULL DEFAULT 'text',
+                        body TEXT NOT NULL,
+                        updated_at VARCHAR(32) NOT NULL,
+                        updated_by INT NULL
+                    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci"
+                );
+                return;
+            }
             Db::exec(
-                'CREATE TABLE IF NOT EXISTS cms_content (
-                    k VARCHAR(191) NOT NULL PRIMARY KEY,
-                    kind VARCHAR(32) NOT NULL DEFAULT \'text\',
+                "CREATE TABLE IF NOT EXISTS cms_content (
+                    k TEXT NOT NULL PRIMARY KEY,
+                    kind TEXT NOT NULL DEFAULT 'text',
                     body TEXT NOT NULL,
-                    updated_at VARCHAR(32) NOT NULL,
-                    updated_by INT NULL
-                ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci'
+                    updated_at TEXT NOT NULL,
+                    updated_by INTEGER
+                )"
             );
-            return;
-        }
-        Db::exec(
-            'CREATE TABLE IF NOT EXISTS cms_content (
-                k TEXT NOT NULL PRIMARY KEY,
-                kind TEXT NOT NULL DEFAULT \'text\',
-                body TEXT NOT NULL,
-                updated_at TEXT NOT NULL,
-                updated_by INTEGER
-            )'
-        );
         } catch (\Throwable $e) {
-            /* table may already exist, or DB is not up yet */
+            error_log('SKILVI CMS ensure ' . $e->getMessage());
         }
     }
 
@@ -76,7 +76,6 @@ final class CmsService
         if (self::$cache !== null) {
             return self::$cache;
         }
-        self::ensure();
         $out = [];
         try {
             foreach (Db::fetchAll('SELECT k, body FROM cms_content') as $row) {
@@ -136,98 +135,78 @@ final class CmsService
 
     public static function apply(string $html): string
     {
-        $map = self::overrides();
-        if ($map === []) {
-            return $html;
-        }
-        if (str_contains($html, '</head>') && !str_contains($html, 'window.SKILVI_CMS')) {
-            $json = json_encode($map, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
-            $html = str_replace('</head>', '<script>window.SKILVI_CMS=' . $json . ';</script></head>', $html, 1);
-        }
-        $fields = CmsSchema::byKey();
-        foreach ($fields as $key => $f) {
-            if (!isset($map[$key]) || empty($f['paths']) || !is_array($f['paths'])) {
-                continue;
+        try {
+            $map = self::overrides();
+            if ($map === []) {
+                return $html;
             }
-            $url = ltrim((string) $map[$key], '/');
-            foreach ($f['paths'] as $old) {
-                $old = ltrim((string) $old, '/');
-                if ($old === '' || $old === $url) {
+            $fields = CmsSchema::byKey();
+            foreach ($fields as $key => $f) {
+                if (!isset($map[$key]) || empty($f['paths']) || !is_array($f['paths'])) {
                     continue;
                 }
-                $html = str_replace($old, $url, $html);
+                $url = ltrim((string) $map[$key], '/');
+                foreach ($f['paths'] as $old) {
+                    $old = ltrim((string) $old, '/');
+                    if ($old !== '' && $old !== $url) {
+                        $html = str_replace($old, $url, $html);
+                    }
+                }
             }
+            foreach ($map as $key => $val) {
+                $html = self::swapNode($html, $key, $val, (string) ($fields[$key]['type'] ?? 'text'));
+            }
+            if (str_contains($html, '</head>') && !str_contains($html, 'window.SKILVI_CMS')) {
+                $json = json_encode($map, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+                if (is_string($json)) {
+                    $html = str_replace('</head>', '<script>window.SKILVI_CMS=' . $json . ';</script></head>', $html, 1);
+                }
+            }
+            return $html;
+        } catch (\Throwable $e) {
+            error_log('SKILVI CMS apply ' . $e->getMessage());
+            return $html;
         }
+    }
+
+    private static function swapNode(string $html, string $key, string $val, string $type): string
+    {
+        $qk = preg_quote($key, '/');
+        if ($type === 'image' || $type === 'video') {
+            $url = htmlspecialchars($val, ENT_QUOTES, 'UTF-8');
+            $html = preg_replace(
+                '/(<(?:img|video|source)\b[^>]*data-cms="' . $qk . '"[^>]*\ssrc=")[^"]*(")/i',
+                '$1' . $url . '$2',
+                $html,
+                1
+            ) ?? $html;
+            return $html;
+        }
+        if (str_starts_with($key, 'landing.meta_desc') || str_contains($key, 'meta_desc')) {
+            $safe = htmlspecialchars($val, ENT_QUOTES, 'UTF-8');
+            $html = preg_replace(
+                '/(<meta\b[^>]*data-cms="' . $qk . '"[^>]*\scontent=")[^"]*(")/i',
+                '$1' . $safe . '$2',
+                $html,
+                1
+            ) ?? $html;
+        }
+        $safe = ($type === 'html' || $type === 'textarea')
+            ? str_replace(["\r\n", "\n"], '<br>', strip_tags($val, '<br><b><strong><em><i>'))
+            : htmlspecialchars($val, ENT_QUOTES, 'UTF-8');
         $html = preg_replace_callback(
-            '/<(title|h1|h2|h3|h4|p|span|a|summary|label|button|b|div)(\s[^>]*data-cms="([a-z0-9._-]+)"[^>]*)>(.*?)<\/\1>/is',
-            static function (array $m) use ($map, $fields): string {
-                $key = $m[3];
-                if (!isset($map[$key])) {
-                    return $m[0];
-                }
-                $type = (string) ($fields[$key]['type'] ?? 'text');
-                $val = $map[$key];
-                if ($type === 'html' || $type === 'textarea') {
-                    $safe = strip_tags($val, '<br><b><strong><em><i>');
-                    $safe = str_replace(["\r\n", "\n"], '<br>', $safe);
-                    return '<' . $m[1] . $m[2] . '>' . $safe . '</' . $m[1] . '>';
-                }
-                return '<' . $m[1] . $m[2] . '>' . htmlspecialchars($val, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') . '</' . $m[1] . '>';
+            '/<(title|h1|h2|h3|h4|p|span|a|summary|label|button|b|div)(\s[^>]*data-cms="' . $qk . '"[^>]*)>.*?<\/\1>/is',
+            static function (array $m) use ($safe): string {
+                return '<' . $m[1] . $m[2] . '>' . $safe . '</' . $m[1] . '>';
             },
-            $html
+            $html,
+            1
         ) ?? $html;
-        $html = preg_replace_callback(
-            '/<meta\b([^>]*\sdata-cms="([a-z0-9._-]+)"[^>]*)>/i',
-            static function (array $m) use ($map): string {
-                $key = $m[2];
-                if (!isset($map[$key])) {
-                    return $m[0];
-                }
-                $val = htmlspecialchars($map[$key], ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
-                $attrs = $m[1];
-                if (preg_match('/\scontent="/i', $attrs)) {
-                    $attrs = preg_replace('/\scontent="[^"]*"/i', ' content="' . $val . '"', $attrs, 1) ?? $attrs;
-                }
-                return '<meta' . $attrs . '>';
-            },
-            $html
-        ) ?? $html;
-        $html = preg_replace_callback(
-            '/<input\b([^>]*\sdata-cms="([a-z0-9._-]+)"[^>]*)>/i',
-            static function (array $m) use ($map): string {
-                $key = $m[2];
-                if (!isset($map[$key])) {
-                    return $m[0];
-                }
-                $val = htmlspecialchars($map[$key], ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
-                $attrs = $m[1];
-                if (preg_match('/\splaceholder="/i', $attrs)) {
-                    $attrs = preg_replace('/\splaceholder="[^"]*"/i', ' placeholder="' . $val . '"', $attrs, 1) ?? $attrs;
-                }
-                if (preg_match('/\svalue="/i', $attrs) && !preg_match('/\stype="(search|text|email)"/i', $attrs)) {
-                    /* leave value */
-                }
-                return '<input' . $attrs . '>';
-            },
-            $html
-        ) ?? $html;
-        $html = preg_replace_callback(
-            '/<(img|video|source)\b([^>]*\sdata-cms="([a-z0-9._-]+)"[^>]*)>/i',
-            static function (array $m) use ($map): string {
-                $key = $m[3];
-                if (!isset($map[$key])) {
-                    return $m[0];
-                }
-                $url = htmlspecialchars($map[$key], ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
-                $attrs = $m[2];
-                if (preg_match('/\ssrc="/i', $attrs)) {
-                    $attrs = preg_replace('/\ssrc="[^"]*"/i', ' src="' . $url . '"', $attrs, 1) ?? $attrs;
-                } else {
-                    $attrs .= ' src="' . $url . '"';
-                }
-                return '<' . $m[1] . $attrs . '>';
-            },
-            $html
+        $html = preg_replace(
+            '/(<input\b[^>]*data-cms="' . $qk . '"[^>]*\splaceholder=")[^"]*(")/i',
+            '$1' . htmlspecialchars($val, ENT_QUOTES, 'UTF-8') . '$2',
+            $html,
+            1
         ) ?? $html;
         return $html;
     }
@@ -239,11 +218,8 @@ final class CmsService
             return strip_tags($value, '<br><b><strong><em><i>');
         }
         if (in_array($type, ['image', 'video'], true)) {
-            if ($value === '' || !str_starts_with($value, '/assets/')) {
+            if ($value === '' || !str_starts_with($value, '/assets/') || str_contains($value, '..')) {
                 throw new AppError('invalid', 'Media must be an on-site /assets/ path.', 422);
-            }
-            if (str_contains($value, '..')) {
-                throw new AppError('invalid', 'Invalid media path.', 422);
             }
             return $value;
         }
@@ -274,7 +250,7 @@ final class CmsService
         $slug = preg_replace('/[^a-z0-9]+/', '-', strtolower($key)) ?: 'file';
         $name = $slug . '-' . bin2hex(random_bytes(4)) . '.' . $ext;
         $frontend = (string) Config::get('frontend_root');
-        $dir = rtrim($frontend, '/\\') . '/assets/cms';
+        $dir = rtrim($frontend, "/\\") . '/assets/cms';
         if (!is_dir($dir) && !@mkdir($dir, 0775, true) && !is_dir($dir)) {
             throw new AppError('server', 'Could not create the media folder.', 500);
         }
