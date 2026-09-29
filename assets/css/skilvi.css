@@ -76,6 +76,7 @@ h3 { font-size: 16px; font-weight: 600; }
 p { margin: 0; }
 ul { margin: 0; padding: 0; list-style: none; }
 ::selection { background: var(--royal-100); }
+[hidden] { display: none !important; }
 
 .muted  { color: var(--ink-2); }
 .faint  { color: var(--ink-3); }
@@ -175,6 +176,7 @@ html.sk-loading #skLoader { display: flex; }
   background: var(--royal-50); color: var(--royal-700);
   font-size: 12px; font-weight: 600; padding: 3px 9px; border-radius: var(--r-full);
 }
+.badge-verified[hidden] { display: none !important; }
 .badge-verified svg { width: 13px; height: 13px; }
 .tag {
   display: inline-flex; align-items: center;

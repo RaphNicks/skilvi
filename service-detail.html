@@ -156,8 +156,6 @@
   document.addEventListener("DOMContentLoaded", () => {
     const I = SkIconSvg;
     ["ck1", "ck2", "ck3"].forEach((id) => ($("#" + id).innerHTML = I.check));
-    $("#svcBadge").innerHTML = I.shield + " Verified";
-    $("#svcRating").innerHTML = SkStars(4.9) + " <b>4.9</b> · 132 reviews · replies ~1 hr";
     $("#escrowNote").innerHTML = I.shield + "<span><b>Protected by Skilvi escrow.</b> You pay Skilvi, not the worker directly. Your money is held safely and released only when the work is done and you approve it.</span>";
     /* keep package name in sync */
     const origPaint = () => {};

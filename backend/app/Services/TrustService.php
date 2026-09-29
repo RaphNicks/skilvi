@@ -9,6 +9,36 @@ use App\Core\Db;
 
 final class TrustService
 {
+    public static function isApproved(int $userId): bool
+    {
+        if ($userId < 1) {
+            return false;
+        }
+        $row = Db::fetch(
+            "SELECT expires_at FROM verifications WHERE user_id = ? AND status = 'approved' ORDER BY id DESC LIMIT 1",
+            [$userId]
+        );
+        return $row !== null && !self::expired($row);
+    }
+
+    /** SQL fragment: true when that user has an unexpired approved identity check. */
+    public static function approvedExistsSql(string $userExpr): string
+    {
+        $now = str_replace("'", "''", now_iso());
+        return "EXISTS (SELECT 1 FROM verifications v WHERE v.user_id = {$userExpr} AND v.status = 'approved' AND (v.expires_at IS NULL OR v.expires_at = '' OR v.expires_at > '{$now}'))";
+    }
+
+    /** @param array<string,mixed> $row */
+    private static function expired(array $row): bool
+    {
+        $exp = trim((string) ($row['expires_at'] ?? ''));
+        if ($exp === '') {
+            return false;
+        }
+        $t = strtotime($exp);
+        return $t !== false && $t < time();
+    }
+
     public static function promoTiers(): array
     {
         $days = (int) Config::get('fees.promo_days', 7);
@@ -37,12 +67,9 @@ final class TrustService
     public static function status(int $userId): array
     {
         $row = Db::fetch('SELECT * FROM verifications WHERE user_id = ? ORDER BY id DESC LIMIT 1', [$userId]);
-        $profile = Db::fetch('SELECT verified FROM profiles WHERE user_id = ?', [$userId]);
-        $status = 'none';
-        if ($row) {
-            $status = $row['status'];
-        } elseif ($profile && (int) $profile['verified'] === 1) {
-            $status = 'approved';
+        $status = $row ? (string) $row['status'] : 'none';
+        if ($status === 'approved' && self::expired($row)) {
+            $status = 'expired';
         }
         return [
             'status'       => $status,

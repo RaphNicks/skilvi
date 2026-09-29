@@ -262,7 +262,10 @@
     const av = $("#wpAvatar");
     if (av) { av.textContent = w.init || "?"; av.className = "avatar lg " + (w.tone || "a1"); }
     const badge = $("#vBadge");
-    if (badge) badge.hidden = !w.verified;
+    if (badge) {
+      if (w.verified) badge.hidden = false;
+      else badge.remove();
+    }
     if ($("#wpHeadline")) $("#wpHeadline").textContent = w.headline || "";
     const bio = $("#wpBio");
     if (bio) bio.textContent = w.bio || w.headline || "No bio yet.";
@@ -387,7 +390,10 @@
     const wlink = $('a[href="worker-profile.html"]');
     if (wlink && s.worker) wlink.href = "worker-profile.html?id=" + encodeURIComponent(s.worker.id);
     const badge = $("#svcBadge");
-    if (badge) badge.hidden = !(s.worker && s.worker.verified);
+    if (badge) {
+      if (s.worker && s.worker.verified) badge.hidden = false;
+      else badge.remove();
+    }
   }
 
   async function hydrateSaved() {

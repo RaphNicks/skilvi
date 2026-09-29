@@ -168,7 +168,7 @@ final class DiscoveryService
         $sinceTs = $sinceRaw ? strtotime((string) $sinceRaw) : false;
         $card['client'] = [
             'name'     => $row['client_name'],
-            'verified' => (int) $row['client_verified'] === 1,
+            'verified' => TrustService::isApproved((int) ($row['client_id'] ?? 0)),
             'rating'   => (float) $row['client_rating'],
             'reviews'  => (int) ($row['client_reviews'] ?? 0),
             'orders'   => (int) ($row['client_orders'] ?? 0),
@@ -196,7 +196,7 @@ final class DiscoveryService
                 'rating'     => (float) $p['rating_avg'],
                 'reviews'    => (int) $p['review_count'],
                 'jobs'       => (int) $p['orders_completed'],
-                'verified'   => (int) $p['verified'] === 1,
+                'verified'   => TrustService::isApproved((int) $p['worker_id']),
                 'bid_naira'  => kobo_naira((int) $p['bid_kobo']),
                 'bid_label'  => ngn_fmt((int) $p['bid_kobo']),
                 'cover'      => $p['cover_note'],
@@ -280,7 +280,7 @@ final class DiscoveryService
             $bind[] = $f['parent'];
         }
         if (!empty($f['verified'])) {
-            $where[] = 'p.verified = 1';
+            $where[] = TrustService::approvedExistsSql('u.id');
         }
         if (!empty($f['rating'])) {
             $min = str_contains((string) $f['rating'], '4.8') ? 4.8 : 4.5;
@@ -302,7 +302,7 @@ final class DiscoveryService
         };
         $off = ($page - 1) * $per;
         $rows = Db::fetchAll(
-            "SELECT u.id, u.full_name, p.*
+            "SELECT u.id, u.full_name, p.*, " . TrustService::approvedExistsSql('u.id') . " AS identity_ok
              FROM users u
              JOIN profiles p ON p.user_id = u.id
              LEFT JOIN categories c ON c.name = p.skill
@@ -321,7 +321,7 @@ final class DiscoveryService
             throw new AppError('not_found', 'Worker not found.', 404);
         }
         $row = Db::fetch(
-            "SELECT u.id, u.full_name, u.created_at AS joined, p.*
+            "SELECT u.id, u.full_name, u.created_at AS joined, p.*, " . TrustService::approvedExistsSql('u.id') . " AS identity_ok
              FROM users u JOIN profiles p ON p.user_id = u.id
              WHERE p.public_code = ? OR u.id = ?",
             [$id, ctype_digit($id) ? $id : 0]
@@ -381,7 +381,8 @@ final class DiscoveryService
     public static function service(string $id): array
     {
         $row = Db::fetch(
-            'SELECT s.*, u.full_name, p.public_code AS worker_code, p.tone, p.verified, p.rating_avg, p.review_count, p.reply, p.city, p.state, p.headline
+            'SELECT s.*, u.full_name, p.public_code AS worker_code, p.tone, p.verified, p.rating_avg, p.review_count, p.reply, p.city, p.state, p.headline,
+                    ' . TrustService::approvedExistsSql('u.id') . ' AS identity_ok
              FROM services s
              JOIN users u ON u.id = s.worker_id
              LEFT JOIN profiles p ON p.user_id = u.id
@@ -397,7 +398,7 @@ final class DiscoveryService
             'name'     => $row['full_name'],
             'initials' => initials($row['full_name']),
             'tone'     => $row['tone'] ?: 'a1',
-            'verified' => (int) $row['verified'] === 1,
+            'verified' => self::identityOk($row),
             'rating'   => (float) $row['rating_avg'],
             'reviews'  => (int) $row['review_count'],
             'reply'    => $row['reply'],
@@ -475,7 +476,7 @@ final class DiscoveryService
             'proposals'     => (int) ($j['proposal_count'] ?? 0),
             'client'        => $j['client_name'] ?? '',
             'clientRating'  => (float) ($j['client_rating'] ?? 0),
-            'verified'      => (int) ($j['client_verified'] ?? 0) === 1,
+            'verified'      => TrustService::isApproved((int) ($j['client_id'] ?? 0)),
             'desc'          => $j['scope'] ?? '',
         ];
     }
@@ -502,7 +503,7 @@ final class DiscoveryService
             'reviews'  => (int) $w['review_count'],
             'jobs'     => (int) $w['orders_completed'],
             'resp'     => $w['reply'],
-            'verified' => (int) $w['verified'] === 1,
+            'verified' => self::identityOk($w),
             'promo'    => (int) $w['promo'] === 1,
             'from'     => kobo_naira($svc ? (int) $svc['price_kobo'] : null),
             'service'  => $svc ? ['id' => $svc['public_code'], 'title' => $svc['title'], 'from' => kobo_naira((int) $svc['price_kobo'])] : null,
@@ -554,6 +555,16 @@ final class DiscoveryService
             }
         }
         return array_values(array_unique($out));
+    }
+
+    /** @param array<string,mixed> $row */
+    private static function identityOk(array $row): bool
+    {
+        if (array_key_exists('identity_ok', $row)) {
+            return (int) $row['identity_ok'] === 1;
+        }
+        $uid = (int) ($row['user_id'] ?? $row['id'] ?? 0);
+        return TrustService::isApproved($uid);
     }
 
     private static function isWorker(int $id): bool

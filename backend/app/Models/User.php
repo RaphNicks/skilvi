@@ -295,7 +295,7 @@ final class User
             'notify_marketing' => (int) ($profile['notify_marketing'] ?? 0),
             'work_mode'  => $profile['work_mode'] ?? null,
             'skill'      => $profile['skill'] ?? null,
-            'verified'   => (int) ($profile['verified'] ?? 0) === 1,
+            'verified'   => \App\Services\TrustService::isApproved((int) $user['id']),
             'rating_avg' => (float) ($profile['rating_avg'] ?? 0),
             'review_count' => (int) ($profile['review_count'] ?? 0),
             'public_code'=> self::ensurePublicCode((int) $user['id']),
