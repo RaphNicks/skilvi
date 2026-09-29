@@ -62,18 +62,19 @@ final class AdminService
 
     public static function users(string $q, string $role, string $status): array
     {
+        User::ensureBlockName();
         $where = ['1=1'];
         $bind = [];
         if ($q !== '') {
             $like = '%' . $q . '%';
             $digits = preg_replace('/\D/', '', $q) ?? '';
+            $clause = '(u.full_name LIKE ? OR IFNULL(u.email,\'\') LIKE ? OR IFNULL(b.email,\'\') LIKE ? OR IFNULL(b.name,\'\') LIKE ? OR IFNULL(b.phone,\'\') LIKE ?';
+            array_push($bind, $like, $like, $like, $like, $like);
             if (strlen($digits) >= 4) {
-                $where[] = '(u.full_name LIKE ? OR u.phone LIKE ? OR IFNULL(u.email,\'\') LIKE ?)';
-                array_push($bind, $like, '%' . $digits . '%', $like);
-            } else {
-                $where[] = '(u.full_name LIKE ? OR IFNULL(u.email,\'\') LIKE ?)';
-                array_push($bind, $like, $like);
+                $clause .= ' OR u.phone LIKE ? OR IFNULL(b.phone,\'\') LIKE ?';
+                array_push($bind, '%' . $digits . '%', '%' . $digits . '%');
             }
+            $where[] = $clause . ')';
         }
         if ($role === 'worker' || $role === 'client' || $role === 'admin') {
             $where[] = "u.roles LIKE ?";
@@ -82,20 +83,32 @@ final class AdminService
         if (in_array($status, ['active', 'suspended', 'banned', 'deleted'], true)) {
             $where[] = 'u.status = ?';
             $bind[] = $status;
-        } else {
+        } elseif ($q === '') {
             $where[] = "u.status <> 'deleted'";
         }
         $sql = implode(' AND ', $where);
-        $rows = Db::fetchAll(
-            "SELECT u.*, p.tone, p.verified, p.orders_completed, p.skill, p.city, p.state,
-                    b.email AS block_email, b.reason AS block_reason
+        $select = "SELECT u.*, p.tone, p.verified, p.orders_completed, p.skill, p.city, p.state,
+                    b.email AS block_email, b.phone AS block_phone, b.name AS block_name, b.reason AS block_reason
              FROM users u
              LEFT JOIN profiles p ON p.user_id = u.id
              LEFT JOIN account_blocks b ON b.user_id = u.id
              WHERE $sql
-             ORDER BY u.id DESC LIMIT 200",
-            $bind
-        );
+             ORDER BY u.id DESC LIMIT 200";
+        try {
+            $rows = Db::fetchAll($select, $bind);
+        } catch (\Throwable $e) {
+            $rows = Db::fetchAll(
+                "SELECT u.*, p.tone, p.verified, p.orders_completed, p.skill, p.city, p.state,
+                        b.email AS block_email, b.phone AS block_phone, b.reason AS block_reason
+                 FROM users u
+                 LEFT JOIN profiles p ON p.user_id = u.id
+                 LEFT JOIN account_blocks b ON b.user_id = u.id
+                 WHERE $sql
+                 ORDER BY u.id DESC LIMIT 200",
+                $bind
+            );
+        }
+        $auditNames = self::auditDeleteNames($rows);
         $out = [];
         foreach ($rows as $r) {
             $flags = (int) (Db::fetch(
@@ -106,13 +119,16 @@ final class AdminService
             $roleLabel = in_array('admin', $roles, true) ? 'Admin'
                 : ((in_array('worker', $roles, true) && in_array('client', $roles, true)) ? 'Both'
                 : (in_array('worker', $roles, true) ? 'Worker' : 'Client'));
+            $name = self::previewName($r, $auditNames);
+            $email = self::previewEmail($r);
+            $phone = self::previewPhone($r);
             $out[] = [
                 'id'         => (int) $r['id'],
-                'name'       => $r['full_name'],
-                'initials'   => initials($r['full_name']),
+                'name'       => $name,
+                'initials'   => initials($name),
                 'tone'       => $r['tone'] ?: 'a1',
-                'phone'      => format_phone($r['phone']),
-                'email'      => $r['email'],
+                'phone'      => $phone,
+                'email'      => $email,
                 'role'       => $roleLabel,
                 'roles'      => $roles,
                 'orders'     => (int) ($r['orders_completed'] ?? 0),
@@ -137,15 +153,23 @@ final class AdminService
         }
         unset($u['password_hash']);
         $id = (int) $u['id'];
+        User::ensureBlockName();
         $p = Db::fetch('SELECT * FROM profiles WHERE user_id = ?', [$id]) ?: [];
         $w = Db::fetch('SELECT available_kobo, pending_kobo, updated_at FROM wallets WHERE user_id = ?', [$id]) ?: [];
-        $block = Db::fetch('SELECT email, phone, reason, created_at FROM account_blocks WHERE user_id = ?', [$id]) ?: [];
-        $phoneRaw = (string) ($u['phone'] ?? '');
-        if ($phoneRaw === '' || str_starts_with($phoneRaw, 'e:') || str_starts_with($phoneRaw, 'x:')) {
-            $phoneRaw = (string) ($block['phone'] ?? '');
+        try {
+            $block = Db::fetch('SELECT email, phone, name, reason, created_at FROM account_blocks WHERE user_id = ?', [$id]) ?: [];
+        } catch (\Throwable $e) {
+            $block = Db::fetch('SELECT email, phone, reason, created_at FROM account_blocks WHERE user_id = ?', [$id]) ?: [];
         }
-        $phone = ($phoneRaw === '' || str_starts_with($phoneRaw, 'e:') || str_starts_with($phoneRaw, 'x:')) ? '' : format_phone($phoneRaw);
-        $emailShow = (string) ($u['email'] ?: ($block['email'] ?? ''));
+        $merged = $u + [
+            'block_email' => $block['email'] ?? '',
+            'block_phone' => $block['phone'] ?? '',
+            'block_name'  => $block['name'] ?? '',
+        ];
+        $auditNames = self::auditDeleteNames([$merged]);
+        $nameShow = self::previewName($merged, $auditNames);
+        $phone = self::previewPhone($merged);
+        $emailShow = self::previewEmail($merged);
         $roles = User::roles($u);
         $roleLabel = in_array('admin', $roles, true) ? 'Admin'
             : ((in_array('worker', $roles, true) && in_array('client', $roles, true)) ? 'Both'
@@ -168,7 +192,7 @@ final class AdminService
         $sections = [
             'Account' => [
                 ['User ID', (string) $id],
-                ['Full name', (string) $u['full_name']],
+                ['Full name', $nameShow],
                 ['Email', $emailShow !== '' ? $emailShow : '—'],
                 ['Phone', $phone !== '' ? $phone : '—'],
                 ['Roles', $roleLabel . ' (' . implode(', ', $roles) . ')'],
@@ -256,22 +280,22 @@ final class AdminService
         ), 'name');
         return [
             'id'         => $id,
-            'name'       => $u['full_name'],
-            'email'      => $emailShow !== '' ? $emailShow : $u['email'],
+            'name'       => $nameShow,
+            'email'      => $emailShow,
             'blocked_email' => (string) ($block['email'] ?? ''),
             'block_reason'  => (string) ($block['reason'] ?? ''),
             'phone'      => $phone,
-            'initials'   => initials((string) $u['full_name']),
+            'initials'   => initials($nameShow),
             'tone'       => ($p['tone'] ?? '') !== '' ? $p['tone'] : 'a1',
             'role'       => $roleLabel,
             'is_admin'   => in_array('admin', $roles, true),
             'status'     => $u['status'],
             'stateLabel' => ucfirst((string) $u['status']),
-            'chip'       => $u['status'] === 'active' ? 'st-green' : ($u['status'] === 'banned' ? 'st-red' : 'st-amber'),
+            'chip'       => $u['status'] === 'active' ? 'st-green' : ($u['status'] === 'banned' ? 'st-red' : ($u['status'] === 'deleted' ? 'st-gray' : 'st-amber')),
             'details'    => $details,
             'form'       => [
-                'full_name' => (string) $u['full_name'],
-                'email'     => (string) ($u['email'] ?? ''),
+                'full_name' => $nameShow,
+                'email'     => $emailShow,
                 'phone'     => $phone,
                 'join_as'   => $join,
                 'status'    => (string) $u['status'],
@@ -547,7 +571,10 @@ final class AdminService
             ['user:' . $id]
         );
         $meta = json_decode((string) ($audit['meta'] ?? ''), true) ?: [];
-        $name = trim((string) ($meta['name'] ?? ''));
+        $name = trim((string) ($block['name'] ?? ''));
+        if ($name === '' || strcasecmp($name, 'Deleted account') === 0) {
+            $name = trim((string) ($meta['name'] ?? ''));
+        }
         if ($name === '' || strcasecmp($name, 'Deleted account') === 0) {
             $name = 'Restored account';
         }
@@ -1242,6 +1269,100 @@ final class AdminService
             $out[] = ['chip' => 'st-green', 'label' => 'Quiet', 'text' => 'No queues need you right now.', 'href' => 'audit-log.html'];
         }
         return $out;
+    }
+
+    /** @param array<string,mixed> $r */
+    private static function previewEmail(array $r): string
+    {
+        $email = trim((string) ($r['email'] ?? ''));
+        if ($email !== '') {
+            return $email;
+        }
+        $block = trim((string) ($r['block_email'] ?? ''));
+        if ($block !== '' && !str_starts_with($block, 'user:')) {
+            return $block;
+        }
+        return '';
+    }
+
+    /** @param array<string,mixed> $r */
+    private static function previewPhone(array $r): string
+    {
+        $phone = (string) ($r['phone'] ?? '');
+        if ($phone === '' || str_starts_with($phone, 'x:') || str_starts_with($phone, 'e:')) {
+            $phone = (string) ($r['block_phone'] ?? '');
+        }
+        if ($phone === '' || str_starts_with($phone, 'x:') || str_starts_with($phone, 'e:')) {
+            return '';
+        }
+        return format_phone($phone);
+    }
+
+    /**
+     * @param array<string,mixed> $r
+     * @param array<string,string> $auditNames
+     */
+    private static function previewName(array $r, array $auditNames): string
+    {
+        $name = trim((string) ($r['full_name'] ?? ''));
+        if ($name !== '' && strcasecmp($name, 'Deleted account') !== 0) {
+            return $name;
+        }
+        $blockName = trim((string) ($r['block_name'] ?? ''));
+        if ($blockName !== '' && strcasecmp($blockName, 'Deleted account') !== 0) {
+            return $blockName;
+        }
+        $fromAudit = trim((string) ($auditNames['user:' . (int) ($r['id'] ?? 0)] ?? ''));
+        if ($fromAudit !== '' && strcasecmp($fromAudit, 'Deleted account') !== 0) {
+            return $fromAudit;
+        }
+        return $name !== '' ? $name : 'Deleted account';
+    }
+
+    /**
+     * @param list<array<string,mixed>> $rows
+     * @return array<string,string>
+     */
+    private static function auditDeleteNames(array $rows): array
+    {
+        $ids = [];
+        foreach ($rows as $r) {
+            if ((string) ($r['status'] ?? '') !== 'deleted') {
+                continue;
+            }
+            $name = trim((string) ($r['full_name'] ?? ''));
+            $blockName = trim((string) ($r['block_name'] ?? ''));
+            if ($name !== '' && strcasecmp($name, 'Deleted account') !== 0) {
+                continue;
+            }
+            if ($blockName !== '' && strcasecmp($blockName, 'Deleted account') !== 0) {
+                continue;
+            }
+            $ids[] = 'user:' . (int) $r['id'];
+        }
+        if ($ids === []) {
+            return [];
+        }
+        $ids = array_values(array_unique($ids));
+        $in = implode(',', array_fill(0, count($ids), '?'));
+        try {
+            $audits = Db::fetchAll(
+                "SELECT target, meta FROM admin_audit WHERE action = 'user.delete' AND target IN ($in) ORDER BY id DESC",
+                $ids
+            );
+        } catch (\Throwable $e) {
+            return [];
+        }
+        $map = [];
+        foreach ($audits as $a) {
+            $t = (string) ($a['target'] ?? '');
+            if ($t === '' || isset($map[$t])) {
+                continue;
+            }
+            $meta = json_decode((string) ($a['meta'] ?? ''), true) ?: [];
+            $map[$t] = trim((string) ($meta['name'] ?? ''));
+        }
+        return $map;
     }
 
     private static function compactNaira(int $kobo): string

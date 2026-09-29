@@ -190,6 +190,7 @@ final class Schema
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 email TEXT NOT NULL,
                 phone TEXT,
+                name TEXT,
                 user_id INTEGER,
                 reason TEXT,
                 admin_id INTEGER,

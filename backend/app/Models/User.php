@@ -177,8 +177,10 @@ final class User
         } catch (\Throwable $e) {
             \App\Core\Schema::install();
         }
+        self::ensureBlockName();
         $email = strtolower(trim((string) ($user['email'] ?? '')));
         $phone = (string) ($user['phone'] ?? '');
+        $name = trim((string) ($user['full_name'] ?? ''));
         if (str_starts_with($phone, 'e:') || str_starts_with($phone, 'x:')) {
             $phone = '';
         }
@@ -186,16 +188,62 @@ final class User
             $email = 'user:' . (int) $user['id'];
         }
         if (Db::fetch('SELECT id FROM account_blocks WHERE LOWER(email) = ?', [$email])) {
-            Db::run(
-                'UPDATE account_blocks SET phone=?, user_id=?, reason=?, admin_id=?, created_at=? WHERE LOWER(email)=?',
-                [$phone !== '' ? $phone : null, (int) $user['id'], $reason, $adminId, now_iso(), $email]
-            );
+            try {
+                Db::run(
+                    'UPDATE account_blocks SET phone=?, name=?, user_id=?, reason=?, admin_id=?, created_at=? WHERE LOWER(email)=?',
+                    [$phone !== '' ? $phone : null, $name !== '' ? $name : null, (int) $user['id'], $reason, $adminId, now_iso(), $email]
+                );
+            } catch (\Throwable $e) {
+                Db::run(
+                    'UPDATE account_blocks SET phone=?, user_id=?, reason=?, admin_id=?, created_at=? WHERE LOWER(email)=?',
+                    [$phone !== '' ? $phone : null, (int) $user['id'], $reason, $adminId, now_iso(), $email]
+                );
+            }
             return;
         }
-        Db::run(
-            'INSERT INTO account_blocks (email, phone, user_id, reason, admin_id, created_at) VALUES (?,?,?,?,?,?)',
-            [$email, $phone !== '' ? $phone : null, (int) $user['id'], $reason, $adminId, now_iso()]
-        );
+        try {
+            Db::run(
+                'INSERT INTO account_blocks (email, phone, name, user_id, reason, admin_id, created_at) VALUES (?,?,?,?,?,?,?)',
+                [$email, $phone !== '' ? $phone : null, $name !== '' ? $name : null, (int) $user['id'], $reason, $adminId, now_iso()]
+            );
+        } catch (\Throwable $e) {
+            Db::run(
+                'INSERT INTO account_blocks (email, phone, user_id, reason, admin_id, created_at) VALUES (?,?,?,?,?,?)',
+                [$email, $phone !== '' ? $phone : null, (int) $user['id'], $reason, $adminId, now_iso()]
+            );
+        }
+    }
+
+    public static function ensureBlockName(): void
+    {
+        static $done = false;
+        if ($done) {
+            return;
+        }
+        $done = true;
+        try {
+            $col = Db::isMysql() ? 'VARCHAR(191) NULL' : 'TEXT';
+            Db::exec('ALTER TABLE account_blocks ADD COLUMN name ' . $col);
+        } catch (\Throwable $e) {
+        }
+        try {
+            $rows = Db::fetchAll(
+                "SELECT id, user_id FROM account_blocks WHERE (name IS NULL OR name = '') AND user_id IS NOT NULL"
+            );
+            foreach ($rows as $row) {
+                $audit = Db::fetch(
+                    "SELECT meta FROM admin_audit WHERE action = 'user.delete' AND target = ? ORDER BY id DESC LIMIT 1",
+                    ['user:' . (int) $row['user_id']]
+                );
+                $meta = json_decode((string) ($audit['meta'] ?? ''), true) ?: [];
+                $name = trim((string) ($meta['name'] ?? ''));
+                if ($name === '' || strcasecmp($name, 'Deleted account') === 0) {
+                    continue;
+                }
+                Db::run('UPDATE account_blocks SET name = ? WHERE id = ?', [$name, (int) $row['id']]);
+            }
+        } catch (\Throwable $e) {
+        }
     }
 
     public static function unblock(array $user): void
