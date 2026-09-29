@@ -215,8 +215,7 @@ final class CmsService
             static function (array $m) use ($safe): string {
                 return '<' . $m[1] . $m[2] . '>' . $safe . '</' . $m[1] . '>';
             },
-            $html,
-            1
+            $html
         ) ?? $html;
         $html = preg_replace(
             '/(<input\b[^>]*data-cms="' . $qk . '"[^>]*\splaceholder=")[^"]*(")/i',

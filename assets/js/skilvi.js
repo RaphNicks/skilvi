@@ -260,7 +260,15 @@
         if (e.target === m || e.target.closest("[data-modal-close]")) m.classList.remove("open");
       }));
     document.addEventListener("keydown", (e) => {
-      if (e.key === "Escape") $$(".modal-backdrop.open").forEach((m) => m.classList.remove("open"));
+      if (e.key !== "Escape") return;
+      $$(".modal-backdrop.open").forEach((m) => m.classList.remove("open"));
+      const id = (location.hash || "").replace(/^#/, "");
+      const sheet = id ? document.getElementById(id) : null;
+      if (sheet && sheet.classList.contains("modal-backdrop")) {
+        const closeTo = sheet.querySelector("[href^='#']");
+        if (closeTo && closeTo.getAttribute("href")) location.hash = closeTo.getAttribute("href").slice(1);
+        else history.replaceState(null, "", location.pathname + location.search);
+      }
     });
   }
 

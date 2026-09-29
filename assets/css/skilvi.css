@@ -840,6 +840,64 @@ table.table { width: 100%; border-collapse: collapse; font-size: 13.5px; min-wid
 html.sk-dialog-lock { overflow: hidden; }
 html[data-theme="dark"] .modal-backdrop { background: rgba(7, 9, 16, 0.62); }
 
+.team-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 260px));
+  gap: 16px;
+}
+.team-card {
+  display: block;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+  padding: 18px;
+  color: inherit;
+  text-align: left;
+}
+.team-card:hover,
+.team-card:focus-visible { color: inherit; border-color: var(--royal-300); }
+.team-card:focus-visible { outline: 2px solid var(--royal-400); outline-offset: 2px; }
+.team-card h3 { font-size: 15px; margin-top: 12px; font-family: var(--font-body); color: var(--heading); }
+.team-card-role { color: var(--royal-700); font-weight: 600; margin-top: 2px; }
+.team-sheet {
+  justify-content: flex-end;
+  align-items: stretch;
+  padding: 0;
+  z-index: 160;
+}
+.team-sheet:target { display: flex; }
+.team-sheet-dismiss { position: absolute; inset: 0; }
+.team-sheet .modal {
+  position: relative;
+  max-width: min(420px, 100%);
+  width: 100%;
+  height: 100%;
+  max-height: none;
+  border-radius: 0;
+  display: flex;
+  flex-direction: column;
+  animation: team-sheet-in 0.18s ease;
+}
+.team-sheet .modal-head { align-items: flex-start; }
+.team-sheet .modal-head h3 { font-size: 16px; }
+.team-sheet .modal-body { overflow: auto; flex: 1; }
+.team-sheet .modal-body p + p { margin-top: 12px; }
+.team-sheet-aside {
+  margin-top: 18px !important;
+  padding-top: 14px;
+  border-top: 1px solid var(--line);
+  color: var(--ink-2);
+  font-size: 13px;
+}
+.team-sheet a.icon-btn { color: var(--ink-2); }
+.team-sheet a.icon-btn:hover { color: var(--ink); }
+@keyframes team-sheet-in {
+  from { transform: translateX(12px); opacity: 0; }
+  to { transform: none; opacity: 1; }
+}
+body:has(.team-sheet:target) { overflow: hidden; }
+html[data-theme="dark"] .team-card-role { color: var(--royal-300); }
+
 /* ---------- Admin extras ---------- */
 .kpi-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 12px; }
 .kpi { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-lg); padding: 14px 16px; box-shadow: var(--sh-sm); }

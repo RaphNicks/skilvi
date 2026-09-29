@@ -43,9 +43,9 @@ final class PagesController
 
     private static function inject(string $html, string $rel): string
     {
-        $html = preg_replace('/skilvi\\.css\\?v=\\d+/', 'skilvi.css?v=37', $html) ?? $html;
+        $html = preg_replace('/skilvi\\.css\\?v=\\d+/', 'skilvi.css?v=38', $html) ?? $html;
         $html = preg_replace('/landing\\.css\\?v=\\d+/', 'landing.css?v=28', $html) ?? $html;
-        $html = preg_replace('/skilvi\\.js\\?v=\\d+/', 'skilvi.js?v=22', $html) ?? $html;
+        $html = preg_replace('/skilvi\\.js\\?v=\\d+/', 'skilvi.js?v=23', $html) ?? $html;
         $boot = '<script>(function(){try{var p=localStorage.getItem("skilvi_theme")||"system";var dark=p==="dark"||(p!=="light"&&window.matchMedia("(prefers-color-scheme: dark)").matches);document.documentElement.setAttribute("data-theme",dark?"dark":"light");document.documentElement.setAttribute("data-theme-pref",p);}catch(e){}})();</script>'
             . '<style id="skLoaderCss">html.sk-loading{background:#F8FAFC}html[data-theme="dark"].sk-loading{background:#10141C}html.sk-loading #skLoader{display:flex}#skLoader{display:none;position:fixed;inset:0;z-index:99999;align-items:center;justify-content:center;background:#F8FAFC;pointer-events:none}html[data-theme="dark"] #skLoader{background:#10141C}#skLoader video{width:min(420px,86vw);height:auto;display:block}</style>'
             . '<script>(function(){try{if(sessionStorage.getItem("skilvi_nav")==="1")document.documentElement.classList.add("sk-loading")}catch(e){}})();</script>'
