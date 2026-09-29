@@ -46,7 +46,7 @@
 <!-- Hero -->
 <section class="hero">
   <div class="hero-in">
-    <span class="hero-eyebrow" id="abEyebrow"></span>
+    <span class="hero-eyebrow"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 5 6v6c0 4.4 3 7.4 7 9 4-1.6 7-4.6 7-9V6l-7-3Z"/><path d="m9 12 2 2 4-4"/></svg> <span data-cms="about.eyebrow">Port Harcourt, Nigeria · est. 2026</span></span>
     <h1 data-cms="about.h1">Built for Nigeria. Designed to go further.</h1>
     <p class="hero-sub" data-cms="about.sub">Skilvi connects skilled Nigerians — developers, designers, tilers, electricians, accountants — with clients who need them. With escrow payments, verified identities and a real dispute process. <b>Discover. Learn. Earn.</b></p>
     <div class="row mt-3" style="gap:10px;flex-wrap:wrap">
@@ -59,30 +59,112 @@
 <!-- Why -->
 <section class="section">
   <div class="section-head"><h2 data-cms="about.why.h2">Why we built this</h2></div>
-  <div class="grid grid-3" id="abWhy"></div>
+  <div class="grid grid-3" id="abWhy">
+    <div class="step">
+      <span class="step-num" style="width:34px;height:34px"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 21V4"/><path d="M5 4h12l-2.5 4L17 12H5"/></svg></span>
+      <h3 data-cms="about.why1.t">Global platforms work against locals</h3>
+      <p data-cms="about.why1.p">USD payouts, delayed transfers, arbitrary account freezes — and competing against the whole world on price. A great PH developer or a great Lagos electrician shouldn't have to fight that fight.</p>
+    </div>
+    <div class="step">
+      <span class="step-num" style="width:34px;height:34px"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a8 8 0 0 1-8 8H4l2-3a8 8 0 1 1 15-5Z"/></svg></span>
+      <h3 data-cms="about.why2.t">Local work runs on WhatsApp</h3>
+      <p data-cms="about.why2.p">No profiles, no reviews, no payment protection. If the tiler disappears after your deposit, there is no one to call. Informal trust is real — but it doesn't scale.</p>
+    </div>
+    <div class="step">
+      <span class="step-num" style="width:34px;height:34px"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 5 6v6c0 4.4 3 7.4 7 9 4-1.6 7-4.6 7-9V6l-7-3Z"/><path d="m9 12 2 2 4-4"/></svg></span>
+      <h3 data-cms="about.why3.t">Clients can't tell who's real</h3>
+      <p data-cms="about.why3.p">Whether it's a logo or a bathroom, the risk feels the same: you've never met this person. So deals stall, or money moves off-platform, unprotected.</p>
+    </div>
+  </div>
 </section>
 
 <!-- Safety -->
 <section class="section">
   <div class="section-head"><h2 data-cms="about.safety.h2">How we keep both sides safe</h2></div>
-  <div class="grid grid-4" id="abSafety"></div>
+  <div class="grid grid-4" id="abSafety">
+    <div class="card card-pad">
+      <span class="stat-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 5 6v6c0 4.4 3 7.4 7 9 4-1.6 7-4.6 7-9V6l-7-3Z"/><path d="m9 12 2 2 4-4"/></svg></span>
+      <h3 style="font-size:14px;margin-top:10px;font-family:var(--font-body)" data-cms="about.safety1.t">Escrow on every order</h3>
+      <p class="small muted mt-1" data-cms="about.safety1.p">Clients pay Skilvi, not the worker. Money is released only when the work is done and approved.</p>
+    </div>
+    <div class="card card-pad">
+      <span class="stat-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="m8.5 12 2.5 2.5 5-5"/></svg></span>
+      <h3 style="font-size:14px;margin-top:10px;font-family:var(--font-body)" data-cms="about.safety2.t">Verified identities</h3>
+      <p class="small muted mt-1" data-cms="about.safety2.p">A one-time check of government ID + photo. The badge says who they are — never what we certified.</p>
+    </div>
+    <div class="card card-pad">
+      <span class="stat-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v16m-7 0h14"/><path d="m5 7-3 6a3.5 3.5 0 0 0 6 0L5 7Zm14 0-3 6a3.5 3.5 0 0 0 6 0l-3-6Z"/><path d="M5 7h14"/></svg></span>
+      <h3 style="font-size:14px;margin-top:10px;font-family:var(--font-body)" data-cms="about.safety3.t">Real dispute mediation</h3>
+      <p class="small muted mt-1" data-cms="about.safety3.p">Frozen funds, evidence, message history, and a 5-business-day resolution target.</p>
+    </div>
+    <div class="card card-pad">
+      <span class="stat-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8l-5-5Z"/><path d="M14 3v5h5"/></svg></span>
+      <h3 style="font-size:14px;margin-top:10px;font-family:var(--font-body)" data-cms="about.safety4.t">Audited, accountable staff</h3>
+      <p class="small muted mt-1" data-cms="about.safety4.p">Every admin action on money or accounts is written to an immutable audit log.</p>
+    </div>
+  </div>
 </section>
 
 <!-- Model -->
 <section class="section">
-  <div class="card card-pad" id="abModel"></div>
+  <div class="card card-pad" id="abModel">
+    <div class="row spread" style="align-items:center;flex-wrap:wrap;gap:16px">
+      <div>
+        <h3 data-cms="about.model.t">Simple money rules</h3>
+        <p class="small muted mt-1" style="max-width:520px" data-cms="about.model.p">Workers never pay to exist on Skilvi. We make money when you both succeed.</p>
+      </div>
+      <div class="row" style="gap:10px;flex-wrap:wrap">
+        <span class="tag tag-royal">Profiles &amp; job posts — free</span>
+        <span class="tag tag-royal">10% commission per completed order</span>
+        <span class="tag tag-royal">Verification ₦5,000 once (2 years)</span>
+        <span class="tag tag-royal">Promotion — optional, always labelled</span>
+      </div>
+    </div>
+  </div>
 </section>
 
 <!-- Roadmap -->
 <section class="section">
   <div class="section-head"><h2 data-cms="about.road.h2">Where we're going</h2></div>
-  <div class="grid grid-3" id="abRoad"></div>
+  <div class="grid grid-3" id="abRoad">
+    <div class="step">
+      <h3 style="font-size:14px" data-cms="about.road1.t">Phase 1 · Nigeria (now)</h3>
+      <p data-cms="about.road1.p">One city at a time: Port Harcourt, Lagos, Abuja. Digital + trades supply, escrow, verification, promotions.</p>
+    </div>
+    <div class="step">
+      <h3 style="font-size:14px" data-cms="about.road2.t">Phase 2 · West Africa</h3>
+      <p data-cms="about.road2.p">Ghana, Nigeria, Kenya pilots: local languages, local rails, same trust model. Workers already serving cross-border clients.</p>
+    </div>
+    <div class="step">
+      <h3 style="font-size:14px" data-cms="about.road3.t">Phase 3 · The world</h3>
+      <p data-cms="about.road3.p">International clients hiring African skills with confidence — identity verified, payments protected, reputation portable. Plus the Learn engine: courses that turn interest into billable skill.</p>
+    </div>
+  </div>
 </section>
 
 <!-- Team -->
 <section class="section">
   <div class="section-head"><h2 data-cms="about.team.h2">The team</h2></div>
-  <div class="grid grid-3" id="abTeam"></div>
+  <div class="grid grid-3" id="abTeam">
+    <div class="card card-pad center">
+      <span class="avatar lg a1" style="margin:0 auto">CO</span>
+      <h3 style="font-size:15px;margin-top:10px;font-family:var(--font-body)">Chidi Obi</h3>
+      <div class="tiny" style="color:var(--royal-700);font-weight:600;margin-top:2px">Co-founder · Product</div>
+      <p class="small muted mt-1">Ex-fintech PM. Built payment rails in 3 markets. Obsessed with the escrow state machine.</p>
+    </div>
+    <div class="card card-pad center">
+      <span class="avatar lg a2" style="margin:0 auto">AE</span>
+      <h3 style="font-size:15px;margin-top:10px;font-family:var(--font-body)">Amina Yusuf</h3>
+      <div class="tiny" style="color:var(--royal-700);font-weight:600;margin-top:2px">Co-founder · Engineering</div>
+      <p class="small muted mt-1">Backend lead. PHP, queues, and an unreasonable love of idempotent webhooks.</p>
+    </div>
+    <div class="card card-pad center">
+      <span class="avatar lg a3" style="margin:0 auto">DA</span>
+      <h3 style="font-size:15px;margin-top:10px;font-family:var(--font-body)">Dele Adekunle</h3>
+      <div class="tiny" style="color:var(--royal-700);font-weight:600;margin-top:2px">Head of Trust &amp; Safety</div>
+      <p class="small muted mt-1">Ex-bank fraud analyst. Reads dispute evidence for fun. Writes the escalation policy.</p>
+    </div>
+  </div>
 </section>
 
 <!-- CTA -->
@@ -111,53 +193,5 @@
   </div>
 </footer>
 <script src="assets/js/skilvi.js?v=19"></script>
-<script>
-  document.addEventListener("DOMContentLoaded", () => {
-    const I = SkIconSvg;
-    const C = window.SKILVI_CMS || {};
-    const t = (k, d) => (C[k] != null && String(C[k]) !== "" ? String(C[k]) : d);
-    $("#abEyebrow").innerHTML = I.shield + " " + t("about.eyebrow", "Port Harcourt, Nigeria · est. 2026");
-
-    $("#abWhy").innerHTML = [
-      [I.flag, t("about.why1.t", "Global platforms work against locals"), t("about.why1.p", "USD payouts, delayed transfers, arbitrary account freezes — and competing against the whole world on price. A great PH developer or a great Lagos electrician shouldn't have to fight that fight.")],
-      [I.chat, t("about.why2.t", "Local work runs on WhatsApp"), t("about.why2.p", "No profiles, no reviews, no payment protection. If the tiler disappears after your deposit, there is no one to call. Informal trust is real — but it doesn't scale.")],
-      [I.shield, t("about.why3.t", "Clients can't tell who's real"), t("about.why3.p", "Whether it's a logo or a bathroom, the risk feels the same: you've never met this person. So deals stall, or money moves off-platform, unprotected.")],
-    ].map(([i, title, d]) => '<div class="step"><span class="step-num" style="width:34px;height:34px">' + i + "</span><h3>" + title + "</h3><p>" + d + "</p></div>").join("");
-
-    $("#abSafety").innerHTML = [
-      [I.shield, t("about.safety1.t", "Escrow on every order"), t("about.safety1.p", "Clients pay Skilvi, not the worker. Money is released only when the work is done and approved.")],
-      [I.checkc, t("about.safety2.t", "Verified identities"), t("about.safety2.p", "A one-time check of government ID + photo. The badge says who they are — never what we certified.")],
-      [I.scale, t("about.safety3.t", "Real dispute mediation"), t("about.safety3.p", "Frozen funds, evidence, message history, and a 5-business-day resolution target.")],
-      [I.doc, t("about.safety4.t", "Audited, accountable staff"), t("about.safety4.p", "Every admin action on money or accounts is written to an immutable audit log.")],
-    ].map(([i, title, d]) => '<div class="card card-pad"><span class="stat-icon">' + i + "</span><h3 style=\"font-size:14px;margin-top:10px;font-family:var(--font-body)\">" + title + "</h3><p class=\"small muted mt-1\">" + d + "</p></div>").join("");
-
-    $("#abModel").innerHTML =
-      '<div class="row spread" style="align-items:center;flex-wrap:wrap;gap:16px">' +
-      "<div><h3>" + t("about.model.t", "Simple money rules") + "</h3>" +
-      '<p class="small muted mt-1" style="max-width:520px">' + t("about.model.p", "Workers never pay to exist on Skilvi. We make money when you both succeed.") + "</p></div>" +
-      '<div class="row" style="gap:10px;flex-wrap:wrap">' +
-      '<span class="tag tag-royal">Profiles & job posts — free</span>' +
-      '<span class="tag tag-royal">10% commission per completed order</span>' +
-      '<span class="tag tag-royal">Verification ₦5,000 once (2 years)</span>' +
-      '<span class="tag tag-royal">Promotion — optional, always labelled</span>' +
-      "</div></div>";
-
-    $("#abRoad").innerHTML = [
-      [t("about.road1.t", "Phase 1 · Nigeria (now)"), t("about.road1.p", "One city at a time: Port Harcourt, Lagos, Abuja. Digital + trades supply, escrow, verification, promotions.")],
-      [t("about.road2.t", "Phase 2 · West Africa"), t("about.road2.p", "Ghana, Nigeria, Kenya pilots: local languages, local rails, same trust model. Workers already serving cross-border clients.")],
-      [t("about.road3.t", "Phase 3 · The world"), t("about.road3.p", "International clients hiring African skills with confidence — identity verified, payments protected, reputation portable. Plus the Learn engine: courses that turn interest into billable skill.")],
-    ].map(([title, d]) => '<div class="step"><h3 style="font-size:14px">' + title + "</h3><p>" + d + "</p></div>").join("");
-
-    $("#abTeam").innerHTML = [
-      ["a1", "CO", "Chidi Obi", "Co-founder · Product", "Ex-fintech PM. Built payment rails in 3 markets. Obsessed with the escrow state machine."],
-      ["a2", "AE", "Amina Yusuf", "Co-founder · Engineering", "Backend lead. PHP, queues, and an unreasonable love of idempotent webhooks."],
-      ["a3", "DA", "Dele Adekunle", "Head of Trust & Safety", "Ex-bank fraud analyst. Reads dispute evidence for fun. Writes the escalation policy."],
-    ].map(([tone, init, name, role, bio]) =>
-      '<div class="card card-pad center"><span class="avatar lg ' + tone + '" style="margin:0 auto">' + init + "</span>" +
-      "<h3 style=\"font-size:15px;margin-top:10px;font-family:var(--font-body)\">" + name + "</h3>" +
-      '<div class="tiny" style="color:var(--royal-700);font-weight:600;margin-top:2px">' + role + "</div>" +
-      '<p class="small muted mt-1">' + bio + "</p></div>").join("");
-  });
-</script>
 </body>
 </html>
