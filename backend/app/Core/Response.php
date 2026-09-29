@@ -12,15 +12,11 @@ final class Response
     public static function json(mixed $data, int $status = 200, array $headers = []): never
     {
         $body = json_encode(['ok' => true, 'data' => $data], JSON_UNESCAPED_UNICODE);
-        $etag = '"' . sha1((string) $body) . '"';
-        $method = strtoupper($_SERVER['REQUEST_METHOD'] ?? 'GET');
-        if ($status === 200 && $method === 'GET') {
-            $headers = ['ETag' => $etag, 'Cache-Control' => 'private, no-cache'] + $headers;
-            $inm = trim((string) ($_SERVER['HTTP_IF_NONE_MATCH'] ?? ''));
-            if ($inm !== '' && hash_equals($etag, $inm)) {
-                self::send(304, $headers, '');
-            }
-        }
+        // Viewer fields are per tab token. Never 304 / share one job JSON across accounts.
+        $headers = [
+            'Cache-Control' => 'private, no-store',
+            'Vary'          => 'Authorization, X-Skilvi-Token',
+        ] + $headers;
         self::send($status, ['Content-Type' => 'application/json; charset=utf-8'] + $headers, (string) $body);
     }
 

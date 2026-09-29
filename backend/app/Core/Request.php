@@ -35,8 +35,9 @@ final class Request
             }
         }
 
-        $uid = Session::get('user_id');
-        $this->userId = $uid === null ? null : (int) $uid;
+        $this->userId = str_starts_with($this->path, '/api/')
+            ? Auth::resolvedId()
+            : Session::cookieUserId();
     }
 
     public function q(string $key, string $default = ''): string

@@ -4,9 +4,9 @@ declare(strict_types=1);
 namespace App\Controllers;
 
 use App\AppError;
+use App\Core\Auth;
 use App\Core\Request;
 use App\Core\Response;
-use App\Core\Session;
 use App\Services\DiscoveryService;
 
 final class DiscoveryController
@@ -34,10 +34,7 @@ final class DiscoveryController
 
     public static function propose(Request $req, array $params = []): void
     {
-        $uid = Session::userId();
-        if ($uid === null) {
-            throw new AppError('unauth', 'Log in as a worker to apply.', 401);
-        }
+        $uid = Auth::id();
         Response::json(DiscoveryService::propose(
             $uid,
             $params['id'] ?? '',
@@ -86,28 +83,16 @@ final class DiscoveryController
 
     public static function saved(Request $req, array $params = []): void
     {
-        $uid = Session::userId();
-        if ($uid === null) {
-            throw new AppError('unauth', 'Log in to continue.', 401);
-        }
-        Response::json(DiscoveryService::saved($uid));
+        Response::json(DiscoveryService::saved(Auth::id()));
     }
 
     public static function save(Request $req, array $params = []): void
     {
-        $uid = Session::userId();
-        if ($uid === null) {
-            throw new AppError('unauth', 'Log in to continue.', 401);
-        }
-        Response::json(DiscoveryService::save($uid, $params['id'] ?? '', $req->str('note') ?: null));
+        Response::json(DiscoveryService::save(Auth::id(), $params['id'] ?? '', $req->str('note') ?: null));
     }
 
     public static function unsave(Request $req, array $params = []): void
     {
-        $uid = Session::userId();
-        if ($uid === null) {
-            throw new AppError('unauth', 'Log in to continue.', 401);
-        }
-        Response::json(DiscoveryService::unsave($uid, $params['id'] ?? ''));
+        Response::json(DiscoveryService::unsave(Auth::id(), $params['id'] ?? ''));
     }
 }

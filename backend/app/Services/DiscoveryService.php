@@ -4,8 +4,8 @@ declare(strict_types=1);
 namespace App\Services;
 
 use App\AppError;
+use App\Core\Auth;
 use App\Core\Db;
-use App\Core\Session;
 use App\Models\User;
 
 final class DiscoveryService
@@ -228,8 +228,9 @@ final class DiscoveryService
             'initials' => initials($row['client_name']),
             'since'    => $sinceTs ? date('M Y', $sinceTs) : '',
         ];
-        $me = Session::userId();
+        $me = Auth::resolvedId();
         $card['viewer'] = [
+            'id'        => $me,
             'is_client' => $me !== null && $me === (int) $row['client_id'],
             'is_worker' => $me !== null && self::isWorker($me),
             'proposed'  => $me !== null && (bool) Db::fetch(
@@ -421,7 +422,7 @@ final class DiscoveryService
         foreach ($dist as $star => $n) {
             $card['distribution'][] = ['stars' => $star, 'pct' => (int) round(100 * $n / $sum)];
         }
-        $me = Session::userId();
+        $me = Auth::resolvedId();
         $card['saved'] = $me !== null && (bool) Db::fetch(
             'SELECT worker_id FROM saved_workers WHERE user_id = ? AND worker_id = ?',
             [$me, $uid]

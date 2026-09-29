@@ -101,10 +101,31 @@ final class Session
             && hash_equals($known, $token);
     }
 
-    public static function userId(): ?int
+    /** Cookie identity. HTML page gates only — never API “who am I”. */
+    public static function cookieUserId(): ?int
     {
         $id = self::get('user_id');
         return $id === null ? null : (int) $id;
+    }
+
+    public static function isApiRequest(): bool
+    {
+        $uri = (string) ($_SERVER['REQUEST_URI'] ?? '');
+        $path = (string) (parse_url($uri, PHP_URL_PATH) ?: '');
+        return str_starts_with($path, '/api/');
+    }
+
+    /**
+     * Signed-in user for this request.
+     * /api/* is the tab Bearer only (cookie is shared across tabs).
+     * HTML uses the cookie so PHP can still gate pages.
+     */
+    public static function userId(): ?int
+    {
+        if (self::isApiRequest()) {
+            return Auth::resolvedId();
+        }
+        return self::cookieUserId();
     }
 
     /** Drop the signed-in user without killing CSRF / pending OTP. */

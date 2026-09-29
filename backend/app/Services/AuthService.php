@@ -281,7 +281,6 @@ final class AuthService
         }
         $user = User::find($id);
         if ($user === null) {
-            Session::logout();
             throw new AppError('unauth', 'Log in to continue.', 401);
         }
         return User::public($user);

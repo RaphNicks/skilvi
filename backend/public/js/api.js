@@ -38,6 +38,7 @@
     const init = {
       method: opts.method || (opts.body ? "POST" : "GET"),
       credentials: "same-origin",
+      cache: "no-store",
       headers,
     };
     if (opts.body !== undefined) {

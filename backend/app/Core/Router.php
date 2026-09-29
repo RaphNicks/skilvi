@@ -133,7 +133,7 @@ final class Router
         if (!$row || (string) $row['value'] !== '1') {
             return;
         }
-        $uid = Session::userId();
+        $uid = str_starts_with($path, '/api/') ? Auth::resolvedId() : Session::cookieUserId();
         if ($uid) {
             $u = Db::fetch('SELECT roles FROM users WHERE id = ?', [$uid]);
             if ($u && str_contains((string) $u['roles'], 'admin')) {

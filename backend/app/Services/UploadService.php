@@ -85,7 +85,7 @@ final class UploadService
         if (preg_match('#proof/(\d+)#', $kind, $m)) {
             $uid = (int) $m[1];
         } elseif ($kind === 'avatars') {
-            $uid = (int) (\App\Core\Session::userId() ?? 0);
+            $uid = (int) (\App\Core\Auth::resolvedId() ?? 0);
         }
         $idx[$token] = [
             'abs'     => $abs,

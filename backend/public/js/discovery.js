@@ -155,6 +155,13 @@
     if ($("#jdDesc")) $("#jdDesc").textContent = j.description || "";
 
     const viewer = j.viewer || {};
+    const tok = window.SkApi && window.SkApi.tabToken ? window.SkApi.tabToken() : "";
+    if (!tok) {
+      viewer.id = null;
+      viewer.is_client = false;
+      viewer.is_worker = false;
+      viewer.proposed = false;
+    }
     const props = Array.isArray(j.proposals) ? j.proposals : [];
     const host = $("#jdProps");
     const head = $("#jdPropsHead");

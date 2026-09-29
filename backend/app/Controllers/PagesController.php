@@ -55,16 +55,16 @@ final class PagesController
         }
         $overlay = '<div id="skLoader" aria-hidden="true" role="status" aria-label="Loading"><video muted loop playsinline autoplay preload="auto"><source src="/assets/video/skilvi-loader.webm" type="video/webm"><source src="/assets/video/skilvi-loader.mp4" type="video/mp4"></video></div>';
         $html = preg_replace('/<body([^>]*)>/i', '<body$1>' . $overlay, $html, 1) ?? $html;
-        $extra = '<script src="/js/loader.js?v=6"></script><script src="/js/theme.js?v=2"></script><script src="/js/api.js?v=41"></script><script src="/js/chrome.js?v=44"></script><script src="/js/geo.js?v=1"></script>';
+        $extra = '<script src="/js/loader.js?v=6"></script><script src="/js/theme.js?v=2"></script><script src="/js/api.js?v=42"></script><script src="/js/chrome.js?v=44"></script><script src="/js/geo.js?v=1"></script>';
         $pageScripts = [
-            'index.html'             => '/js/discovery.js?v=37',
-            'jobs.html'              => '/js/discovery.js?v=37',
-            'search.html'            => '/js/discovery.js?v=37',
-            'category.html'          => '/js/discovery.js?v=37',
-            'job-detail.html'        => '/js/discovery.js?v=37',
-            'worker-profile.html'    => '/js/discovery.js?v=37',
-            'service-detail.html'    => '/js/discovery.js?v=37',
-            'saved.html'             => '/js/discovery.js?v=37',
+            'index.html'             => '/js/discovery.js?v=38',
+            'jobs.html'              => '/js/discovery.js?v=38',
+            'search.html'            => '/js/discovery.js?v=38',
+            'category.html'          => '/js/discovery.js?v=38',
+            'job-detail.html'        => '/js/discovery.js?v=38',
+            'worker-profile.html'    => '/js/discovery.js?v=38',
+            'service-detail.html'    => '/js/discovery.js?v=38',
+            'saved.html'             => '/js/discovery.js?v=38',
             'account-settings.html'  => '/js/account.js?v=34',
             'post-job.html'          => '/js/client.js?v=32',
             'client-dashboard.html'  => '/js/client.js?v=37',
