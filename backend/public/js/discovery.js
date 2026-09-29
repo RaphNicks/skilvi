@@ -453,6 +453,9 @@
     }
     const wgrid = $(".lp-worker-grid");
     if (wgrid && data.workers) {
+      if (!data.workers.length) {
+        wgrid.innerHTML = '<p class="tiny faint">No worker profiles to show yet.</p>';
+      } else
       wgrid.innerHTML = data.workers.map((w) =>
         '<article class="lp-card">' +
         '<div class="lp-w-head"><span class="lp-w-ava ' + esc(w.tone) + '">' + esc(w.init) + "</span><div>" +
@@ -463,6 +466,22 @@
         '<a class="lp-btn lp-btn-outline lp-btn-sm lp-btn-block" href="worker-profile.html?id=' + esc(w.id) + '">View profile</a></article>'
       ).join("");
     }
+    const st = data.stats || {};
+    if ($("#lpStatPros")) $("#lpStatPros").textContent = String(st.professionals_label != null ? st.professionals_label : (st.professionals || 0));
+    if ($("#lpStatGmv")) $("#lpStatGmv").textContent = st.gmv_label || "₦0";
+    if ($("#lpStatDone")) $("#lpStatDone").textContent = String(st.jobs_done_label != null ? st.jobs_done_label : (st.jobs_done || 0));
+    (data.categories || []).forEach((c) => {
+      const el = document.querySelector('[data-cat-count="' + c.slug + '"]');
+      if (!el) return;
+      const n = Number(c.workers) || 0;
+      el.textContent = n + " professional" + (n === 1 ? "" : "s");
+    });
+    (data.skills || []).forEach((s) => {
+      const el = document.querySelector('[data-skill-jobs="' + s.name + '"]');
+      if (!el) return;
+      const n = Number(s.jobs) || 0;
+      el.textContent = n + " job" + (n === 1 ? "" : "s");
+    });
   }
 
   document.addEventListener("DOMContentLoaded", () => {

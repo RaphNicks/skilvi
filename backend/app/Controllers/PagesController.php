@@ -57,14 +57,14 @@ final class PagesController
         $html = preg_replace('/<body([^>]*)>/i', '<body$1>' . $overlay, $html, 1) ?? $html;
         $extra = '<script src="/js/loader.js?v=6"></script><script src="/js/theme.js?v=2"></script><script src="/js/api.js?v=41"></script><script src="/js/chrome.js?v=44"></script><script src="/js/geo.js?v=1"></script>';
         $pageScripts = [
-            'index.html'             => '/js/discovery.js?v=35',
-            'jobs.html'              => '/js/discovery.js?v=35',
-            'search.html'            => '/js/discovery.js?v=35',
-            'category.html'          => '/js/discovery.js?v=35',
-            'job-detail.html'        => '/js/discovery.js?v=35',
-            'worker-profile.html'    => '/js/discovery.js?v=35',
-            'service-detail.html'    => '/js/discovery.js?v=35',
-            'saved.html'             => '/js/discovery.js?v=35',
+            'index.html'             => '/js/discovery.js?v=36',
+            'jobs.html'              => '/js/discovery.js?v=36',
+            'search.html'            => '/js/discovery.js?v=36',
+            'category.html'          => '/js/discovery.js?v=36',
+            'job-detail.html'        => '/js/discovery.js?v=36',
+            'worker-profile.html'    => '/js/discovery.js?v=36',
+            'service-detail.html'    => '/js/discovery.js?v=36',
+            'saved.html'             => '/js/discovery.js?v=36',
             'account-settings.html'  => '/js/account.js?v=34',
             'post-job.html'          => '/js/client.js?v=32',
             'client-dashboard.html'  => '/js/client.js?v=37',

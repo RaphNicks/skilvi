@@ -12,18 +12,32 @@ final class DiscoveryService
 {
     public static function landing(): array
     {
+        $verified = (int) (Db::fetch(
+            "SELECT COUNT(*) c FROM users u
+             WHERE u.status = 'active' AND u.roles LIKE '%worker%' AND " . TrustService::approvedExistsSql('u.id')
+        )['c'] ?? 0);
+        $gmv = (int) (Db::fetch(
+            "SELECT COALESCE(SUM(amount_kobo),0) s FROM orders WHERE status = 'released'"
+        )['s'] ?? 0);
+        $done = (int) (Db::fetch(
+            "SELECT COUNT(*) c FROM orders WHERE status = 'released'"
+        )['c'] ?? 0);
         $stats = [
-            'professionals' => (int) (self::setting('stats_professionals') ?: 12000),
-            'gmv_naira'     => (int) (self::setting('stats_gmv_naira') ?: 4200000000),
-            'jobs_done'     => (int) (self::setting('stats_jobs_done') ?: 8500),
-            'live_workers'  => (int) Db::fetch("SELECT COUNT(*) c FROM users WHERE roles LIKE '%worker%' AND status='active'")['c'],
-            'open_jobs'     => (int) Db::fetch("SELECT COUNT(*) c FROM jobs WHERE status='open'")['c'],
+            'professionals'       => $verified,
+            'professionals_label' => $verified === 1 ? '1' : (string) $verified,
+            'gmv_kobo'            => $gmv,
+            'gmv_label'           => ngn_fmt($gmv),
+            'jobs_done'           => $done,
+            'jobs_done_label'     => (string) $done,
+            'live_workers'        => (int) (Db::fetch("SELECT COUNT(*) c FROM users WHERE roles LIKE '%worker%' AND status='active'")['c'] ?? 0),
+            'open_jobs'           => (int) (Db::fetch("SELECT COUNT(*) c FROM jobs WHERE status='open'")['c'] ?? 0),
         ];
         return [
             'stats'      => $stats,
             'jobs'       => self::jobs(['per' => 6, 'page' => 1])['items'],
             'workers'    => self::workers(['per' => 3, 'page' => 1, 'verified' => '1'])['items'],
             'categories' => self::categories(),
+            'skills'     => self::landingSkills(),
         ];
     }
 
@@ -33,12 +47,14 @@ final class DiscoveryService
         $out = [];
         foreach ($parents as $p) {
             $subs = Db::fetchAll('SELECT id, slug, name FROM categories WHERE parent_id = ? ORDER BY sort, id', [$p['id']]);
-            $workerCount = (int) Db::fetch(
-                "SELECT COUNT(*) c FROM profiles pr
+            $workerCount = (int) (Db::fetch(
+                "SELECT COUNT(*) c FROM users u
+                 JOIN profiles pr ON pr.user_id = u.id
                  JOIN categories c ON c.name = pr.skill
-                 WHERE c.parent_id = ? OR c.id = ?",
+                 WHERE u.status = 'active' AND u.roles LIKE '%worker%'
+                   AND (c.parent_id = ? OR c.id = ?)",
                 [$p['id'], $p['id']]
-            )['c'];
+            )['c'] ?? 0);
             $out[] = [
                 'id'      => (int) $p['id'],
                 'slug'    => $p['slug'],
@@ -51,6 +67,48 @@ final class DiscoveryService
                     'id' => (int) $s['id'], 'slug' => $s['slug'], 'name' => $s['name'],
                 ], $subs),
             ];
+        }
+        return $out;
+    }
+
+    /** @return list<array{name:string,jobs:int}> */
+    public static function landingSkills(): array
+    {
+        $names = [
+            'Web Development',
+            'UI/UX Design',
+            'Graphic Design',
+            'Digital Marketing',
+            'Plumbing',
+            'Electrical',
+            'Carpentry',
+            'Video Editing',
+        ];
+        $alias = [
+            'UI/UX Design'     => ['UI/UX Design', 'UI/UX', 'uiux'],
+            'Video Editing'    => ['Video Editing', 'Video & Motion', 'video'],
+            'Digital Marketing'=> ['Digital Marketing', 'Marketing'],
+            'Carpentry'        => ['Carpentry', 'Carpenter'],
+            'Electrical'       => ['Electrical', 'Electrician'],
+        ];
+        $out = [];
+        foreach ($names as $name) {
+            $needles = $alias[$name] ?? [$name];
+            $ors = [];
+            $bind = [];
+            foreach ($needles as $n) {
+                $ors[] = 'c.name = ? OR c.slug = ?';
+                $bind[] = $n;
+                $bind[] = $n;
+            }
+            $sql = implode(' OR ', $ors);
+            $jobs = (int) (Db::fetch(
+                "SELECT COUNT(*) c FROM jobs j
+                 LEFT JOIN categories c ON c.id = j.category_id
+                 WHERE j.status = 'open' AND ($sql)",
+                $bind
+            )['c'] ?? 0);
+            $out[] = ['name' => $name, 'jobs' => $jobs];
         }
         return $out;
     }
