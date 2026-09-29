@@ -47,14 +47,7 @@ final class DiscoveryService
         $out = [];
         foreach ($parents as $p) {
             $subs = Db::fetchAll('SELECT id, slug, name FROM categories WHERE parent_id = ? ORDER BY sort, id', [$p['id']]);
-            $workerCount = (int) (Db::fetch(
-                "SELECT COUNT(*) c FROM users u
-                 JOIN profiles pr ON pr.user_id = u.id
-                 JOIN categories c ON c.name = pr.skill
-                 WHERE u.status = 'active' AND u.roles LIKE '%worker%'
-                   AND (c.parent_id = ? OR c.id = ?)",
-                [$p['id'], $p['id']]
-            )['c'] ?? 0);
+            $workerCount = self::countWorkersInCategory((string) $p['slug']);
             $out[] = [
                 'id'      => (int) $p['id'],
                 'slug'    => $p['slug'],
@@ -144,6 +137,7 @@ final class DiscoveryService
                 'active'  => $skill,
             ],
             'workers' => $workers['items'],
+            'total'   => $workers['total'],
         ];
     }
 
@@ -329,13 +323,12 @@ final class DiscoveryService
             $where[] = 'p.work_mode = ?';
             $bind[] = $f['mode'];
         }
-        if (!empty($f['skill'])) {
-            $where[] = 'p.skill = ?';
-            $bind[] = $f['skill'];
+        $catKey = trim((string) ($f['skill'] ?? ''));
+        if ($catKey === '') {
+            $catKey = trim((string) ($f['parent'] ?? $f['category'] ?? ''));
         }
-        if (!empty($f['parent'])) {
-            $where[] = 'c.parent_id = (SELECT id FROM categories WHERE slug = ?)';
-            $bind[] = $f['parent'];
+        if ($catKey !== '') {
+            $where[] = self::categoryMatchSql($catKey, $bind);
         }
         if (!empty($f['verified'])) {
             $where[] = TrustService::approvedExistsSql('u.id');
@@ -623,6 +616,67 @@ final class DiscoveryService
         }
         $uid = (int) ($row['user_id'] ?? $row['id'] ?? 0);
         return TrustService::isApproved($uid);
+    }
+
+    private static function countWorkersInCategory(string $slugOrName): int
+    {
+        $bind = [];
+        $match = self::categoryMatchSql($slugOrName, $bind);
+        return (int) (Db::fetch(
+            "SELECT COUNT(*) c FROM users u
+             JOIN profiles p ON p.user_id = u.id
+             WHERE u.status = 'active' AND u.roles LIKE '%worker%' AND $match",
+            $bind
+        )['c'] ?? 0);
+    }
+
+    /** @param list<mixed> $bind */
+    private static function categoryMatchSql(string $slugOrName, array &$bind): string
+    {
+        $cat = Db::fetch(
+            'SELECT id, name, slug, parent_id FROM categories WHERE slug = ? OR name = ? LIMIT 1',
+            [$slugOrName, $slugOrName]
+        );
+        if ($cat === null) {
+            $bind[] = mb_strtolower($slugOrName);
+            return 'LOWER(TRIM(IFNULL(p.skill, \'\'))) = ?';
+        }
+        $ids = [(int) $cat['id']];
+        if ($cat['parent_id'] === null || $cat['parent_id'] === '' || (int) $cat['parent_id'] === 0) {
+            foreach (Db::fetchAll('SELECT id FROM categories WHERE parent_id = ?', [$cat['id']]) as $r) {
+                $ids[] = (int) $r['id'];
+            }
+        }
+        $inIds = implode(',', array_fill(0, count($ids), '?'));
+        $names = array_column(
+            Db::fetchAll('SELECT name FROM categories WHERE id IN (' . $inIds . ')', $ids),
+            'name'
+        );
+        $aliases = [
+            'Web Development' => ['App Development'],
+            'Graphic Design'  => ['Graphic Design & Branding'],
+            'UI/UX Design'    => ['UI/UX', 'UI / UX'],
+        ];
+        foreach (array_keys($aliases) as $canon) {
+            if (in_array($canon, $names, true)) {
+                $names = array_merge($names, $aliases[$canon]);
+            }
+        }
+        $names[] = (string) $cat['name'];
+        $names = array_values(array_unique(array_filter(array_map('trim', $names))));
+        $low = array_map(static fn ($n) => mb_strtolower($n), $names);
+        $namePh = implode(',', array_fill(0, count($low), '?'));
+        foreach ($low as $n) {
+            $bind[] = $n;
+        }
+        foreach ($ids as $id) {
+            $bind[] = $id;
+        }
+        return '(LOWER(TRIM(IFNULL(p.skill, \'\'))) IN (' . $namePh . ')
+            OR EXISTS (
+                SELECT 1 FROM services s
+                WHERE s.worker_id = u.id AND s.category_id IN (' . $inIds . ')
+            ))';
     }
 
     private static function isWorker(int $id): bool

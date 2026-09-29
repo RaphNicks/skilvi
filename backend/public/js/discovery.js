@@ -81,24 +81,43 @@
   }
 
   async function hydrateCategory() {
-    const slug = params.get("c") || params.get("skill") || "trades";
+    const slug = params.get("c") || params.get("skill") || "";
+    if (!slug) {
+      location.replace("search.html");
+      return;
+    }
     const data = await api("/api/categories/" + encodeURIComponent(slug));
     const c = data.category;
+    const list = data.workers || [];
+    const total = Number(data.total != null ? data.total : (c && c.workers) || list.length) || 0;
+    document.title = (c.name || "Category") + " — Skilvi";
+    if ($("#catCrumbName")) $("#catCrumbName").textContent = c.name || "Category";
     if ($("#catHead")) {
       $("#catHead").innerHTML =
         '<div class="row" style="gap:16px; align-items:center">' +
-        '<span class="cat-ico" style="width:52px;height:52px">' + (I[c.icon] || I.wrench || "") + "</span>" +
+        '<span class="cat-ico" style="width:52px;height:52px">' + (I[c.icon] || I.grid || I.wrench || "") + "</span>" +
         '<div class="grow"><h1 style="font-size:24px">' + esc(c.name) + "</h1>" +
         '<p class="small muted mt-1">' + esc(c.blurb || "") + "</p></div>" +
-        '<div class="stack" style="gap:8px; min-width:150px"><span class="tag tag-royal">' + c.workers + " workers</span>" +
+        '<div class="stack" style="gap:8px; min-width:150px"><span class="tag tag-royal">' + total + " worker" + (total === 1 ? "" : "s") + "</span>" +
         (c.mode ? '<span class="tag">' + esc(c.mode) + "</span>" : "") + "</div></div>";
     }
     if ($("#subChips")) {
-      $("#subChips").innerHTML = (c.subs || []).map((s) =>
-        '<a class="chip' + (c.active === s.name ? " active" : "") + '" href="category.html?c=' + encodeURIComponent(s.slug) + '">' + esc(s.name) + "</a>"
-      ).join("");
+      const parentSlug = c.slug;
+      const chips = [];
+      if (c.subs && c.subs.length) {
+        chips.push('<a class="chip' + (c.active ? "" : " active") + '" href="category.html?c=' + encodeURIComponent(parentSlug) + '">All</a>');
+        c.subs.forEach((s) => {
+          chips.push('<a class="chip' + (c.active === s.name ? " active" : "") + '" href="category.html?c=' + encodeURIComponent(s.slug) + '">' + esc(s.name) + "</a>");
+        });
+      }
+      $("#subChips").innerHTML = chips.join("");
     }
-    if ($("#catResults")) $("#catResults").innerHTML = data.workers.map(resultItem).join("") || empty("No workers in this category yet.");
+    if ($("#catCount")) $("#catCount").textContent = String(total);
+    if ($("#catResults")) {
+      $("#catResults").innerHTML = list.map(resultItem).join("") || empty("No workers in this category yet.");
+    }
+    const pager = $("#catPager");
+    if (pager) pager.hidden = true;
   }
 
   function rateLine(rating, reviews, orders) {

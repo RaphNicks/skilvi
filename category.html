@@ -8,7 +8,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
   <link rel="icon" href="assets/img/skilvi-favicon.png?v=2" type="image/png">
   <link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png?v=2">
-  <title>Trades &amp; Home Services — Skilvi</title>
+  <title>Categories — Skilvi</title>
   <meta name="description" content="Browse Skilvi workers by category: web development, design, digital marketing, plumbing, house painting, bookkeeping, and more.">
   <link rel="stylesheet" href="assets/css/skilvi.css?v=21">
 </head>
@@ -44,35 +44,29 @@
 </header>
 
 <main class="container page-pad">
-  <p class="small muted"><a href="search.html">Explore</a> / Trades &amp; Home Services</p>
+  <p class="small muted" id="catCrumb"><a href="search.html">Explore</a> / <span id="catCrumbName">Categories</span></p>
 
-  <!-- Category header -->
-  <div class="card card-pad mt-1 mb-3" id="catHead"><div class="row" style="gap:16px; align-items:center"><span class="cat-ico" style="width:52px;height:52px"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a4.5 4.5 0 0 0-6 5.6L3 17.6V21h3.4l5.7-5.7a4.5 4.5 0 0 0 5.6-6L14.5 12l-2.5-2.5 2.7-3.2Z"/></svg></span><div class="grow"><h1 style="font-size:24px">Trades &amp; Home Services</h1><p class="small muted mt-1">Plumbing, electrical, tiling, painting, AC, generator power and more. All on-site workers show their service area before you hire. Travel costs are stated up front.</p></div><div class="stack" style="gap:8px; min-width:150px"><span class="tag tag-royal">289 workers</span><span class="tag">Mostly on-site</span></div></div></div>
+  <div class="card card-pad mt-1 mb-3" id="catHead">
+    <div class="row" style="gap:16px; align-items:center">
+      <span class="cat-ico" style="width:52px;height:52px"></span>
+      <div class="grow"><h1 style="font-size:24px">Categories</h1><p class="small muted mt-1">Pick a trade to see who is available.</p></div>
+      <div class="stack" style="gap:8px; min-width:150px"><span class="tag tag-royal">0 workers</span></div>
+    </div>
+  </div>
 
-  <!-- Sub-categories -->
-  <div class="row mb-3" id="subChips" style="gap:8px; flex-wrap:wrap"><a class="chip active" href="category.html">Plumbing</a>
-    <a class="chip" href="category.html">Electrical</a>
-    <a class="chip" href="category.html">Tiling & Masonry</a>
-    <a class="chip" href="category.html">Painting</a>
-    <a class="chip" href="category.html">AC Installation & Repair</a>
-    <a class="chip" href="category.html">Generator & Power</a>
-    <a class="chip" href="category.html">Appliance Repair</a>
-    <a class="chip" href="category.html">Locksmith</a></div>
+  <div class="row mb-3" id="subChips" style="gap:8px; flex-wrap:wrap"></div>
 
   <div class="results-bar">
-    <span class="rc"><b>6</b> workers in this category</span>
+    <span class="rc"><b id="catCount">0</b> workers in this category</span>
     <span style="flex:1"></span>
-    <select class="select" style="width:auto">
-      <option>Relevance</option><option>Top rated</option><option>Lowest price</option><option>Newest</option>
+    <select class="select" id="catSort" style="width:auto">
+      <option value="">Relevance</option><option value="orders">Most orders</option><option value="newest">Newest</option>
     </select>
   </div>
 
-  <div class="stack" id="catResults" style="gap:12px"><p class="tiny faint">No workers in this category yet.</p></div>
+  <div class="stack" id="catResults" style="gap:12px"></div>
 
-  <div class="pagination">
-    <button class="active" type="button">1</button><button type="button">2</button>
-    <button type="button" data-toast="More results coming soon">Next →</button>
-  </div>
+  <div class="pagination" id="catPager" hidden></div>
 </main>
 
 <footer class="footer">
