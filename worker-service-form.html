@@ -84,12 +84,49 @@
               </div>
             </div>
             <div class="field mb-2" id="travelField" style="display:none">
-              <label>Service area (states you travel to)</label>
-              <div class="row-wrap" style="gap:8px" id="areaChips"><button type="button" class="chip active" style="font-size:12px;padding:4px 10px">Rivers</button>
-              <button type="button" class="chip" style="font-size:12px;padding:4px 10px">Lagos</button>
-              <button type="button" class="chip" style="font-size:12px;padding:4px 10px">Abia</button>
-              <button type="button" class="chip" style="font-size:12px;padding:4px 10px">FCT</button></div>
-              <span class="hint">Shown to clients before they hire. Required for on-site work.</span>
+              <label for="areaState">Service area (states you travel to) <span style="color:var(--red)">*</span></label>
+              <select class="select" id="areaState" name="service_areas">
+                <option value="">Select a state</option>
+                <option>Abia</option>
+                <option>Adamawa</option>
+                <option>Akwa Ibom</option>
+                <option>Anambra</option>
+                <option>Bauchi</option>
+                <option>Bayelsa</option>
+                <option>Benue</option>
+                <option>Borno</option>
+                <option>Cross River</option>
+                <option>Delta</option>
+                <option>Ebonyi</option>
+                <option>Edo</option>
+                <option>Ekiti</option>
+                <option>Enugu</option>
+                <option>FCT</option>
+                <option>Gombe</option>
+                <option>Imo</option>
+                <option>Jigawa</option>
+                <option>Kaduna</option>
+                <option>Kano</option>
+                <option>Katsina</option>
+                <option>Kebbi</option>
+                <option>Kogi</option>
+                <option>Kwara</option>
+                <option>Lagos</option>
+                <option>Nasarawa</option>
+                <option>Niger</option>
+                <option>Ogun</option>
+                <option>Ondo</option>
+                <option>Osun</option>
+                <option>Oyo</option>
+                <option>Plateau</option>
+                <option>Rivers</option>
+                <option>Sokoto</option>
+                <option>Taraba</option>
+                <option>Yobe</option>
+                <option>Zamfara</option>
+              </select>
+              <div class="row-wrap mt-1" id="areaPicked" style="gap:6px"></div>
+              <span class="hint">Pick every state you will travel to. Shown to clients before they hire. Required for on-site work.</span>
             </div>
             <div class="field">
               <label>Description <span style="color:var(--red)">*</span></label>

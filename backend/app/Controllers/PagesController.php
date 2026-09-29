@@ -75,7 +75,7 @@ final class PagesController
             'worker-dashboard.html'  => '/js/worker.js?v=33',
             'worker-wallet.html'     => '/js/worker.js?v=33',
             'worker-services.html'   => '/js/worker.js?v=34',
-            'worker-service-form.html' => '/js/worker.js?v=33',
+            'worker-service-form.html' => '/js/worker.js?v=34',
             'checkout.html'          => '/js/pay.js?v=38',
             'payment-success.html'   => '/js/pay.js?v=38',
             'verification.html'      => '/js/pay.js?v=38',

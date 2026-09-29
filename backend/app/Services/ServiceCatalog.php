@@ -36,16 +36,17 @@ final class ServiceCatalog
 
     public static function create(int $workerId, array $in, bool $draft = false): array
     {
-        $parsed = self::parse($in);
+        self::ensureAreas();
+        $parsed = self::parse($in, null, $draft);
         $now = now_iso();
         $status = $draft ? 'draft' : 'live';
         $code = self::nextCode($workerId);
         Db::run(
-            'INSERT INTO services (worker_id, title, description, price_kobo, status, created_at, updated_at, category_id, packages_json, public_code, work_mode)
-             VALUES (?,?,?,?,?,?,?,?,?,?,?)',
+            'INSERT INTO services (worker_id, title, description, price_kobo, status, created_at, updated_at, category_id, packages_json, public_code, work_mode, service_areas)
+             VALUES (?,?,?,?,?,?,?,?,?,?,?,?)',
             [
                 $workerId, $parsed['title'], $parsed['description'], $parsed['price_kobo'], $status,
-                $now, $now, $parsed['category_id'], $parsed['packages_json'], $code, $parsed['work_mode'],
+                $now, $now, $parsed['category_id'], $parsed['packages_json'], $code, $parsed['work_mode'], $parsed['service_areas'],
             ]
         );
         return self::getOwned($workerId, $code);
@@ -64,16 +65,18 @@ final class ServiceCatalog
             Db::run('UPDATE services SET status=?, updated_at=? WHERE id=?', [$in['status'], now_iso(), $cur['id']]);
             return self::getOwned($workerId, (string) $cur['id']);
         }
-        $parsed = self::parse($in, $cur);
+        self::ensureAreas();
+        $asDraft = array_key_exists('draft', $in) ? !empty($in['draft']) : false;
+        $parsed = self::parse($in, $cur, $asDraft);
         $status = $cur['status'];
         if (array_key_exists('draft', $in)) {
-            $status = !empty($in['draft']) ? 'draft' : 'live';
+            $status = $asDraft ? 'draft' : 'live';
         }
         Db::run(
-            'UPDATE services SET title=?, description=?, price_kobo=?, category_id=?, packages_json=?, work_mode=?, status=?, updated_at=? WHERE id=?',
+            'UPDATE services SET title=?, description=?, price_kobo=?, category_id=?, packages_json=?, work_mode=?, service_areas=?, status=?, updated_at=? WHERE id=?',
             [
                 $parsed['title'], $parsed['description'], $parsed['price_kobo'], $parsed['category_id'],
-                $parsed['packages_json'], $parsed['work_mode'], $status, now_iso(), $cur['id'],
+                $parsed['packages_json'], $parsed['work_mode'], $parsed['service_areas'], $status, now_iso(), $cur['id'],
             ]
         );
         return self::getOwned($workerId, (string) $cur['id']);
@@ -94,7 +97,7 @@ final class ServiceCatalog
     }
 
     /** @param array<string,mixed> $in */
-    private static function parse(array $in, ?array $cur = null): array
+    private static function parse(array $in, ?array $cur = null, bool $draft = false): array
     {
         $title = trim((string) ($in['title'] ?? $cur['title'] ?? ''));
         $desc = trim((string) ($in['description'] ?? $cur['description'] ?? ''));
@@ -139,6 +142,28 @@ final class ServiceCatalog
         if (!$norm) {
             $fields['packages'] = 'Add at least one package of ₦500 or more.';
         }
+        $allowed = self::ngStates();
+        $rawAreas = $in['service_areas'] ?? null;
+        if (is_string($rawAreas)) {
+            $rawAreas = array_map('trim', explode(',', $rawAreas));
+        }
+        if (!is_array($rawAreas)) {
+            $prev = json_decode((string) ($cur['service_areas'] ?? ''), true);
+            $rawAreas = is_array($prev) ? $prev : [];
+        }
+        $areas = [];
+        foreach ($rawAreas as $st) {
+            $st = trim((string) $st);
+            if ($st !== '' && in_array($st, $allowed, true) && !in_array($st, $areas, true)) {
+                $areas[] = $st;
+            }
+        }
+        if (!$draft && ($mode === 'on-site' || $mode === 'hybrid') && $areas === []) {
+            $fields['service_areas'] = 'Pick the states you travel to.';
+        }
+        if ($mode === 'remote') {
+            $areas = [];
+        }
         if ($fields) {
             throw new AppError('invalid', 'Please fix the highlighted fields.', 422, $fields);
         }
@@ -157,10 +182,11 @@ final class ServiceCatalog
         return [
             'title'         => $title,
             'description'   => $desc,
-            'work_mode'     => $mode,
-            'category_id'   => $catRow['id'] ?? ($cur['category_id'] ?? null),
-            'packages_json' => json_encode($norm),
-            'price_kobo'    => $floor,
+            'work_mode'      => $mode,
+            'category_id'    => $catRow['id'] ?? ($cur['category_id'] ?? null),
+            'packages_json'  => json_encode($norm),
+            'price_kobo'     => $floor,
+            'service_areas'  => json_encode($areas),
         ];
     }
 
@@ -174,11 +200,38 @@ final class ServiceCatalog
             'description' => $s['description'],
             'category'    => $s['category'] ?? '',
             'mode'        => $s['work_mode'] ?: 'remote',
+            'service_areas' => json_decode((string) ($s['service_areas'] ?? ''), true) ?: [],
             'status'      => $s['status'],
             'live'        => $s['status'] === 'live',
             'from_label'  => ngn_fmt((int) $s['price_kobo']),
             'packages'    => $packages,
         ];
+    }
+
+    /** @return list<string> */
+    public static function ngStates(): array
+    {
+        return [
+            'Abia', 'Adamawa', 'Akwa Ibom', 'Anambra', 'Bauchi', 'Bayelsa', 'Benue', 'Borno',
+            'Cross River', 'Delta', 'Ebonyi', 'Edo', 'Ekiti', 'Enugu', 'FCT', 'Gombe', 'Imo',
+            'Jigawa', 'Kaduna', 'Kano', 'Katsina', 'Kebbi', 'Kogi', 'Kwara', 'Lagos', 'Nasarawa',
+            'Niger', 'Ogun', 'Ondo', 'Osun', 'Oyo', 'Plateau', 'Rivers', 'Sokoto', 'Taraba',
+            'Yobe', 'Zamfara',
+        ];
+    }
+
+    private static function ensureAreas(): void
+    {
+        static $done = false;
+        if ($done) {
+            return;
+        }
+        $done = true;
+        try {
+            $col = Db::isMysql() ? 'VARCHAR(800) NULL' : 'TEXT';
+            Db::exec('ALTER TABLE services ADD COLUMN service_areas ' . $col);
+        } catch (\Throwable $e) {
+        }
     }
 
     private static function nextCode(int $workerId): string

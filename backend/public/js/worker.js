@@ -389,6 +389,7 @@
         }
         const mode = document.querySelector('input[name="work_mode"][value="' + (s.mode || "remote") + '"]');
         if (mode) mode.checked = true;
+        renderAreas(s.service_areas || []);
         const pkgs = s.packages || [];
         const rows = $$(".pkg-row");
         pkgs.forEach((p, i) => {
@@ -413,6 +414,7 @@
         description: (desc && desc.value) || "",
         work_mode: modeValue(),
         packages: readPackages(),
+        service_areas: pickedAreas(),
         draft: !!draft,
       };
       busy(btn, true);
@@ -491,7 +493,16 @@
       });
     }
     wireRm();
-    $$("#areaChips .chip").forEach((c) => c.addEventListener("click", () => c.classList.toggle("active")));
+    const areaSel = $("#areaState");
+    if (areaSel) {
+      areaSel.addEventListener("change", () => {
+        const v = areaSel.value;
+        if (!v) return;
+        const cur = pickedAreas();
+        if (!cur.includes(v)) renderAreas(cur.concat([v]));
+        areaSel.value = "";
+      });
+    }
     const quoteBtn = $("#customQuote") || form.querySelector(".btn-ghost");
     if (quoteBtn && /custom quote/i.test(quoteBtn.textContent || "")) {
       quoteBtn.removeAttribute("data-toast");
@@ -512,6 +523,26 @@
     };
     $$('input[name="work_mode"]').forEach((m) => m.addEventListener("change", syncTravel));
     syncTravel();
+  }
+
+  function pickedAreas() {
+    return $$("#areaPicked [data-state]").map((el) => el.getAttribute("data-state")).filter(Boolean);
+  }
+
+  function renderAreas(list) {
+    const box = $("#areaPicked");
+    if (!box) return;
+    const esc = (window.SkApi && window.SkApi.esc) ? window.SkApi.esc : (s) => String(s)
+      .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+    box.innerHTML = (list || []).map((s) =>
+      '<button type="button" class="tag" data-state="' + esc(s) + '">' + esc(s) +
+      ' <span aria-hidden="true">×</span></button>'
+    ).join("");
+    box.querySelectorAll("button").forEach((b) => {
+      b.addEventListener("click", () => {
+        renderAreas(pickedAreas().filter((x) => x !== b.getAttribute("data-state")));
+      });
+    });
   }
 
   document.addEventListener("DOMContentLoaded", () => {

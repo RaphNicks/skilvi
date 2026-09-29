@@ -66,6 +66,7 @@ final class Schema
                 'packages_json TEXT',
                 'public_code TEXT',
                 'work_mode TEXT',
+                'service_areas VARCHAR(800)',
             ],
             'categories' => [
                 'parent_id INTEGER',
