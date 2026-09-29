@@ -193,8 +193,7 @@ final class CmsService
             $html = preg_replace(
                 '/(<(?:img|video|source)\b[^>]*data-cms="' . $qk . '"[^>]*\ssrc=")[^"]*(")/i',
                 '$1' . $url . '$2',
-                $html,
-                1
+                $html
             ) ?? $html;
             return $html;
         }

@@ -152,6 +152,8 @@ final class CmsSchema
                     self::f('about.team.h2', 'Team heading', 'text', 'The team'),
                     self::f('about.team1.name', 'Founder name', 'text', 'Raphael Zidougha'),
                     self::f('about.team1.role', 'Founder role (card)', 'text', 'Founder'),
+                    self::f('about.team1.craft', 'Founder craft', 'text', 'Fullstack Web Developer'),
+                    self::media('about.team1.photo', 'Founder photo', 'image', '/assets/img/raphael-zidougha.jpg', ['assets/img/raphael-zidougha.jpg']),
                     self::f('about.team1.blurb', 'Founder card line', 'textarea', 'Building Skilvi to help skills become real opportunities.'),
                     self::f('about.team1.role_long', 'Founder role (panel)', 'text', 'Founder, Skilvi'),
                     self::f('about.team1.p1', 'Founder note 1', 'textarea', 'I started Skilvi because I kept seeing the same problem: people can be genuinely good at something and still struggle to find people willing to trust them enough to pay for it.'),

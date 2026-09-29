@@ -217,6 +217,7 @@ button.chip.active:hover, a.chip.active:hover { color: #fff; }
 }
 .avatar.sm { width: 32px; height: 32px; font-size: 12px; }
 .avatar.lg { width: 72px; height: 72px; font-size: 24px; }
+img.avatar { object-fit: cover; object-position: center 18%; padding: 0; }
 .a1 { background: var(--royal-100); color: var(--royal-800); }
 .a2 { background: #E3EBE7; color: #33523F; }
 .a3 { background: #EFE7DC; color: #6B4E2E; }
@@ -880,6 +881,8 @@ html[data-theme="dark"] .modal-backdrop { background: rgba(7, 9, 16, 0.62); }
 }
 .team-sheet .modal-head { align-items: flex-start; }
 .team-sheet .modal-head h3 { font-size: 16px; }
+.team-sheet-who { display: flex; align-items: flex-start; gap: 12px; }
+.team-sheet-who .avatar { flex: none; }
 .team-sheet .modal-body { overflow: auto; flex: 1; }
 .team-sheet .modal-body p + p { margin-top: 12px; }
 .team-sheet-aside {
