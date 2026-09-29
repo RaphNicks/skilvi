@@ -89,6 +89,11 @@
   }
 
   async function users() {
+    const pre = new URLSearchParams(location.search).get("status");
+    if (pre && $("#uState")) {
+      const hit = Array.from($("#uState").options).find((o) => o.text.toLowerCase() === pre.toLowerCase());
+      if (hit) $("#uState").value = hit.value;
+    }
     const load = async () => {
       const q = ($("#uSearch") && $("#uSearch").value) || "";
       const role = ($("#uRole") && $("#uRole").value) || "";
@@ -109,11 +114,14 @@
           '<td><span class="st ' + esc(u.chip) + '">' + esc(u.stateLabel) + "</span></td>" +
           '<td class="acts">' +
           '<a class="btn btn-secondary btn-sm" href="user.html?id=' + u.id + '">Edit</a> ' +
-          (u.status === "deleted" || /admin/i.test(u.role) ? "" :
+          (u.status === "deleted"
+            ? '<button class="btn btn-primary btn-sm u-act" data-id="' + u.id + '" data-act="restore" type="button">Restore</button> ' +
+              '<button class="btn btn-secondary btn-sm u-act" data-id="' + u.id + '" data-act="release_email" type="button">Allow signup</button>'
+            : (/admin/i.test(u.role) ? "" :
             (u.status === "banned"
               ? '<button class="btn btn-primary btn-sm u-act" data-id="' + u.id + '" data-act="unban" type="button">Unban</button>'
               : '<button class="btn btn-danger btn-sm u-act" data-id="' + u.id + '" data-act="ban" type="button">Ban</button> ' +
-                '<button class="btn btn-ghost btn-sm u-act" data-id="' + u.id + '" data-act="delete" type="button" style="color:var(--red)">Delete</button>')) +
+                '<button class="btn btn-ghost btn-sm u-act" data-id="' + u.id + '" data-act="delete" type="button" style="color:var(--red)">Delete</button>'))) +
           "</td></tr>"
         ).join("") || emptyRow(7, "No users match.");
         $$(".u-act").forEach((b) => b.addEventListener("click", async () => {
@@ -123,7 +131,7 @@
             reason = await dialog.prompt({
               title: del ? "Delete this account?" : "Ban this user?",
               body: del
-                ? "This wipes the profile. That email cannot sign up again. Write a short reason for the audit log."
+                ? "This wipes the profile. That email cannot sign up again until you restore it or allow signup. Write a short reason for the audit log."
                 : "That email cannot sign up again. Write a short reason for the audit log.",
               label: "Reason",
               placeholder: "At least 8 characters",
@@ -133,7 +141,28 @@
             });
             if (!reason) return;
           }
-          act("/api/admin/users/" + b.dataset.id + "/action", { action: b.dataset.act, reason }, "Updated.");
+          if (b.dataset.act === "restore") {
+            const ok = await dialog.confirm({
+              title: "Restore this account?",
+              body: "The email can log in again. They must reset their password. Profile details that were wiped stay blank.",
+              ok: "Restore",
+            });
+            if (!ok) return;
+            reason = "Restored by staff.";
+          }
+          if (b.dataset.act === "release_email") {
+            const ok = await dialog.confirm({
+              title: "Allow this email to sign up?",
+              body: "The deleted profile stays gone. This email may open a new account.",
+              ok: "Allow signup",
+            });
+            if (!ok) return;
+            reason = "Email released for new signup.";
+          }
+          const okMsg = b.dataset.act === "restore"
+            ? "Restored. They must reset their password to log in."
+            : (b.dataset.act === "release_email" ? "That email can open a new account." : "Updated.");
+          act("/api/admin/users/" + b.dataset.id + "/action", { action: b.dataset.act, reason }, okMsg);
         }));
       }
     };
@@ -194,7 +223,10 @@
       if ($("#ueTitle")) $("#ueTitle").textContent = u.name || "User";
       if ($("#ueChip")) { $("#ueChip").className = "st " + (u.chip || "st-gray"); $("#ueChip").textContent = u.stateLabel || ""; }
       set("#ueName", f.full_name); show("full_name", f.full_name);
-      set("#ueEmail", f.email); show("email", f.email);
+      set("#ueEmail", f.email || u.blocked_email); show("email", f.email || u.blocked_email);
+      const gone = u.status === "deleted";
+      ["#ueBan", "#ueUnban", "#ueDelete"].forEach((s) => { if ($(s)) $(s).style.display = gone ? "none" : ""; });
+      ["#ueRestore", "#ueRelease"].forEach((s) => { if ($(s)) $(s).style.display = gone ? "" : "none"; });
       set("#uePhone", f.phone); show("phone", f.phone);
       set("#ueJoin", f.join_as || "client"); show("join_as", joinLabel[f.join_as] || f.join_as);
       set("#ueStatus", f.status || "active"); show("status", statusLabel[f.status] || f.status);
@@ -310,29 +342,30 @@
         }
       });
     }
-    const runMod = async (action, confirmMsg) => {
+    const runMod = async (action, opts) => {
+      opts = opts || {};
       const reason = (($("#ueModReason") && $("#ueModReason").value) || "").trim();
       if ((action === "ban" || action === "delete") && reason.length < 8) {
         toast("Write a short reason first.", "error");
         return;
       }
-      if (confirmMsg) {
+      if (opts.confirm) {
         const ok = await dialog.confirm({
-          title: "Delete this account?",
-          body: confirmMsg,
-          ok: "Delete account",
-          danger: true,
+          title: opts.title || "Please confirm",
+          body: opts.confirm,
+          ok: opts.ok || "Confirm",
+          danger: !!opts.danger,
         });
         if (!ok) return;
       }
       try {
-        await api("/api/admin/users/" + encodeURIComponent(id) + "/action", { body: { action, reason: reason || "Reactivated by staff." } });
+        await api("/api/admin/users/" + encodeURIComponent(id) + "/action", { body: { action, reason: reason || opts.reason || "Reactivated by staff." } });
         if (action === "delete") {
-          toast("Account deleted. That email cannot sign up again.", "success");
-          location.href = "users.html";
+          toast("Account deleted. Filter Deleted to restore it or allow signup.", "success");
+          location.href = "users.html?status=deleted";
           return;
         }
-        toast("Updated.", "success");
+        toast(opts.done || "Updated.", "success");
         await paint();
       } catch (err) {
         if (!gate(err)) toast(err.message, "error");
@@ -340,7 +373,26 @@
     };
     if ($("#ueBan")) $("#ueBan").addEventListener("click", () => runMod("ban"));
     if ($("#ueUnban")) $("#ueUnban").addEventListener("click", () => runMod("unban"));
-    if ($("#ueDelete")) $("#ueDelete").addEventListener("click", () => runMod("delete", "Delete this account and all profile details? That email cannot sign up again."));
+    if ($("#ueDelete")) $("#ueDelete").addEventListener("click", () => runMod("delete", {
+      title: "Delete this account?",
+      confirm: "This wipes profile details. That email cannot sign up again until you restore it or allow signup.",
+      ok: "Delete account",
+      danger: true,
+    }));
+    if ($("#ueRestore")) $("#ueRestore").addEventListener("click", () => runMod("restore", {
+      title: "Restore this account?",
+      confirm: "The email can log in again. They must reset their password. Wiped profile details stay blank.",
+      ok: "Restore",
+      reason: "Restored by staff.",
+      done: "Restored. They must reset their password to log in.",
+    }));
+    if ($("#ueRelease")) $("#ueRelease").addEventListener("click", () => runMod("release_email", {
+      title: "Allow this email to sign up?",
+      confirm: "The deleted profile stays gone. This email may open a new account.",
+      ok: "Allow signup",
+      reason: "Email released for new signup.",
+      done: "That email can open a new account.",
+    }));
     try {
       await paint();
     } catch (err) {

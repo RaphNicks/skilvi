@@ -147,24 +147,60 @@
         }
       });
 
-      $("#btnExport") && $("#btnExport").addEventListener("click", async () => {
-        const btn = $("#btnExport");
-        busy(btn, true);
-        try {
-          const data = await api("/api/me/export");
-          const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+      async function pullExport(format) {
+        const tok = (window.SkApi && window.SkApi.tabToken && window.SkApi.tabToken()) || "";
+        const headers = {
+          Accept: format === "pdf" ? "application/pdf" : "application/json",
+          "X-CSRF-Token": (window.SkApi && window.SkApi.csrf && window.SkApi.csrf()) || "",
+        };
+        if (tok) {
+          headers.Authorization = "Bearer " + tok;
+          headers["X-Skilvi-Token"] = tok;
+        }
+        const res = await fetch("/api/me/export" + (format === "pdf" ? "?format=pdf" : ""), {
+          credentials: "same-origin",
+          headers,
+        });
+        if (format === "pdf") {
+          const ct = (res.headers.get("content-type") || "");
+          if (!res.ok || ct.indexOf("pdf") === -1) {
+            let msg = "Could not build the PDF.";
+            try { const j = await res.json(); msg = (j.error && j.error.message) || msg; } catch (e) {}
+            throw new Error(msg);
+          }
+          const blob = await res.blob();
           const a = document.createElement("a");
           a.href = URL.createObjectURL(blob);
-          a.download = "skilvi-data.json";
+          a.download = "skilvi-data.pdf";
           a.click();
           URL.revokeObjectURL(a.href);
-          toast("Your data download started.", "success");
-        } catch (err) {
-          toast(err.message, "error");
-        } finally {
-          busy(btn, false);
+          return;
         }
-      });
+        const data = await api("/api/me/export");
+        const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+        const a = document.createElement("a");
+        a.href = URL.createObjectURL(blob);
+        a.download = "skilvi-data.json";
+        a.click();
+        URL.revokeObjectURL(a.href);
+      }
+      const bindExport = (sel, format, label) => {
+        const btn = $(sel);
+        if (!btn) return;
+        btn.addEventListener("click", async () => {
+          busy(btn, true);
+          try {
+            await pullExport(format);
+            toast(label, "success");
+          } catch (err) {
+            toast(err.message, "error");
+          } finally {
+            busy(btn, false);
+          }
+        });
+      };
+      bindExport("#btnExportJson", "json", "JSON download started.");
+      bindExport("#btnExportPdf", "pdf", "PDF download started.");
 
       $("#btnDelete") && $("#btnDelete").addEventListener("click", async () => {
         const okDel = dialog

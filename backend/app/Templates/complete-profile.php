@@ -119,7 +119,7 @@ $me = $me ?? null;
 
 <?php View::partial('footer_public'); ?>
 <script src="/js/geo.js?v=1"></script>
-<script src="/js/auth.js?v=44"></script>
+<script src="/js/auth.js?v=45"></script>
 <script>
   document.addEventListener("DOMContentLoaded", () => {
     if (window.SkGeo) {

@@ -100,7 +100,7 @@ final class AuthService
             throw new AppError('email_taken', 'That email is already on an account. Log in instead.', 409);
         }
         if (User::isBlocked($email, $phone)) {
-            throw new AppError('blocked', 'This email cannot be used to open an account.', 403, ['email' => 'This email cannot be used to open an account.']);
+            throw new AppError('blocked', self::blockedMessage(), 403, ['email' => self::blockedMessage()]);
         }
 
         $rl = RateLimit::hit('register:ip:' . $ip, 5, 3600);
@@ -178,7 +178,7 @@ final class AuthService
                 throw new AppError('email_taken', 'That email is already on an account. Log in instead.', 409);
             }
             if (User::isBlocked((string) $pending['email'], (string) ($pending['phone'] ?? ''))) {
-                throw new AppError('blocked', 'This email cannot be used to open an account.', 403);
+                throw new AppError('blocked', self::blockedMessage(), 403);
             }
             $id = User::create($pending);
             Session::remove('pending_register');
@@ -391,6 +391,52 @@ final class AuthService
         ];
     }
 
+    public static function blockedMessage(): string
+    {
+        return 'This email cannot be used to open an account. Contact support@skilvi.ng for further assistance.';
+    }
+
+    /** @return array{filename:string,body:string} */
+    public static function exportPdf(int $id): array
+    {
+        $pack = self::export($id);
+        $me = is_array($pack['account'] ?? null) ? $pack['account'] : [];
+        $rows = [
+            ['Exported', (string) ($pack['exported_at'] ?? '')],
+            ['Name', (string) ($me['name'] ?? $me['full_name'] ?? '—')],
+            ['Email', (string) ($me['email'] ?? '—')],
+            ['Role', (string) ($me['role'] ?? '—')],
+            ['City', trim((string) ($me['city'] ?? '') . ' ' . (string) ($me['state'] ?? '')) ?: '—'],
+        ];
+        foreach (($pack['orders'] ?? []) as $i => $o) {
+            if (!is_array($o) || $i >= 12) {
+                break;
+            }
+            $rows[] = [
+                'Order ' . (string) ($o['code'] ?? ($i + 1)),
+                trim((string) ($o['title'] ?? '') . ' · ' . (string) ($o['status'] ?? '')),
+            ];
+        }
+        foreach (($pack['jobs'] ?? []) as $i => $j) {
+            if (!is_array($j) || $i >= 8) {
+                break;
+            }
+            $rows[] = [
+                'Job ' . (string) ($j['code'] ?? ($i + 1)),
+                trim((string) ($j['title'] ?? '') . ' · ' . (string) ($j['status'] ?? '')),
+            ];
+        }
+        $logo = rtrim((string) \App\Core\Config::get('frontend_root'), '/\\') . '/assets/img/skilvi-logo-word.png';
+        $body = \App\Core\SimplePdf::receipt(
+            'Your Skilvi data',
+            $rows,
+            'This is a summary of your Skilvi account under the NDPR. Download JSON from account settings for the full file. Skilvi. Built in Nigeria.',
+            is_file($logo) ? $logo : null,
+            'Data export'
+        );
+        return ['filename' => 'skilvi-data.pdf', 'body' => $body];
+    }
+
     public static function consent(int $id): array
     {
         $user = User::find($id);
@@ -461,7 +507,7 @@ final class AuthService
         }
         $g = GoogleAuthService::userFromCode($code);
         if (User::isBlocked($g['email'])) {
-            throw new AppError('blocked', 'This email cannot be used to open an account.', 403);
+            throw new AppError('blocked', self::blockedMessage(), 403);
         }
         $user = User::findByGoogleId($g['sub']);
         if ($user === null) {

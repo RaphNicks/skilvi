@@ -87,8 +87,11 @@ final class AdminService
         }
         $sql = implode(' AND ', $where);
         $rows = Db::fetchAll(
-            "SELECT u.*, p.tone, p.verified, p.orders_completed, p.skill, p.city, p.state
-             FROM users u LEFT JOIN profiles p ON p.user_id = u.id
+            "SELECT u.*, p.tone, p.verified, p.orders_completed, p.skill, p.city, p.state,
+                    b.email AS block_email, b.reason AS block_reason
+             FROM users u
+             LEFT JOIN profiles p ON p.user_id = u.id
+             LEFT JOIN account_blocks b ON b.user_id = u.id
              WHERE $sql
              ORDER BY u.id DESC LIMIT 200",
             $bind
@@ -136,8 +139,13 @@ final class AdminService
         $id = (int) $u['id'];
         $p = Db::fetch('SELECT * FROM profiles WHERE user_id = ?', [$id]) ?: [];
         $w = Db::fetch('SELECT available_kobo, pending_kobo, updated_at FROM wallets WHERE user_id = ?', [$id]) ?: [];
+        $block = Db::fetch('SELECT email, phone, reason, created_at FROM account_blocks WHERE user_id = ?', [$id]) ?: [];
         $phoneRaw = (string) ($u['phone'] ?? '');
-        $phone = ($phoneRaw === '' || str_starts_with($phoneRaw, 'e:')) ? '' : format_phone($phoneRaw);
+        if ($phoneRaw === '' || str_starts_with($phoneRaw, 'e:') || str_starts_with($phoneRaw, 'x:')) {
+            $phoneRaw = (string) ($block['phone'] ?? '');
+        }
+        $phone = ($phoneRaw === '' || str_starts_with($phoneRaw, 'e:') || str_starts_with($phoneRaw, 'x:')) ? '' : format_phone($phoneRaw);
+        $emailShow = (string) ($u['email'] ?: ($block['email'] ?? ''));
         $roles = User::roles($u);
         $roleLabel = in_array('admin', $roles, true) ? 'Admin'
             : ((in_array('worker', $roles, true) && in_array('client', $roles, true)) ? 'Both'
@@ -161,7 +169,7 @@ final class AdminService
             'Account' => [
                 ['User ID', (string) $id],
                 ['Full name', (string) $u['full_name']],
-                ['Email', (string) ($u['email'] ?: '—')],
+                ['Email', $emailShow !== '' ? $emailShow : '—'],
                 ['Phone', $phone !== '' ? $phone : '—'],
                 ['Roles', $roleLabel . ' (' . implode(', ', $roles) . ')'],
                 ['Status', ucfirst((string) $u['status'])],
@@ -249,7 +257,9 @@ final class AdminService
         return [
             'id'         => $id,
             'name'       => $u['full_name'],
-            'email'      => $u['email'],
+            'email'      => $emailShow !== '' ? $emailShow : $u['email'],
+            'blocked_email' => (string) ($block['email'] ?? ''),
+            'block_reason'  => (string) ($block['reason'] ?? ''),
             'phone'      => $phone,
             'initials'   => initials((string) $u['full_name']),
             'tone'       => ($p['tone'] ?? '') !== '' ? $p['tone'] : 'a1',
@@ -494,7 +504,11 @@ final class AdminService
             NotificationService::push((int) $u['id'], 'order', 'Account banned', $reason, 'help.html');
         } elseif ($action === 'delete') {
             self::deleteAccount($adminId, $u, $reason, $ip);
-            return self::users('', '', '');
+            return self::users('', '', 'deleted');
+        } elseif ($action === 'restore') {
+            self::restoreAccount($adminId, $u, $ip);
+        } elseif ($action === 'release_email') {
+            self::releaseEmail($adminId, $u, $ip);
         } elseif ($action === 'grant_admin') {
             if (!str_contains((string) $u['roles'], 'admin')) {
                 Db::run("UPDATE users SET roles = trim(roles || ',admin', ','), updated_at=? WHERE id=?", [$now, $u['id']]);
@@ -510,6 +524,60 @@ final class AdminService
         }
         self::audit($adminId, 'user.' . $action, 'user:' . $u['id'], ['reason' => $reason, 'name' => $u['full_name']], $ip);
         return self::users('', '', '');
+    }
+
+    /** @param array<string,mixed> $u */
+    private static function restoreAccount(int $adminId, array $u, string $ip): void
+    {
+        if ((string) ($u['status'] ?? '') !== 'deleted') {
+            throw new AppError('invalid', 'Only a deleted account can be restored.', 422);
+        }
+        $id = (int) $u['id'];
+        $block = Db::fetch('SELECT * FROM account_blocks WHERE user_id = ?', [$id]);
+        $email = strtolower(trim((string) ($block['email'] ?? '')));
+        if ($email === '' || str_starts_with($email, 'user:')) {
+            throw new AppError('invalid', 'No email is on file for this deleted account. It may already have been released.', 422);
+        }
+        $taken = User::findByEmail($email);
+        if ($taken !== null && (int) $taken['id'] !== $id) {
+            throw new AppError('email_taken', 'That email is already on another account.', 409);
+        }
+        $audit = Db::fetch(
+            "SELECT meta FROM admin_audit WHERE action = 'user.delete' AND target = ? ORDER BY id DESC LIMIT 1",
+            ['user:' . $id]
+        );
+        $meta = json_decode((string) ($audit['meta'] ?? ''), true) ?: [];
+        $name = trim((string) ($meta['name'] ?? ''));
+        if ($name === '' || strcasecmp($name, 'Deleted account') === 0) {
+            $name = 'Restored account';
+        }
+        $phone = (string) ($block['phone'] ?? '');
+        if ($phone === '' || str_starts_with($phone, 'x:') || str_starts_with($phone, 'e:')) {
+            $phone = 'e:' . $id;
+        }
+        Db::run(
+            'UPDATE users SET full_name=?, email=?, phone=?, status=?, updated_at=? WHERE id=?',
+            [$name, $email, $phone, 'active', now_iso(), $id]
+        );
+        User::unblock(['id' => $id, 'email' => $email]);
+        self::audit($adminId, 'user.restore', 'user:' . $id, ['email' => $email, 'name' => $name], $ip);
+    }
+
+    /** @param array<string,mixed> $u */
+    private static function releaseEmail(int $adminId, array $u, string $ip): void
+    {
+        if ((string) ($u['status'] ?? '') !== 'deleted') {
+            throw new AppError('invalid', 'Only a deleted account can release its email.', 422);
+        }
+        $id = (int) $u['id'];
+        $block = Db::fetch('SELECT email FROM account_blocks WHERE user_id = ?', [$id]);
+        $email = strtolower(trim((string) ($block['email'] ?? '')));
+        User::unblock(['id' => $id, 'email' => $email]);
+        try {
+            Db::run('UPDATE users SET google_id=NULL, updated_at=? WHERE id=?', [now_iso(), $id]);
+        } catch (\Throwable $e) {
+        }
+        self::audit($adminId, 'user.release_email', 'user:' . $id, ['email' => $email], $ip);
     }
 
     /** @param array<string,mixed> $u */
@@ -544,7 +612,7 @@ final class AdminService
             [$now, $id]
         );
         Db::run(
-            'UPDATE users SET full_name=?, email=NULL, phone=?, password_hash=?, status=?, updated_at=? WHERE id=?',
+            'UPDATE users SET full_name=?, email=NULL, phone=?, password_hash=?, status=?, google_id=NULL, updated_at=? WHERE id=?',
             ['Deleted account', 'x:' . $id, password_hash(bin2hex(random_bytes(24)), PASSWORD_DEFAULT), 'deleted', $now, $id]
         );
         self::audit($adminId, 'user.delete', 'user:' . $id, ['reason' => $reason, 'name' => $u['full_name'], 'email' => $u['email'] ?? ''], $ip);

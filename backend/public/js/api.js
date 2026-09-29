@@ -146,7 +146,16 @@
     const inputType = opts.input || (kind === "prompt" ? "textarea" : "");
     title.textContent = opts.title || "Skilvi";
     body.textContent = opts.body || "";
-    body.hidden = !opts.body;
+    const href = String(opts.href || "");
+    const safeHref = /^(mailto:|https:\/\/|\/)[^\s"'<>]+$/i.test(href) ? href : "";
+    if (safeHref && opts.hrefLabel) {
+      body.appendChild(document.createTextNode(" "));
+      const a = document.createElement("a");
+      a.href = safeHref;
+      a.textContent = String(opts.hrefLabel);
+      body.appendChild(a);
+    }
+    body.hidden = !opts.body && !safeHref;
     field.hidden = kind !== "prompt";
     cancelBtn.hidden = kind === "alert";
     okBtn.textContent = opts.ok || (kind === "alert" ? "OK" : kind === "prompt" ? "Continue" : "Confirm");

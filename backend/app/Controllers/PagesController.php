@@ -55,7 +55,7 @@ final class PagesController
         }
         $overlay = '<div id="skLoader" aria-hidden="true" role="status" aria-label="Loading"><video muted loop playsinline autoplay preload="auto"><source src="/assets/video/skilvi-loader.webm" type="video/webm"><source src="/assets/video/skilvi-loader.mp4" type="video/mp4"></video></div>';
         $html = preg_replace('/<body([^>]*)>/i', '<body$1>' . $overlay, $html, 1) ?? $html;
-        $extra = '<script src="/js/loader.js?v=6"></script><script src="/js/theme.js?v=2"></script><script src="/js/api.js?v=40"></script><script src="/js/chrome.js?v=44"></script><script src="/js/geo.js?v=1"></script>';
+        $extra = '<script src="/js/loader.js?v=6"></script><script src="/js/theme.js?v=2"></script><script src="/js/api.js?v=41"></script><script src="/js/chrome.js?v=44"></script><script src="/js/geo.js?v=1"></script>';
         $pageScripts = [
             'index.html'             => '/js/discovery.js?v=31',
             'jobs.html'              => '/js/discovery.js?v=31',
@@ -65,7 +65,7 @@ final class PagesController
             'worker-profile.html'    => '/js/discovery.js?v=34',
             'service-detail.html'    => '/js/discovery.js?v=31',
             'saved.html'             => '/js/discovery.js?v=31',
-            'account-settings.html'  => '/js/account.js?v=33',
+            'account-settings.html'  => '/js/account.js?v=34',
             'post-job.html'          => '/js/client.js?v=32',
             'client-dashboard.html'  => '/js/client.js?v=37',
             'order-detail.html'      => '/js/client.js?v=35',
@@ -101,7 +101,7 @@ final class PagesController
         if (str_starts_with($rel, 'admin/')) {
             // Do not bounce staff to a client/worker dashboard. Cookie is shared
             // across tabs; this tab's account is the Bearer token in JS.
-            $extra .= '<script src="/js/admin.js?v=47"></script>';
+            $extra .= '<script src="/js/admin.js?v=48"></script>';
         }
         if (in_array($rel, $gated, true) && !Session::userId() && empty($_SERVER['HTTP_AUTHORIZATION']) && empty($_SERVER['HTTP_X_SKILVI_TOKEN'])) {
             Response::redirect('/login.html?next=/' . $rel);

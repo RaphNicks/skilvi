@@ -44,6 +44,11 @@ final class AccountController
     public static function export(Request $req, array $params = []): void
     {
         $id = self::requireUser();
+        $fmt = strtolower($req->q('format') ?: '');
+        if ($fmt === 'pdf') {
+            $pdf = AuthService::exportPdf($id);
+            Response::download($pdf['filename'], $pdf['body'], 'application/pdf');
+        }
         Response::json(AuthService::export($id));
     }
 

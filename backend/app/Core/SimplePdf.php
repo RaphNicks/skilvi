@@ -10,7 +10,7 @@ final class SimplePdf
      * @param array<int, array{0:string,1:string}> $rows
      * @param string|null $logoPng Path to a PNG wordmark (optional).
      */
-    public static function receipt(string $title, array $rows, string $footer, ?string $logoPng = null): string
+    public static function receipt(string $title, array $rows, string $footer, ?string $logoPng = null, string $kicker = 'Escrow receipt'): string
     {
         $logo = $logoPng ? self::jpegFromPng($logoPng) : null;
         $ops = [];
@@ -20,12 +20,12 @@ final class SimplePdf
             $w = $h * ($logo['w'] / max(1, $logo['h']));
             $ops[] = sprintf('q %.2f 0 0 %.2f 40 798 cm /Im1 Do Q', $w, $h);
             $ops[] = '0.45 0.48 0.55 rg';
-            $ops[] = self::text(430, 808, 'Escrow receipt', 'F1', 10);
+            $ops[] = self::text(430, 808, $kicker, 'F1', 10);
         } else {
             $ops[] = '0.145 0.275 0.78 rg';
             $ops[] = self::text(40, 808, 'Skilvi', 'F2', 20);
             $ops[] = '0.45 0.48 0.55 rg';
-            $ops[] = self::text(40, 790, 'Escrow receipt', 'F1', 10);
+            $ops[] = self::text(40, 790, $kicker, 'F1', 10);
         }
         $ops[] = '0.145 0.275 0.78 RG 1.2 w 40 786 515 0 m 555 786 l S';
         $ops[] = '0.12 0.16 0.24 rg';

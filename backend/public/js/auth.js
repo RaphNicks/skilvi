@@ -231,7 +231,16 @@
         showOtp(data, "register");
         toast("Code sent to " + data.phone_mask, "success");
       } catch (err) {
-        toast(err.message, "error");
+        if (err.code === "blocked" && window.SkApi && window.SkApi.dialog) {
+          window.SkApi.dialog.alert({
+            title: "This email cannot be used",
+            body: "This email cannot be used to open an account. Contact support for further assistance:",
+            href: "mailto:support@skilvi.ng",
+            hrefLabel: "support@skilvi.ng",
+          });
+        } else {
+          toast(err.message, "error");
+        }
       } finally {
         busy(btn, false);
       }
@@ -342,7 +351,17 @@
 
   const q = new URLSearchParams(location.search);
   if (q.get("google") === "error") {
-    toast(q.get("msg") || "Google sign-in failed. Try again.", "error");
+    const gmsg = q.get("msg") || "Google sign-in failed. Try again.";
+    if (/cannot be used/i.test(gmsg) && window.SkApi && window.SkApi.dialog) {
+      window.SkApi.dialog.alert({
+        title: "This email cannot be used",
+        body: "This email cannot be used to open an account. Contact support for further assistance:",
+        href: "mailto:support@skilvi.ng",
+        hrefLabel: "support@skilvi.ng",
+      });
+    } else {
+      toast(gmsg, "error");
+    }
   }
 
   const completeForm = document.getElementById("completeForm");
